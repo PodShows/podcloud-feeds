@@ -4,7 +4,7 @@
   "description": "Testing GraphQL for podcloud",
   "scripts": {
     "start": "nodemon ./server.js --exec babel-node",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "istanbul cover ./node_modules/mocha/bin/_mocha && codecov"
   },
   "keywords": [],
   "author": "Pof Magicfingers <pof@podcloud.fr>",
@@ -26,7 +26,10 @@
   },
   "devDependencies": {
     "babel-cli": "6.5.1",
+    "codecov": "^2.3.0",
+    "istanbul": "^0.4.5",
     "lodash": "^4.11.1",
+    "mocha": "^3.5.3",
     "nodemon": "^1.9.1",
     "webpack": "^3.6.0"
   }
