@@ -1,4 +1,5 @@
 import express from 'express';
+import compression from 'compression'
 import { graphqlExpress, graphiqlExpress } from "apollo-server-express"
 import { makeExecutableSchema } from 'graphql-tools';
 import Schema from './data/schema';
@@ -8,6 +9,8 @@ import Resolvers from './data/resolvers';
 const GRAPHQL_PORT = 8880;
 
 var app = express();
+app.use(compression());
+
 app.use('/graphql', bodyParser.json(), graphqlExpress({
   schema: makeExecutableSchema({
     typeDefs: Schema,
