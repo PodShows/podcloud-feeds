@@ -59,7 +59,7 @@ const resolveFunctions = {
         podcastForFeedWithIdentifier(obj, args, context, info) {
             return new Promise((resolve, reject) => {
                 const identifier_cleaned = args.identifier.toLowerCase().trim();
-                const cache_key =                     "identifier-uid-"+identifier_cleaned;
+                const cache_key = "identifier-uid-"+identifier_cleaned;
                 console.log("Looking for cached uid with key : "+cache_key);
                 podcastIdentifiersCache.get(
                     cache_key,
