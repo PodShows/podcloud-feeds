@@ -1,13 +1,11 @@
 import Mongoose from 'mongoose';
 import rp from 'request-promise';
 import _ from 'lodash';
+import config from 'config';
 
 const ObjectId = Mongoose.Schema.Types.ObjectId;
 
-const PROD = "mongodb://localhost/podcloud"
-const DEV = "mongodb://localhost/podcloud_development"
-
-const mongo = Mongoose.connect(DEV, {
+const mongo = Mongoose.connect(config.get("mongodb"), {
     promiseLibrary: rp,
     useMongoClient: true,
 }, (err) => {
