@@ -75,7 +75,7 @@ type Enclosure {
 
 type RootQuery {
   podcasts: [Podcast]
-  podcastWithIdentifier(identifier: String!): Podcast
+  podcastForFeedWithIdentifier(identifier: String!): Podcast
 }
 
 schema {

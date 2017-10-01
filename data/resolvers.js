@@ -2,6 +2,13 @@ import GraphQLDate from 'graphql-date';
 import { Feed, Item } from './connectors';
 import moment from 'moment';
 import path from 'path';
+import NodeCache from  "node-cache";
+
+const podcastIdentifiersCache = new NodeCache();
+
+const notEmpty = function(obj) {
+    return (typeof obj === "string" && obj.length > 0);
+}
 
 const PodcastFields =  [
     "_id", "title", "catchline",
@@ -49,25 +56,86 @@ const resolveFunctions = {
                 });
             });
         },
-        podcastWithIdentifier(obj, args, context, info) {
+        podcastForFeedWithIdentifier(obj, args, context, info) {
             return new Promise((resolve, reject) => {
-                Feed.findOne(
-                    {
-                        draft: {"$ne": true},
-                        disabled: {"$ne": true},
-                        identifier: args.identifier
-                    }, PodcastFields, {
-                        sort:{
-                            created_at: -1
+                const identifier_cleaned = args.identifier.toLowerCase().trim();
+                const cache_key =                     "identifier-uid-"+identifier_cleaned;
+                console.log("Looking for cached uid with key : "+cache_key);
+                podcastIdentifiersCache.get(
+                    cache_key,
+                    (err, found) => {
+                        if(err){
+                            console.error(err);
                         }
+                        
+                        let findArgs;
+                        
+                        if(notEmpty(found)) {
+                            console.log("Found cached uid : "+found);
+                            findArgs = [{_id: found}, PodcastFields];
+                        } else {
+                            console.log("Cached uid not found, executing big ass query");
+                            findArgs = [
+                                {
+                                    draft: {"$ne": true},
+                                    feed_to_takeover_id: {"$exists": false},
+                                    external: {"$ne": true},
+                                    "$or": [
+                                        { custom_domain: identifier_cleaned },
+                                        { identifier: identifier_cleaned },
+                                        { _slugs: identifier_cleaned }
+                                    ]
+                                },
+                                PodcastFields                                
+                            ];
+                        }
+                        
+                        Feed.findOne(...findArgs).exec(function(err, feed) {
+                            if(err) {
+                                console.error(err);
+                                reject(err);
+                            } else {
+                                let keys;
+                                if(feed === null) {
+                                    keys = [];
+                                } else {
+                                    console.log("Found podcast.");
+                                    keys = [
+                                        feed.identifier,
+                                        ...feed._slugs,
+                                        feed.custom_domain
+                                    ].filter((item, pos, self) => {
+                                        return self.indexOf(item) == pos;
+                                    }).map(i => "identifier-uid-"+i);
+                                }
+                                if(notEmpty(found) && (keys.indexOf(identifier_cleaned) === -1 || feed === null)) {
+                                    console.log("Found podcast doesn't include cached identifier, we need to invalidate cache");
+                                    podcastIdentifiersCache.del(cache_key);
+                                    // cached value is not valid anymore
+                                    resolve(null);
+                                } else {
+                                    console.log("Updating cache with up to date data")
+                                    keys.forEach(k => {
+                                        console.log("Setting cache "+k+"="+f._id);
+                                        podcastIdentifiersCache.set(
+                                            k,
+                                            f._id,
+                                            function( err, success ) {
+                                                if(err){
+                                                    console.error(err);
+                                                }
+                                                if(success){
+                                                    console.log("updated "+k);
+                                                }
+                                            }
+                                        );
+                                    });
+                                    resolve(feed);
+                                }
+                            }
+                        });
                     }
-                ).exec(function(err, feed) {
-                    if(err) {
-                        reject(err);
-                    } else {
-                        resolve(feed);
-                    }
-                });
+                )
             });
         }
     },
@@ -118,7 +186,7 @@ const resolveFunctions = {
             return url;  
         },
         website_url(feed) {
-            let url = typeof feed === "string" && feed.link.length > 0 ? feed.link : feed.identifier+".lepodcast.fr/";
+            let url = notEmpty(feed.link) ? feed.link : feed.identifier+".lepodcast.fr/";
             if(!(/^https?:\/\//.test(url))) url = "http://"+url;
 
             return url;
@@ -195,7 +263,7 @@ const resolveFunctions = {
             return item.title;
         },
         author(item) {
-            return typeof(item.author) === "string" && item.author.length > 0 ? item.author : item.feed.author;
+            return notEmpty(item.author) ? item.author : item.feed.author;
         },
         explicit(item) {
             return !!item.explicit;
@@ -210,7 +278,7 @@ const resolveFunctions = {
             return moment(item.published_at).format(DateFormat[args.format]);
         },
         url(item) {
-            let url = typeof(item.link) === "string" && item.link.length > 0 ? item.link : "http://"+item.feed.identifier+".lepodcast.fr/"+item._slugs[item._slugs.length-1];
+            let url = notEmpty(item.link) ? item.link : "http://"+item.feed.identifier+".lepodcast.fr/"+item._slugs[item._slugs.length-1];
             if(!(/^https?:\/\//.test(url))) url = "http://"+url;
             return url;
         }
@@ -229,7 +297,7 @@ const resolveFunctions = {
             return item.content;
         },
         author(item) {
-            return typeof(item.author) === "string" && item.author.length > 0 ? item.author : item.feed.author;
+            return notEmpty(item.author) ? item.author : item.feed.author;
         },
         explicit(item) {
             return !!item.explicit;
@@ -238,7 +306,7 @@ const resolveFunctions = {
             return moment(item.published_at).format(DateFormat[args.format]);
         },
         url(item) {
-            let url = typeof(item.link) === "string" && item.link.length > 0 ? item.link : "http://"+item.feed.identifier+".lepodcast.fr/"+item._slugs[item._slugs.length-1];
+            let url = notEmpty(item.link) ? item.link : "http://"+item.feed.identifier+".lepodcast.fr/"+item._slugs[item._slugs.length-1];
             if(!(/^https?:\/\//.test(url))) url = "http://"+url;
             return url;
         },
