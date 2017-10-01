@@ -105,7 +105,7 @@ const resolveFunctions = {
                                         ...feed._slugs,
                                         feed.custom_domain
                                     ].filter((item, pos, self) => {
-                                        return self.indexOf(item) == pos;
+                                        return self.indexOf(item) == pos && notEmpty(item);
                                     }).map(i => "identifier-uid-"+i);
                                 }
                                 if(notEmpty(found) && (keys.indexOf(identifier_cleaned) === -1 || feed === null)) {
@@ -116,10 +116,10 @@ const resolveFunctions = {
                                 } else {
                                     console.log("Updating cache with up to date data")
                                     keys.forEach(k => {
-                                        console.log("Setting cache "+k+"="+f._id);
+                                        console.log("Setting cache "+k+"="+feed._id);
                                         podcastIdentifiersCache.set(
                                             k,
-                                            f._id,
+                                            feed._id,
                                             function( err, success ) {
                                                 if(err){
                                                     console.error(err);
