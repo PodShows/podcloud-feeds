@@ -32,8 +32,7 @@ const DateFormat = {
     "RFC822": "ddd, DD MMM YYYY HH:mm:ss ZZ"
 };
 
-const resolveFunctions = {
-    Date: GraphQLDate.constructor,
+const Resolvers = {
     RootQuery: {
         podcasts(){
             return new Promise((resolve, reject) => {
@@ -333,4 +332,4 @@ const resolveFunctions = {
     }
 }
 
-export default resolveFunctions;
+export default Resolvers;

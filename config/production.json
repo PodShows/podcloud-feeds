@@ -1,3 +1,4 @@
 {
-  "mongodb": "mongodb://localhost/podcloud"
+	"port": 8880,
+	"mongodb": "mongodb://localhost/podcloud"
 }

@@ -1,0 +1,20 @@
+import PodcastItem from "./podcastItem";
+import DateFormat from "./dateFormat";
+import Enclosure from "./enclosure";
+
+const Episode = `
+type Episode implements PodcastItem {
+  guid: String!
+  title: String!
+  text_content: String!
+  formatted_content: String!
+  published_at(format: DateFormat = RFC822): String!
+  url: String!
+  explicit: Boolean!
+  cover_url: String!
+  author: String
+  enclosure: Enclosure
+}
+`;
+
+export default () => [PodcastItem, DateFormat, Enclosure, Episode];
