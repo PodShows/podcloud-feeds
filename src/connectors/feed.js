@@ -1,0 +1,33 @@
+import Mongoose from 'mongoose';
+
+const ObjectId = Mongoose.Schema.Types.ObjectId;
+
+const FeedSchema = new Mongoose.Schema({
+    _id: ObjectId,
+    title: String,
+    catchline: String,
+    description: String,
+    copyright: String,
+    cover_filename: String,
+    identifier: String,
+    language: String,
+    contact_email: String,
+    author: String,
+    explicit: Boolean,
+    tags: String,
+    _slugs: [String],
+    parent_feed: String,
+    external: Boolean,
+    created_at: Date,
+    updated_at: Date,
+    ordering: String,
+    block_itunes: Boolean,
+    itunes_category: String,
+    disabled: Boolean,
+    feed_redirect_url: String,
+    web_redirect_url: String
+})
+
+const Feed = Mongoose.model('feeds', FeedSchema);
+
+export default Feed;
