@@ -2,8 +2,8 @@ import { expect } from "chai";
 import Server from "~/server.js";
 
 // Fixtures
-import resolvers from "#/fixtures/graphql/resolvers";
-import typeDefinitions from "#/fixtures/graphql/typeDefinitions";
+import resolvers from "#/fixtures/graphql/resolvers.fixture";
+import typeDefinitions from "#/fixtures/graphql/typeDefinitions.fixture";
 
 const createServer = function(td, rs) {
 	return function() {

@@ -1,5 +1,5 @@
 const notEmpty = function(obj) {
-    return (typeof obj === "string" && obj.length > 0);
+    return (typeof obj === "string" && obj.trim().length > 0);
 };
 
 export default { notEmpty };

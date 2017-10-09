@@ -1,4 +1,5 @@
 import Mongoose from 'mongoose';
+Mongoose.Promise = global.Promise;
 
 const ObjectId = Mongoose.Schema.Types.ObjectId;
 

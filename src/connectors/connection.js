@@ -1,9 +1,8 @@
 import Mongoose from 'mongoose';
-import rp from 'request-promise';
+Mongoose.Promise = global.Promise;
 
 function mongo_connect(conn_str) {
 	const mongo = Mongoose.connect(conn_str, {
-	    promiseLibrary: rp,
 	    useMongoClient: true,
 	}, (err) => {
 	    if(err){
