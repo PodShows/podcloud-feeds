@@ -22,6 +22,7 @@
     "babel-polyfill": "6.5.0",
     "babel-preset-env": "1.6.0",
     "body-parser": "^1.18.2",
+    "chai-as-promised": "^7.1.1",
     "compression": "^1.7.1",
     "config": "^1.26.2",
     "express": "4.13.4",

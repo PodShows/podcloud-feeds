@@ -1,5 +1,6 @@
 import proxyquire from "proxyquire"
 import chai from "chai"
+import chaiAsPromised from "chai-as-promised"
 import sinon from "sinon"
 import sinonChai from "sinon-chai"
 import "sinon-mongoose";
@@ -11,6 +12,7 @@ import Feed from "~/connectors/feed"
 
 const expect = chai.expect;
 chai.use(sinonChai)
+chai.use(chaiAsPromised)
 
 describe("Resolvers", () => {
 	describe("queries", () => {
@@ -38,6 +40,26 @@ describe("Resolvers", () => {
 			it("should return a promise", () => {
 				const query = podcastForFeedWithIdentifier({}, {identifier: ""}).then(() => {}, () => {});
 				expect(query).to.be.a('promise');
+			});
+
+			it("should reject the promise when identifier is not a string", () => {
+				const query = podcastForFeedWithIdentifier({}, {identifier: null});
+				expect(query).to.be.a('promise');
+				expect(query).to.be.eventually.rejected;
+			});
+
+			it("should reject the promise when database has an error", () => {
+				const err_msg = "Error occured (simulated at "+(+new Date()/1000)+")"
+	
+				FeedMock
+				.expects('findOne')
+				.chain('exec')
+				.yields(err_msg, null);
+
+				const query = podcastForFeedWithIdentifier({}, {identifier: ""})
+
+				expect(query).to.be.a('promise');
+				expect(query).to.be.eventually.rejectedWith(err_msg);
 			});
 
 			it("with unknown identifier should resolve null", () => {
