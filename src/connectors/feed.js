@@ -4,7 +4,6 @@ Mongoose.Promise = global.Promise;
 const ObjectId = Mongoose.Schema.Types.ObjectId;
 
 const FeedSchema = new Mongoose.Schema({
-    _id: ObjectId,
     title: String,
     catchline: String,
     description: String,
