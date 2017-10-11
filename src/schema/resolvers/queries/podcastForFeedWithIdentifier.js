@@ -2,6 +2,8 @@ import { notEmpty } from "~/utils";
 import Feed from "~/connectors/feed";
 import NodeCache from  "node-cache";
 
+const debug = require("debug")("podcastForFeedWithIdentifier");
+
 const podcastIdentifiersCache = new NodeCache();
 
 const PodcastFields =  [
@@ -17,10 +19,20 @@ const PodcastFields =  [
 ];
 
 const podcastForFeedWithIdentifier = function(obj, args, context, info) {
+    debug("called");
     return new Promise((resolve, reject) => {
+        debug("inside promise");
+        if(
+            typeof args !== "object" || 
+            !args.hasOwnProperty("identifier") || 
+            typeof args.identifier !== "string"
+        ) {
+            console.error("args.identifier must be a string!");
+            reject("args.identifier must be a string!");
+        }
         const identifier_cleaned = args.identifier.toLowerCase().trim();
         const cache_key = "identifier-uid-"+identifier_cleaned;
-        console.log("Looking for cached uid with key : "+cache_key);
+        debug("Looking for cached uid with key : "+cache_key);
         podcastIdentifiersCache.get(
             cache_key,
             (err, found) => {
@@ -31,10 +43,10 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
                 let findArgs;
                         
                 if(notEmpty(found)) {
-                    console.log("Found cached uid : "+found);
+                    debug("Found cached uid : "+found);
                     findArgs = [{_id: found}, PodcastFields];
                 } else {
-                    console.log("Cached uid not found, executing big ass query");
+                    debug("Cached uid not found, executing big ass query");
                     findArgs = [
                         {
                             draft: {"$ne": true},
@@ -49,7 +61,10 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
                         PodcastFields                                
                     ];
                 }
-                        
+
+                debug("FEED OBJECT");
+                debug(Feed);
+                
                 Feed.findOne(...findArgs).exec(function(err, feed) {
                     if(err) {
                         console.error(err);
@@ -59,7 +74,7 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
                         if(feed === null) {
                             keys = [];
                         } else {
-                            console.log("Found podcast.");
+                            debug("Found podcast.");
                             keys = [
                                 feed.identifier,
                                 ...feed._slugs,
@@ -69,14 +84,14 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
                             }).map(i => "identifier-uid-"+i);
                         }
                         if(notEmpty(found) && (keys.indexOf(identifier_cleaned) === -1 || feed === null)) {
-                            console.log("Found podcast doesn't include cached identifier, we need to invalidate cache");
+                            debug("Found podcast doesn't include cached identifier, we need to invalidate cache");
                             podcastIdentifiersCache.del(cache_key);
                             // cached value is not valid anymore
                             resolve(null);
                         } else {
-                            console.log("Updating cache with up to date data")
+                            debug("Updating cache with up to date data")
                             keys.forEach(k => {
-                                console.log("Setting cache "+k+"="+feed._id);
+                                debug("Setting cache "+k+"="+feed._id);
                                 podcastIdentifiersCache.set(
                                     k,
                                     feed._id,
@@ -85,7 +100,7 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
                                             console.error(err);
                                         }
                                         if(success){
-                                            console.log("updated "+k);
+                                            debug("updated "+k);
                                         }
                                     }
                                 );

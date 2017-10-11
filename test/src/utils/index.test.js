@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import utils from "~/utils";
+import * as utils from "~/utils";
 
 describe("Utils", () => {
 	describe("notEmpty", () => {
