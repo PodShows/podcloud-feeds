@@ -31,6 +31,7 @@
     "graphql-tools": "^1.2.3",
     "moment": "^2.18.1",
     "mongoose": "^4.4.12",
+    "mongoose-fixture-loader": "^1.0.2",
     "node-cache-store": "0.0.2",
     "request-promise": "^3.0.0"
   },

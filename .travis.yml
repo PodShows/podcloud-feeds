@@ -1,9 +1,17 @@
 language: node_js
 sudo: false
+
 node_js:
   - "6.11.3"
 
+services:
+  - mongodb
+
 install:
   - npm install
+
+env:
+  - NODE_ENV=test
+
 script:
-  - npm run codecov 
+  - npm run codecov
