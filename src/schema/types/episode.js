@@ -1,5 +1,5 @@
 import PodcastItem from "./podcastItem";
-import DateFormat from "./dateFormat";
+import { DateFormat } from '~/schema/enums';
 import Enclosure from "./enclosure";
 
 const Episode = `

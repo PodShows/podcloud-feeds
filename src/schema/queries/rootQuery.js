@@ -1,4 +1,4 @@
-import Podcast from "./podcast";
+import { Podcast } from "~/schema/types/typeDefs";
 
 const RootQuery = `
 type RootQuery {

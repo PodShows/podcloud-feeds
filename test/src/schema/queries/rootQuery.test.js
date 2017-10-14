@@ -1,6 +1,6 @@
 import { expect } from "chai";
 
-import rootQuery from '~/schema/resolvers/queries/rootQuery';
+import rootQuery from '~/schema/queries/resolvers/rootQuery';
 
 describe("Resolvers", () => {
 	describe("queries", () => {

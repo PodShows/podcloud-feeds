@@ -1,4 +1,4 @@
-import DateFormat from "./dateFormat";
+import { DateFormat } from '~/schema/enums';
 import Episode from "./episode";
 import Post from "./post";
 

@@ -1,6 +1,6 @@
 import moment from 'moment';
 import Item from "~/connectors/item";
-import DateFormat from './dateFormat';
+import { DateFormat } from '~/schema/enums';
 import { notEmpty } from "~/utils";
 import path from 'path';
 
@@ -39,10 +39,10 @@ const Podcast = {
         return "http://"+feed.identifier+".lepodcast.fr/cover"+path.extname(feed.cover_filename);
     },
     created_at(feed, args) {
-        return moment(feed.created_at).format(DateFormat[args.format]);
+        return moment(feed.created_at).format(DateFormat.resolve(args.format));
     },
     updated_at(feed, args) {
-        return moment(feed.updated_at).format(DateFormat[args.format]);
+        return moment(feed.updated_at).format(DateFormat.resolve(args.format));
     },
     internal(feed) {
         return !feed.external;

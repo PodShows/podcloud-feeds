@@ -1,4 +1,4 @@
-import DateFormat from "./dateFormat";
+import { DateFormat } from '~/schema/enums';
 import PodcastItem from './podcastItem';
 
 const Podcast = `type Podcast {

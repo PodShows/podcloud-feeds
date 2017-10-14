@@ -1,5 +1,5 @@
 import moment from 'moment';
-import DateFormat from './dateFormat';
+import { DateFormat } from '~/schema/enums';
 import { notEmpty } from "~/utils";
 
 const Episode = {
@@ -22,7 +22,7 @@ const Episode = {
         return !!item.explicit;
     },
     published_at(item, args) {
-        return moment(item.published_at).format(DateFormat[args.format]);
+        return moment(item.published_at).format(DateFormat.resolve(args.format));
     },
     url(item) {
         let url = notEmpty(item.link) ? item.link : "http://"+item.feed.identifier+".lepodcast.fr/"+item._slugs[item._slugs.length-1];

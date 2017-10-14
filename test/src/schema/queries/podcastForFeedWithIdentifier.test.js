@@ -24,7 +24,7 @@ describe("Resolvers", () => {
 				FeedMock = sinon.mock(Feed);
 
 				podcastForFeedWithIdentifier = proxyquire(
-					"../../../../../src/schema/resolvers/queries/podcastForFeedWithIdentifier", 
+					"../../../../src/schema/queries/resolvers/podcastForFeedWithIdentifier", 
 					{ 
 						Feed
 					}
