@@ -2,7 +2,7 @@ import { expect } from "chai";
 
 import rootQuery from '~/schema/queries/resolvers/rootQuery';
 
-describe("Resolvers", () => {
+describe("Schema", () => {
 	describe("queries", () => {
 		describe("rootQuery", () => {
 			it("should have *podcasts* query", () => {

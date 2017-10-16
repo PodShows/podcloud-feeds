@@ -14,7 +14,7 @@ const expect = chai.expect;
 chai.use(sinonChai)
 chai.use(chaiAsPromised)
 
-describe("Resolvers", () => {
+describe("Schema", () => {
 	describe("queries", () => {
 		describe("podcastForFeedWithIdentifier", () => {
 			var podcastForFeedWithIdentifier;
@@ -45,7 +45,7 @@ describe("Resolvers", () => {
 			it("should reject the promise when identifier is not a string", () => {
 				const query = podcastForFeedWithIdentifier({}, {identifier: null});
 				expect(query).to.be.a('promise');
-				expect(query).to.be.eventually.rejected;
+				return expect(query).to.be.eventually.rejected;
 			});
 
 			it("should reject the promise when database has an error", () => {
@@ -59,7 +59,7 @@ describe("Resolvers", () => {
 				const query = podcastForFeedWithIdentifier({}, {identifier: ""})
 
 				expect(query).to.be.a('promise');
-				expect(query).to.be.eventually.rejectedWith(err_msg);
+				return expect(query).to.be.eventually.rejectedWith(err_msg);
 			});
 
 			it("with unknown identifier should resolve null", () => {

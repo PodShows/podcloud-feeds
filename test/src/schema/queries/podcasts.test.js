@@ -14,7 +14,7 @@ const expect = chai.expect;
 chai.use(sinonChai)
 chai.use(chaiAsPromised)
 
-describe("Resolvers", () => {
+describe("Schema", () => {
 	describe("queries", () => {
 		describe("podcasts", () => {
 			var podcasts;
@@ -51,8 +51,9 @@ describe("Resolvers", () => {
 				const query = podcasts()
 
 				expect(query).to.be.a('promise')
-				expect(query).to.be.eventually.rejectedWith(err_msg)
 				FeedMock.verify();
+
+				return expect(query).to.be.eventually.rejectedWith(err_msg)
 			});
 
 			it("should resolve an array", () => {	
@@ -64,8 +65,9 @@ describe("Resolvers", () => {
 				const query = podcasts()
 
 				expect(query).to.be.a('promise')
-				expect(query).to.be.eventually.be.an("array")
 				FeedMock.verify();
+
+				return expect(query).to.be.eventually.be.an("array")
 			});
 
 		});
