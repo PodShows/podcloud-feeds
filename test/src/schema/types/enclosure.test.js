@@ -22,21 +22,24 @@ describe("Enclosure Graph Object", () => {
 		const enclosureFields = enclosureSchemaFactory().getType("Enclosure").getFields();
 
 		it("should include a required int duration", () => {
+			expect(enclosureFields).to.have.property('duration');
 			expect(enclosureFields.duration.type).to.deep.equals(new graphql.GraphQLNonNull(graphql.GraphQLInt));
 		})
 
 		it("should include a required string size", () => {
+			expect(enclosureFields).to.have.property('size');
 			expect(enclosureFields.size.type).to.deep.equals(new graphql.GraphQLNonNull(graphql.GraphQLInt));
 		})
 
 		it("should include a required string type", () => {
+			expect(enclosureFields).to.have.property('type');
 			expect(enclosureFields.type.type).to.deep.equals(new graphql.GraphQLNonNull(graphql.GraphQLString));
 		})
 
 		it("should include a required string url", () => {
+			expect(enclosureFields).to.have.property('url');
 			expect(enclosureFields.url.type).to.deep.equals(new graphql.GraphQLNonNull(graphql.GraphQLString));
 		})
-
 	})
 
 
@@ -49,7 +52,7 @@ describe("Enclosure Graph Object", () => {
 			meta_url: {
 				path: "http://anurl.test/afile.mp3"
 			}
-		};
+		}
 
 		it("should resolve duration", () => {
 			expect(enclosureFields.duration.resolve(enclosureObject)).to.equals(600);
