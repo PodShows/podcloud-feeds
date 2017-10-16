@@ -13,8 +13,10 @@ describe("mongo_connect", () => {
 
 	it("should reject when server is wrong", () => {
 		return expect(
-			mongo_connect("mongodb://stupidserver")
-		).to.be.eventually.rejectedWith("failed to connect to server")
+			mongo_connect("mongodb://invalid.invalid")
+		).to.be.eventually.rejectedWith(
+			"failed to connect to server"
+		)
 	})
 
 	it("should resolve when server is good", () => {

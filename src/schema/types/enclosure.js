@@ -1,7 +1,7 @@
 const Enclosure = `
 type Enclosure {
   duration: Int!
-  size: String!
+  size: Int!
   type: String!
   url: String!  
 }
