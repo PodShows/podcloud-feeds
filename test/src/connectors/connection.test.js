@@ -4,7 +4,7 @@ chai.use(chaiAsPromised)
 const expect = chai.expect
 
 import mongo_connect from "~/connectors/connection.js";
-import mongo_connect_test_db from "#/helpers/mongodb.js";
+import mongo_connect_test_db from "#/helpers/mongodb.helper.js";
 
 describe("mongo_connect", () => {
 	it("should be a function", () => {

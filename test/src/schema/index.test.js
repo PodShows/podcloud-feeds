@@ -1,15 +1,19 @@
 import { expect } from "chai";
+import sinon from "sinon"
 
-import { typeDefs, Resolvers } from '~/schema';
-import { makeExecutableSchema } from 'graphql-tools';
+import { buildSchema } from "#/helpers/schema.helper.js"
 
 describe("Schema", () => {
 	it("should be a valid GraphQL schema", () => {
-		let schema = makeExecutableSchema({
-			typeDefs: typeDefs,
-			resolvers: Resolvers
-		});
+    	sinon.stub(console, "warn");
 
-		expect(schema).to.be.a("object");
+    	let schema = buildSchema();
+
+		if(console.warn.called) {
+    		throw new Error(console.warn.getCall(0).args.join(", "));
+		}
+
+		console.warn.restore();
+		expect(schema).to.be.an("object");
 	});
 });
