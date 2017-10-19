@@ -1,11 +1,10 @@
 import { makeExecutableSchema } from 'graphql-tools'
-import { typeDefs, Resolvers } from '~/schema'
+import { typeDefs, resolvers } from '~/schema'
 
 export function buildSchema() {
-	console.log(Resolvers.RootQuery.podcasts)
 	return makeExecutableSchema({
 		typeDefs,
-		Resolvers,
+		resolvers,
 		resolverValidationOptions: { 
 			requireResolversForAllFields: true 
 		}
