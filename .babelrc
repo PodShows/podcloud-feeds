@@ -13,6 +13,7 @@
     },{
       "rootPathPrefix": "#",
       "rootPathSuffix": "test"
-    }]]
+    }]],
+    "transform-object-rest-spread"
   ]
 }

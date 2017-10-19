@@ -4,7 +4,7 @@ import { notEmpty } from "~/utils";
 
 const Post = {
     guid(item) {
-        return item._id;
+        return item._id.toString();
     },
     title(item) {
         return item.title;
@@ -21,8 +21,8 @@ const Post = {
     formatted_content(item) {
         return item.content;
     },
-    published_at(item, args) {
-        return moment(item.published_at).format(DateFormat.resolve(args.format));
+    published_at(item, args = { format: "RFC822"}) {
+        return moment.utc(item.published_at).format(DateFormat.resolve(args.format));
     },
     url(item) {
         let url = notEmpty(item.link) ? item.link : "http://"+item.feed.identifier+".lepodcast.fr/"+item._slugs[item._slugs.length-1];
