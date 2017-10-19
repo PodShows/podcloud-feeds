@@ -1,6 +1,6 @@
 const PodcastItem = {
     __resolveType(data, context, info){
-		const { enclosure: { meta_url: { path: enclosure_path } = {} } = {} } = data
+		const enclosure_path = (((data || {}).enclosure || {}).meta_url || {}).path
 
         if(enclosure_path){
             return info.schema.getType('Episode');
