@@ -38,11 +38,11 @@ const Podcast = {
     cover_url(feed) {
         return "http://"+feed.identifier+".lepodcast.fr/cover"+path.extname(feed.cover_filename);
     },
-    created_at(feed, args) {
-        return moment(feed.created_at).format(DateFormat.resolve(args.format));
+    created_at(feed, args = { format: "RFC822"}) {
+        return moment.utc(feed.created_at).format(DateFormat.resolve(args.format));
     },
-    updated_at(feed, args) {
-        return moment(feed.updated_at).format(DateFormat.resolve(args.format));
+    updated_at(feed, args = { format: "RFC822"}) {
+        return moment.utc(feed.updated_at).format(DateFormat.resolve(args.format));
     },
     internal(feed) {
         return !feed.external;
@@ -52,13 +52,13 @@ const Podcast = {
     },
     feed_url(feed) {
         let url = feed.external ? feed.parent_feed : feed.identifier+".lepodcast.fr/rss";
-        if(!(/^https?:\/\//.test(url))) url = "http://"+url;
+        if(!((/^https?:\/\//i).test(url))) url = "http://"+url;
 
         return url;  
     },
     website_url(feed) {
         let url = notEmpty(feed.link) ? feed.link : feed.identifier+".lepodcast.fr/";
-        if(!(/^https?:\/\//.test(url))) url = "http://"+url;
+        if(!((/^https?:\/\//i).test(url))) url = "http://"+url;
 
         return url;
     },
