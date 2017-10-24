@@ -1,10 +1,24 @@
-import { expect } from "chai"
+import chai from "chai"
+import chaiAsPromised from "chai-as-promised"
 import sinon from "sinon"
+import sinonChai from "sinon-chai"
+import "sinon-mongoose";
+import proxyquire from "proxyquire"
 
 import * as graphql from "graphql"
 import { buildSchema, testGraphQLProperty } from "#/helpers/schema.helper.js"
 
+import Item from "~/connectors/item"
+
 import path from 'path';
+
+import { Types } from "mongoose"
+const ObjectId = Types.ObjectId;
+
+const expect = chai.expect;
+chai.use(sinonChai)
+chai.use(chaiAsPromised)
+
 
 describe("Podcast Graph Object", () => {
 	const schema = buildSchema();
@@ -31,7 +45,7 @@ describe("Podcast Graph Object", () => {
 		explicit: true,
 		tags: "test,tags,lol",
 		block_itunes: false,
-		itunes_category: "",
+		itunes_category: "comedy",
 		disabled: false,
 		feed_redirect_url: "http://redirect_feed",
 		web_redirect_url: "http://redirect_web",
@@ -255,14 +269,124 @@ describe("Podcast Graph Object", () => {
 		false
 	))
 
-	it.skip(`should test the following list of attributes : 
-	- tags
-	- explicit
-	- itunes_block
-	- itunes_category
-	- disabled
-	- feed_redirect_url
-	- web_redirect_url
-	- items`)
+	it("should include and resolve a required boolean disabled", testGraphQLProperty(
+		fields,
+		"disabled",
+		new graphql.GraphQLNonNull(graphql.GraphQLBoolean),
+		obj,
+		false
+	))
+
+	it("should include and resolve a required boolean explicit", testGraphQLProperty(
+		fields,
+		"explicit",
+		new graphql.GraphQLNonNull(graphql.GraphQLBoolean),
+		obj,
+		true
+	))
+
+	it("should include and resolve a required string array tags", testGraphQLProperty(
+		fields,
+		"tags",
+		new graphql.GraphQLList(new graphql.GraphQLNonNull(graphql.GraphQLString)),
+		obj,
+		["test","tags","lol"]
+	))
+
+	it("should include and resolve a required boolean itunes_block", testGraphQLProperty(
+		fields,
+		"itunes_block",
+		new graphql.GraphQLNonNull(graphql.GraphQLBoolean),
+		obj,
+		false
+	))
+
+	it("should include and resolve a required boolean itunes_category", testGraphQLProperty(
+		fields,
+		"itunes_category",
+		graphql.GraphQLString,
+		obj,
+		obj.itunes_category
+	))
+
+	it("should include and resolve a required boolean feed_redirect_url", testGraphQLProperty(
+		fields,
+		"feed_redirect_url",
+		graphql.GraphQLString,
+		obj,
+		obj.feed_redirect_url
+	))
+
+	it("should include and resolve a required boolean web_redirect_url", testGraphQLProperty(
+		fields,
+		"web_redirect_url",
+		graphql.GraphQLString,
+		obj,
+		obj.web_redirect_url
+	))
+
+	it("should include a required list of PodcastItems", testGraphQLProperty(
+		fields,
+		"items",
+		new graphql.GraphQLNonNull(new graphql.GraphQLList(schema.getType("PodcastItem")))
+	))
+
+	describe("should resolve a required list of PodcastItems", () => {
+		let ItemMock
+		let PodcastResolvers
+
+		beforeEach(() => {
+			ItemMock = sinon.mock(Item);
+			PodcastResolvers = proxyquire(
+				"../../../../src/schema/types/resolvers/podcast", 
+				{ 
+					Item
+				}
+			).default;
+		})
+
+		it("should reject the promise when database has an error", () => {
+			const err_msg = "Error occured (simulated at "+(+new Date()/1000)+")"
+
+			ItemMock
+			.expects('find')
+			.chain('exec')
+			.yields(err_msg, null);
+
+			const items = PodcastResolvers.items(obj)
+
+			expect(items).to.be.a('promise')
+			ItemMock.verify();
+
+			return expect(items).to.be.eventually.rejectedWith(err_msg)
+		})
+
+		it("should resolve the promise when everything works", () => {
+			ItemMock
+			.expects('find')
+			.chain('exec')
+			.yields(undefined, [{id: "item1"},{id: "item2"}]);
+
+			const items = PodcastResolvers.items(obj)
+
+			expect(items).to.be.a('promise')
+			ItemMock.verify();
+
+			return expect(items).to.eventually.deep.equals([
+				{
+					id: "item1",
+					feed: obj
+				},{
+					id: "item2",
+					feed: obj
+				}
+			])
+		})
+
+		afterEach(() => {
+			ItemMock.restore();
+		})
+
+	})
 
 })

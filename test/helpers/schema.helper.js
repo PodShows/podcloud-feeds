@@ -14,10 +14,17 @@ export function buildSchema() {
 	})
 }
 
-export function testGraphQLProperty(fields, property, type, obj, expectedResolve) {
+export function testGraphQLProperty(fields, property, type, obj = null, expectedResolve = null) {
 	return function() {
 		expect(fields).to.have.property(property);
 		expect(fields[property].type).to.deep.equals(type);
-		expect(fields[property].resolve(obj)).to.equals(expectedResolve);
+
+		if(!(obj === null && expectedResolve === null)) {
+			if(typeof expectedResolve === "boolean") {
+				expect(fields[property].resolve(obj)).to.be[expectedResolve ? "true" : "false"];
+			} else {
+				expect(fields[property].resolve(obj)).to.deep.equals(expectedResolve);
+			}
+		}
 	}
 }

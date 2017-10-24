@@ -79,12 +79,12 @@ const Podcast = {
     },
     feed_redirect_url(feed) {
         let fru = feed.feed_redirect_url;
-        if(!(/^https?:\/\//.test(fru))) fru = "http://"+fru;
+        if(!((/^https?:\/\//i).test(fru))) fru = "http://"+fru;
         return fru;
     },
     web_redirect_url(feed) {
         let wru = feed.web_redirect_url;
-        if(!(/^https?:\/\//.test(wru))) wru = "http://"+wru;
+        if(!((/^https?:\/\//i).test(wru))) wru = "http://"+wru;
         return wru;            
     },
     items(feed) {
