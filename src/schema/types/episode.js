@@ -13,7 +13,7 @@ type Episode implements PodcastItem {
   explicit: Boolean!
   cover_url: String!
   author: String
-  enclosure: Enclosure
+  enclosure: Enclosure!
 }
 `;
 
