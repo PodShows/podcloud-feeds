@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import Server from "~/server.js";
+import Server from "~/server";
 
 // Fixtures
 import resolvers from "#/fixtures/graphql/resolvers.fixture";

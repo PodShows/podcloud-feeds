@@ -5,15 +5,15 @@ import { makeExecutableSchema } from 'graphql-tools';
 import bodyParser from 'body-parser';
 
 
-function GraphQLServer(typeDefs = null, resolvers = null) {
+function GraphQLServer(typeDefs = null, resolvers = null, graphqlExpressOptions = {}) {
 	this.server = express();
 
-	this.server.use('/graphql', bodyParser.json(), graphqlExpress({
-	  schema: makeExecutableSchema({
-	    typeDefs: typeDefs,
-	    resolvers: resolvers
-	  }),
-	  debug: true
+	this.server.use('/graphql', bodyParser.json({ type: '*/*' }), graphqlExpress({
+		...graphqlExpressOptions,
+		schema: makeExecutableSchema({
+			typeDefs: typeDefs,
+			resolvers: resolvers
+		})
 	}));
 
 	this.server.use('/graphiql', graphiqlExpress({
