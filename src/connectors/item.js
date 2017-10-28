@@ -15,6 +15,7 @@ const EnclosureSchema = new Mongoose.Schema({
 });
 
 const ItemSchema = new Mongoose.Schema({
+    feed_id: ObjectId,
     title: String,
     explicit: Boolean,
     author: String,

@@ -4,6 +4,8 @@ import { DateFormat } from '~/schema/enums';
 import { notEmpty } from "~/utils";
 import path from 'path';
 
+const debug = require("debug")("podcloud-feeds:types:resolvers:podcast");
+
 const ItemFields = [
     "_id", "title",
     "content", "published_at",
@@ -89,13 +91,17 @@ const Podcast = {
     },
     items(feed) {
         return new Promise((resolve, reject) => {
+            const findArgs = {
+                feed_id: feed._id,
+                published_at: {
+                    "$lte": new Date()
+                }
+            };
+            
+            debug("findArgs", findArgs)
+
             Item.find(
-                {
-                    feed_id: feed._id,
-                    published_at: {
-                        "$lte": new Date()
-                    }
-                },
+                findArgs,
                 ItemFields,
                 {
                     sort:{
@@ -103,6 +109,8 @@ const Podcast = {
                     }
                 }
             ).exec(function(err, items) {
+                debug("err:", err)
+                debug("items:", items)
                 if(err) {
                     reject(err);
                 } else {

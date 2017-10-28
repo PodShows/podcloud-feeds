@@ -3,8 +3,8 @@ import chaiAsPromised from "chai-as-promised"
 chai.use(chaiAsPromised)
 const expect = chai.expect
 
-import mongo_connect from "~/connectors/connection.js";
-import mongo_connect_test_db from "#/helpers/mongodb.helper.js";
+import mongo_connect from "~/connectors/connection";
+import { connect as connect_test_db } from "#/helpers/mongodb.helper";
 
 describe("mongo_connect", () => {
 	it("should be a function", () => {
@@ -21,7 +21,7 @@ describe("mongo_connect", () => {
 
 	it("should resolve when server is good", () => {
 		return expect(
-			mongo_connect_test_db()
+			connect_test_db()
 		).to.be.eventually.fulfilled;
 	})
 })

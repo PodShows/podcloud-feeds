@@ -1,17 +1,14 @@
 import { expect } from "chai";
-import * as testServer from "#/helpers/server.helper.js"
 
-import loadFixture from 'mongoose-fixture-loader'
-
-import { Feed } from "~/connectors"
-import feeds from "#/fixtures/mongodb/feeds.fixture"
+import * as testServer from "#/helpers/server.helper"
+import MongoHelper from "#/helpers/mongodb.helper"
 
 describe("GraphQL Server", () => {
 
 	before((done) => {
-		testServer.start();
-		loadFixture(Feed, feeds)
-			.then(() => { done() }, done);
+		testServer.start(() => {
+			MongoHelper.setup(done)
+		})
 	})
 	
 	it("should answer requests", () => {
@@ -138,14 +135,93 @@ describe("GraphQL Server", () => {
 		})
 
 		describe("podcast", function() {
-			it("should not include unpublished items")
-			it("should respect items order")
+			it("should not include unpublished items", () => {
+				return testServer.graphqlQuery(`
+					{
+					  podcastForFeedWithIdentifier(identifier: "blog") {
+					  	items {
+					  		title
+					  	}
+					  }
+					}
+				`).then((response) => {
+			        expect(response.statusCode).to.equal(200)
+			        expect(response.body.data).to.have.property("podcastForFeedWithIdentifier")
+
+			        const feed = response.body.data.podcastForFeedWithIdentifier
+
+			        expect(feed.items)
+			        	.to.be.an("array")			        	
+			        	.that.is.not.empty
+			        	
+			        expect(feed.items)
+			        	.to.not.deep.include({
+			        		title: "Blog post dans le turfu"
+			        	})
+				})
+			})
+
+			it("should respect items order", () => {
+				return testServer.graphqlQuery(`
+					{
+					  podcastForFeedWithIdentifier(identifier: "blog") {
+					  	identifier
+					  	items {
+					  		published_at
+					  	}
+					  }
+					}
+				`).then((response) => {
+			        expect(response.statusCode).to.equal(200)
+			        expect(response.body.data).to.have.property("podcastForFeedWithIdentifier")
+
+			        const feed = response.body.data.podcastForFeedWithIdentifier
+
+			        expect(feed.items)
+			        	.to.be.an("array")
+			        	.and.have.lengthOf.above(1)
+
+			        const first_post = feed.items[0];
+			        const last_post = feed.items[feed.items.length-1];
+			        expect(Date.parse(first_post.published_at))
+			        	.to.be.above(
+			        		Date.parse(last_post.published_at)
+			        	)
+
+			        return testServer.graphqlQuery(`
+						{
+						  podcastForFeedWithIdentifier(identifier: "fiction") {
+						  	identifier
+						  	items {
+						  		published_at
+						  	}
+						  }
+						}
+					`)
+				}).then((response) => {
+			        expect(response.statusCode).to.equal(200)
+			        expect(response.body.data).to.have.property("podcastForFeedWithIdentifier")
+
+			        const feed = response.body.data.podcastForFeedWithIdentifier
+
+			        expect(feed.items)
+			        	.to.be.an("array")
+			        	.and.have.lengthOf.above(1)
+
+			        const first_post = feed.items[0];
+			        const last_post = feed.items[feed.items.length-1];
+			        expect(Date.parse(first_post.published_at))
+			        	.to.be.below(
+			        		Date.parse(last_post.published_at)
+			        	)
+				})
+			})
 		})
 	})
 
 	after((done) => {
 		testServer.stop(() => {
-			Feed.remove({}).then(() => { done() }, done);
+			MongoHelper.tearDown(done)
 		});
 	})
 
