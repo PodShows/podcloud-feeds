@@ -2,7 +2,7 @@ import { notEmpty } from "~/utils";
 import Feed from "~/connectors/feed";
 import { Cache } from  "node-cache-store";
 
-const debug = require("debug")("podcastForFeedWithIdentifier");
+const debug = require("debug")("podcloud-feeds:queries:podcastForFeedWithIdentifier");
 
 const podcastIdentifiersCache = new Cache({
     expire: 300,
@@ -69,17 +69,19 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
                 if(feed === null) {
                     keys = [];
                 } else {
-                    debug("Found podcast.");
+                    debug("Found podcast.", feed);
                     keys = [
                         feed.identifier,
                         ...feed._slugs,
                         feed.custom_domain
                     ].filter((item, pos, self) => {
                         return self.indexOf(item) == pos && notEmpty(item);
-                    }).map(i => "identifier-uid-"+i);
+                    })
                 }
                 if(notEmpty(found) && (keys.indexOf(identifier_cleaned) === -1 || feed === null)) {
                     debug("Found podcast doesn't include cached identifier, we need to invalidate cache");
+                    debug("identifier_cleaned: "+identifier_cleaned);
+                    debug("keys: ", keys);
                     // cached value is not valid anymore
                     podcastIdentifiersCache.delete(cache_key);
                     resolve(null);
@@ -87,9 +89,10 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
                     if(feed !== null) {
                         debug("Updating cache with up to date data")
                         const feed_id = feed._id.toString();
+                        const prefix = "identifier-uid-";
                         keys.forEach(k => {
                             debug("Setting cache "+k+"="+feed_id)
-                            podcastIdentifiersCache.set(k, feed_id)
+                            podcastIdentifiersCache.set(prefix+k, feed_id)
                         });
                     }
                     resolve(feed);
