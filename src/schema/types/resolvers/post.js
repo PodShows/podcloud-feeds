@@ -1,6 +1,7 @@
 import moment from 'moment';
 import { DateFormat } from '~/schema/enums';
 import { notEmpty } from "~/utils";
+import Podcast from "./podcast"
 
 const Post = {
     guid(item) {
@@ -21,11 +22,12 @@ const Post = {
     formatted_content(item) {
         return item.content;
     },
-    published_at(item, args = { format: "RFC822"}) {
+    published_at(item, args = {}) {
+        args.format = args.format || "RFC822"
         return moment.utc(item.published_at).format(DateFormat.resolve(args.format));
     },
-    url(item) {
-        let url = notEmpty(item.link) ? item.link : "http://"+item.feed.identifier+".lepodcast.fr/"+item._slugs[item._slugs.length-1];
+    url(item, args, ctx) {
+        let url = notEmpty(item.link) ? item.link : "http://"+Podcast._host(item.feed, args, ctx)+"/"+item._slugs[item._slugs.length-1];
         if(!(/^https?:\/\//.test(url))) url = "http://"+url;
         return url;
     }

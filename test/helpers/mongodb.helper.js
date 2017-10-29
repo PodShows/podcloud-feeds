@@ -23,11 +23,13 @@ export function tearDown(done) {
 
 export function setup(done) {
 	connect()
-	loadFixture(Feed, feeds)
-		.then(() => {
-			return loadFixture(Item, items)
-		})
-		.then(() => { done() }, done);
+	tearDown(() => {
+		loadFixture(Feed, feeds)
+			.then(() => {
+				return loadFixture(Item, items)
+			})
+			.then(() => { done() }, done);
+	}) // just in case
 }
 
 export default {

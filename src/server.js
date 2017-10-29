@@ -4,27 +4,54 @@ import { graphqlExpress, graphiqlExpress } from "apollo-server-express"
 import { makeExecutableSchema } from 'graphql-tools';
 import bodyParser from 'body-parser';
 
+const DEFAULT_CONFIG = { 
+	typeDefs: null, 
+	resolvers: null, 
+	options: {}, 
+	port: 8888
+}
 
-function GraphQLServer(typeDefs = null, resolvers = null, graphqlExpressOptions = {}) {
-	this.server = express();
+function GraphQLServer(config = DEFAULT_CONFIG) {
+	config = { ...DEFAULT_CONFIG, ...config }
 
-	this.server.use('/graphql', bodyParser.json({ type: '*/*' }), graphqlExpress({
-		...graphqlExpressOptions,
+	if(typeof config.prepare !== "function")
+		config.prepare = () => {}
+
+	if(typeof config.listen !== "function")
+		config.listen = () => {}
+
+	const graphqlExpressOptions = {
+		...config.options,
+		context: (config.context || (typeof config.options === "object" ? config.options.context : {})),
 		schema: makeExecutableSchema({
-			typeDefs: typeDefs,
-			resolvers: resolvers
+			typeDefs: config.typeDefs,
+			resolvers: config.resolvers
 		})
-	}));
+	}
 
-	this.server.use('/graphiql', graphiqlExpress({
-	  graphiql: true,
-	  pretty: true,
-	  endpointURL: '/graphql'
-	}));
+	const server = express()
+
+	server.use(
+		'/graphql', 
+		bodyParser.json({ type: '*/*' }), 
+		graphqlExpress(graphqlExpressOptions)
+	)
+
+	server.use(
+		'/graphiql', 
+		graphiqlExpress({
+		  graphiql: true,
+		  pretty: true,
+		  endpointURL: '/graphql'
+		})
+	)
 	
-	this.server.use(compression());
+	server.use(compression());
 
-	return this.server;
+	config.prepare()
+	server.listen(config.port, config.listen)
+
+	return server;
 }
 
 export default GraphQLServer;

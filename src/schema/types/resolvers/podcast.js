@@ -2,6 +2,7 @@ import moment from 'moment';
 import Item from "~/connectors/item";
 import { DateFormat } from '~/schema/enums';
 import { notEmpty } from "~/utils";
+
 import path from 'path';
 
 const debug = require("debug")("podcloud-feeds:types:resolvers:podcast");
@@ -12,12 +13,20 @@ const ItemFields = [
     "enclosure", "_slugs"
 ];
 
+const platform_subdomains = [
+    "faq",
+    "blog",
+    "devblog",
+    "astuces",
+    "changelog"
+]
+
 const Podcast = {
     title(feed) {
         return feed.title;
     },
     identifier(feed) {
-        return feed.identifier;
+        return feed.identifier
     },
     catchline(feed) {
         return feed.catchline;
@@ -37,13 +46,15 @@ const Podcast = {
     author(feed) {
         return feed.author;
     },
-    cover_url(feed) {
-        return "http://"+feed.identifier+".lepodcast.fr/cover"+path.extname(feed.cover_filename);
+    cover_url(feed, args, ctx) {
+        return "http://"+Podcast._host(feed, args, ctx)+"/cover"+path.extname(feed.cover_filename);
     },
-    created_at(feed, args = { format: "RFC822"}) {
+    created_at(feed, args = {}) {
+        args.format = args.format || "RFC822"
         return moment.utc(feed.created_at).format(DateFormat.resolve(args.format));
     },
-    updated_at(feed, args = { format: "RFC822"}) {
+    updated_at(feed, args = {}) {
+        args.format = args.format || "RFC822"
         return moment.utc(feed.updated_at).format(DateFormat.resolve(args.format));
     },
     internal(feed) {
@@ -52,14 +63,14 @@ const Podcast = {
     external(feed) {
         return feed.external;
     },
-    feed_url(feed) {
-        let url = feed.external ? feed.parent_feed : feed.identifier+".lepodcast.fr/rss";
+    feed_url(feed, args, ctx) {
+        let url = feed.external ? feed.parent_feed : `${Podcast._host(feed, args, ctx)}/rss`;
         if(!((/^https?:\/\//i).test(url))) url = "http://"+url;
 
         return url;  
     },
-    website_url(feed) {
-        let url = notEmpty(feed.link) ? feed.link : feed.identifier+".lepodcast.fr/";
+    website_url(feed, args, ctx) {
+        let url = notEmpty(feed.link) ? feed.link : `${Podcast._host(feed, args, ctx)}/`;
         if(!((/^https?:\/\//i).test(url))) url = "http://"+url;
 
         return url;
@@ -112,17 +123,28 @@ const Podcast = {
                 debug("err:", err)
                 debug("items:", items)
                 if(err) {
-                    reject(err);
+                    reject(err)
                 } else {
                     resolve(
                         items.map(item => {
-                            item.feed = feed;
-                            return item;
+                            item.feed = feed
+                            return item
                         })
-                    );
+                    )
                 }
-            });
-        });
+            })
+        })
+    },
+    _host(feed, args, ctx) {
+        if(notEmpty(feed.custom_domain))
+            return feed.custom_domain
+
+        let host = ctx.hosts.podcasts
+
+        if(platform_subdomains.includes(feed.identifier))
+            host = ctx.hosts.platform
+
+        return `${feed.identifier}.${host}`
     }
 };
 

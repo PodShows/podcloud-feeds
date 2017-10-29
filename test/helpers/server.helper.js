@@ -8,33 +8,44 @@ import Server from '~/server'
 import { typeDefs, resolvers } from '~/schema';
 import config from 'config';
 
-const server = http.createServer(
-  new Server(typeDefs, resolvers, {
-    debug: true,
-    formatError: (err) => { 
-      console.log(err.stack); 
-      return err.message;
-    }
-  })
-)
+let server;
+let port;
 
-const port = config.get("port");
+export const context = {
+  hosts: config.get("hosts")
+};
 
 export function start(done) {
-  server.listen(port, done)
-};
+  port = config.get("port")
+  server = http.createServer(
+    new Server({
+      typeDefs, 
+      resolvers,
+      context,
+      port: port,
+      options: {
+        debug: true,
+        formatError: (err) => { 
+          console.log(err.stack); 
+          return err.message;
+        }
+      },
+      listen: done
+    })
+  )
+}
 
 export function stop(done) {
   server.close()
   done()
-};
+}
 
 export function graphqlQuery(query) {
   return request({
-    baseUrl : `http://localhost:${server.address().port}`,
+    baseUrl : `http://localhost:${port}`,
     uri : '/graphql',
     qs : { query },
     resolveWithFullResponse: true,
     json: true
   })
-};
+}

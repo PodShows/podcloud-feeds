@@ -7,6 +7,7 @@ import proxyquire from "proxyquire"
 
 import * as graphql from "graphql"
 import { buildSchema, testGraphQLProperty } from "#/helpers/schema.helper.js"
+import { context } from "#/helpers/server.helper"
 
 import Item from "~/connectors/item"
 
@@ -50,6 +51,14 @@ describe("Podcast Graph Object", () => {
 		feed_redirect_url: "http://redirect_feed",
 		web_redirect_url: "http://redirect_web",
 	}
+
+	before(() => {
+		testGraphQLProperty.context = context
+	})
+
+	after(() => {
+		testGraphQLProperty.restore()
+	})
 
 	it("should include and resolve a required string title", testGraphQLProperty(
 		fields,
@@ -115,17 +124,49 @@ describe("Podcast Graph Object", () => {
 		obj.author
 	))
 
-	it("should include and resolve a required string cover_url", () => {
-		let identifier = obj.identifier
-		let ext = path.extname(obj.cover_filename)
+	describe("should include and resolve a required string cover_url", () => {
+		it("for standard podcasts", () => {
+			const feed = { ...obj }
+			const identifier = feed.identifier
+			const ext = path.extname(feed.cover_filename)
 
-		testGraphQLProperty(
-			fields,
-			"cover_url",
-			new graphql.GraphQLNonNull(graphql.GraphQLString),
-			obj,
-			`http://${identifier}.lepodcast.fr/cover${ext}`
-		)();
+			testGraphQLProperty(
+				fields,
+				"cover_url",
+				new graphql.GraphQLNonNull(graphql.GraphQLString),
+				feed,
+				`http://${identifier}.${context.hosts.podcasts}/cover${ext}`
+			)();
+		})
+
+		it("for custom domain podcasts", () => {
+			const feed = { ...obj, custom_domain: "monposcast.com" }
+			const custom_domain = feed.custom_domain
+			const ext = path.extname(feed.cover_filename)
+
+			testGraphQLProperty(
+				fields,
+				"cover_url",
+				new graphql.GraphQLNonNull(graphql.GraphQLString),
+				feed,
+				`http://${custom_domain}/cover${ext}`
+			)();
+		})
+
+		it("for platform subdomain feeds", () => {
+			const feed = { ...obj, identifier: "blog" }
+			const identifier = feed.identifier
+			const ext = path.extname(feed.cover_filename)
+
+			testGraphQLProperty(
+				fields,
+				"cover_url",
+				new graphql.GraphQLNonNull(graphql.GraphQLString),
+				feed,
+				`http://${identifier}.${context.hosts.platform}/cover${ext}`
+			)();
+		})
+
 	})
 
 	it("should include and resolve a required string published_at", testGraphQLProperty(
@@ -161,20 +202,44 @@ describe("Podcast Graph Object", () => {
 	))
 
 	describe("should include and resolve a required string feed_url", () => {
-		it("internal feed", () => {
-			const o = {
+		describe("internal feed", () => {
+			const feed = {
 				...obj,
 				external: false,
 				identifier: "toto"
 			}
 
-			testGraphQLProperty(
-				fields,
-				"feed_url",
-				new graphql.GraphQLNonNull(graphql.GraphQLString),
-				o,
-				"http://"+o.identifier+".lepodcast.fr/rss"
-			)()
+			it("without custom domain", () => {
+				testGraphQLProperty(
+					fields,
+					"feed_url",
+					new graphql.GraphQLNonNull(graphql.GraphQLString),
+					feed,
+					`http://${feed.identifier}.${context.hosts.podcasts}/rss`
+				)()
+			})
+
+			it("with custom domain", () => {
+				const o = { ...feed, custom_domain: "monpodcast.fr" }
+				testGraphQLProperty(
+					fields,
+					"feed_url",
+					new graphql.GraphQLNonNull(graphql.GraphQLString),
+					o,
+					`http://${o.custom_domain}/rss`
+				)()
+			})
+
+			it("with platform subdomain", () => {
+				const o = { ...feed, identifier: "blog" }
+				testGraphQLProperty(
+					fields,
+					"feed_url",
+					new graphql.GraphQLNonNull(graphql.GraphQLString),
+					o,
+					`http://${o.identifier}.${context.hosts.platform}/rss`
+				)()
+			})
 		});
 
 		it("external feed with http", () => {
@@ -212,20 +277,44 @@ describe("Podcast Graph Object", () => {
 
 	describe("should include and resolve a required string website_url", () => {
 		it("without website", () => {
-			const o = {
+			const feed = {
 				...obj,
 				external: false,
 				identifier: "toto",
 				link: null
 			}
 
-			testGraphQLProperty(
-				fields,
-				"website_url",
-				new graphql.GraphQLNonNull(graphql.GraphQLString),
-				o,
-				"http://"+o.identifier+".lepodcast.fr/"
-			)()
+			it("without custom domain", () => {
+				testGraphQLProperty(
+					fields,
+					"website_url",
+					new graphql.GraphQLNonNull(graphql.GraphQLString),
+					feed,
+					`http://${feed.identifier}.${context.hosts.podcasts}/`
+				)()
+			})
+
+			it("with custom domain", () => {
+				const o = { ...feed, custom_domain: "monpodcast.fr" }
+				testGraphQLProperty(
+					fields,
+					"website_url",
+					new graphql.GraphQLNonNull(graphql.GraphQLString),
+					o,
+					`http://${o.custom_domain}/`
+				)()
+			})
+
+			it("with platform subdomain", () => {
+				const o = { ...feed, identifier: "blog" }
+				testGraphQLProperty(
+					fields,
+					"website_url",
+					new graphql.GraphQLNonNull(graphql.GraphQLString),
+					o,
+					`http://${o.identifier}.${context.hosts.platform}/`
+				)()
+			})
 		});
 
 		it("external website with http", () => {

@@ -3,6 +3,7 @@ import sinon from "sinon"
 
 import * as graphql from "graphql"
 import { buildSchema, testGraphQLProperty } from "#/helpers/schema.helper.js"
+import { context } from "#/helpers/server.helper"
 
 describe("Episode Graph Object", () => {
 	const schema = buildSchema();
@@ -21,6 +22,14 @@ describe("Episode Graph Object", () => {
 		}
 	}
 
+	before(() => {
+		testGraphQLProperty.context = context
+	})
+
+	after(() => {
+		testGraphQLProperty.restore()
+	})
+
 	it("should include and resolve a required Enclosure", testGraphQLProperty(
 		fields,
 		"enclosure",
@@ -29,12 +38,39 @@ describe("Episode Graph Object", () => {
 		obj.enclosure
 	))
 
-	it("should include and resolve a required cover_url", testGraphQLProperty(
-		fields,
-		"cover_url",
-		new graphql.GraphQLNonNull(graphql.GraphQLString),
-		obj,
-		"http://toto.lepodcast.fr/abc/cover"
-	))
+	describe("should include and resolve a required cover_url", () => {
+		it("without custom_domain", () => {
+			testGraphQLProperty(
+				fields,
+				"cover_url",
+				new graphql.GraphQLNonNull(graphql.GraphQLString),
+				obj,
+				`http://${obj.feed.identifier}.${context.hosts.podcasts}/abc/cover`
+			)()
+		})
+
+		it("with custom_domain", () => {
+			const o = { ...obj, feed: { custom_domain: "monpodcast.fr" } }
+			testGraphQLProperty(
+				fields,
+				"cover_url",
+				new graphql.GraphQLNonNull(graphql.GraphQLString),
+				o,
+				`http://${o.feed.custom_domain}/abc/cover`
+			)()
+		})
+
+		it("with platform subdomain", () => {
+			const o = { ...obj, feed: { identifier: "blog" } }
+			testGraphQLProperty(
+				fields,
+				"cover_url",
+				new graphql.GraphQLNonNull(graphql.GraphQLString),
+				o,
+				`http://${o.feed.identifier}.${context.hosts.platform}/abc/cover`
+			)()
+		})
+
+	})
 
 })

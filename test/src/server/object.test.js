@@ -3,7 +3,7 @@ import Server from "~/server";
 
 // Fixtures
 import resolvers from "#/fixtures/graphql/resolvers.fixture";
-import typeDefinitions from "#/fixtures/graphql/typeDefinitions.fixture";
+import typeDefs from "#/fixtures/graphql/typeDefinitions.fixture";
 
 const createServer = function(td, rs) {
 	return function() {
@@ -18,7 +18,7 @@ describe("Server object", () => {
 
 	it("should require type definitions", () => {
 		expect(
-			createServer(undefined, resolvers)
+			createServer({resolvers})
 		).to.throw(
 			Error, "Must provide typeDefs"
 		);
@@ -26,14 +26,14 @@ describe("Server object", () => {
 	
 	it("should require resolvers", () => {
 		expect(
-			createServer(typeDefinitions, undefined)
+			createServer({typeDefs})
 		).to.throw(
 			Error, "Must provide resolvers"
 		);
 	});	
 
 	it("should return an express server", () => {
-		const server = createServer(typeDefinitions, resolvers)();
+		const server = createServer({typeDefs, resolvers})();
 		
 		expect(server).to.have.ownProperty("listen");
 		expect(server.listen).to.be.a("function");

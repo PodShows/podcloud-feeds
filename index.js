@@ -3,12 +3,15 @@ import mongo_connect from '~/connectors/connection'
 import Server from '~/server'
 import config from 'config';
 
-const server = new Server(typeDefs, resolvers);
-const port = config.get("port");
+const port = config.get("port") || 8888;
 
-const conn_str = config.get("mongodb")
-mongo_connect(conn_str);
-
-server.listen(port, () => console.log(
-  `GraphQL Server is now running on http://localhost:${port}/graphql`
-));
+const server = new Server({
+	typeDefs, 
+	resolvers,
+	port,
+	context: {
+		hosts: config.get("hosts")
+	},
+	prepare: () => mongo_connect(config.get("mongodb")),
+	listen: () => console.log(`GraphQL Server is now running on http://localhost:${port}/graphql`)
+});

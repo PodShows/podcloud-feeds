@@ -5,6 +5,8 @@ import { Types as mongooseTypes } from "mongoose"
 
 import * as graphql from "graphql"
 import { buildSchema } from "#/helpers/schema.helper.js"
+import { context } from "#/helpers/server.helper"
+
 
 describe("PodcastItem Graph Object", () => {
 	const schema = buildSchema();
@@ -90,13 +92,14 @@ describe("PodcastItem Graph Object", () => {
 
 		const obj = {
 			_id,
+			feed: { identifier: "totocast" },
 			title: "toto",
 			explicit: true,
 			author: "toto l'asticot",
 			content: "# Titre\n\ntest *gras*",
 			published_at,
-			_slugs: ["a", "b", "c"],
-			link: "http://monpost.com",
+			_slugs: ["titi", "tata", "toto"],
+			link: "http://montoto.com/monpost",
 		}
 
 		describe("resolved "+resolvedType.name, () => {
@@ -125,9 +128,37 @@ describe("PodcastItem Graph Object", () => {
 				expect(resolvedFields.published_at.resolve(obj)).to.equals("Fri, 01 May 2009 19:30:42 +0000");
 			})
 
-			it("should resolve string url", () => {
-				expect(resolvedFields).to.have.property('url');
-				expect(resolvedFields.url.resolve(obj)).to.equals(obj.link);
+			describe("should resolve string url", () => {
+				it("with link", () => {
+					expect(resolvedFields).to.have.property('url');
+					expect(resolvedFields.url.resolve(obj, {}, context)).to.equals(obj.link);
+				})
+
+				describe("without link", () => {
+					it("without custom_domain", () => {
+						const o = {...obj, link: undefined }
+						expect(resolvedFields).to.have.property('url');
+						expect(resolvedFields.url.resolve(o, {}, context)).to.equals(
+							`http://${o.feed.identifier}.${context.hosts.podcasts}/${o._slugs[o._slugs.length-1]}`
+						);
+					})
+
+					it("with custom_domain", () => {
+						const o = {...obj, feed: { custom_domain: "monpodcast.com" }, link: undefined }
+						expect(resolvedFields).to.have.property('url');
+						expect(resolvedFields.url.resolve(o, {}, context)).to.equals(
+							`http://monpodcast.com/${o._slugs[o._slugs.length-1]}`
+						);
+					})
+
+					it("with platform subdomain", () => {
+						const o = {...obj, feed: { identifier: "blog" }, link: undefined }
+						expect(resolvedFields).to.have.property('url');
+						expect(resolvedFields.url.resolve(o, {}, context)).to.equals(
+							`http://${o.feed.identifier}.${context.hosts.platform}/${o._slugs[o._slugs.length-1]}`
+						);
+					})
+				})
 			})
 
 			it("should resolve author", () => {
@@ -142,5 +173,4 @@ describe("PodcastItem Graph Object", () => {
 
 		})
 	})
-
 })

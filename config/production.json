@@ -1,4 +1,8 @@
 {
 	"port": 8880,
-	"mongodb": "mongodb://localhost/podcloud"
+	"mongodb": "mongodb://localhost/podcloud",
+	"hosts": {
+		"podcasts": "lepodcast.fr",
+		"platform": "podcloud.fr"
+	}
 }
