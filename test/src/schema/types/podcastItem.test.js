@@ -96,7 +96,16 @@ describe("PodcastItem Graph Object", () => {
 			title: "toto",
 			explicit: true,
 			author: "toto l'asticot",
-			content: "# Titre\n\ntest *gras*",
+			content: `
+# Titre
+
+test **gras** 
+
+![Une image](http://image.com/img.jpg)
+[Un lien](http://google.com)
+
+http://unlienauto.com/
+			`.trim(),
 			published_at,
 			_slugs: ["titi", "tata", "toto"],
 			link: "http://montoto.com/monpost",
@@ -118,9 +127,15 @@ describe("PodcastItem Graph Object", () => {
 				expect(resolvedFields.text_content.resolve(obj)).to.equals(obj.content);
 			})
 
-			it.skip("should resolve formatted_content", () => {
+			it("should resolve formatted_content", () => {
 				expect(resolvedFields).to.have.property('formatted_content');
-				expect(resolvedFields.formatted_content.resolve(obj)).to.equals("<h1>Titre</h1>\ntest <strong>gras</strong>");
+				expect(resolvedFields.formatted_content.resolve(obj)).to.equals(
+`<h1>Titre</h1>
+<p>test <strong>gras</strong> </p>
+<p><img src="http://image.com/img.jpg" alt="Une image"><br><a href="http://google.com">Un lien</a></p>
+<p><a href="http://unlienauto.com/">http://unlienauto.com/</a></p>
+`
+				);
 			})
 
 			it("should resolve published_at", () => {

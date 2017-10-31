@@ -1,7 +1,7 @@
 import moment from 'moment';
 import Podcast from "./podcast";
 import { DateFormat } from '~/schema/enums';
-import { notEmpty } from "~/utils";
+import { notEmpty, markdown } from "~/utils";
 
 const Episode = {
     guid(item) {
@@ -14,7 +14,7 @@ const Episode = {
         return item.content;
     },
     formatted_content(item) {
-        return item.content;
+        return markdown(item.content);
     },
     author(item) {
         return notEmpty(item.author) ? item.author : item.feed.author;

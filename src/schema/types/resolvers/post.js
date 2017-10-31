@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { DateFormat } from '~/schema/enums';
-import { notEmpty } from "~/utils";
+import { notEmpty, markdown } from "~/utils";
 import Podcast from "./podcast"
 
 const Post = {
@@ -20,7 +20,7 @@ const Post = {
         return item.content;
     },
     formatted_content(item) {
-        return item.content;
+        return markdown(item.content);
     },
     published_at(item, args = {}) {
         args.format = args.format || "RFC822"
