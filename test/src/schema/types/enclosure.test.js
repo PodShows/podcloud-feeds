@@ -2,13 +2,15 @@ import { expect } from "chai"
 import sinon from "sinon"
 
 import * as graphql from "graphql"
-import { buildSchema } from "#/helpers/schema.helper.js"
+import { buildSchema } from "#/helpers/schema.helper"
+import { context } from "#/helpers/server.helper"
 
 describe("Enclosure Graph Object", () => {
 	const schema = buildSchema();
 	const enclosureFields = schema.getType("Enclosure").getFields();
 
 	const enclosureObject = {
+		item: { _slugs: ["toto", "tata"], feed: { identifier: "blog-de-toto" } },
 		duration_in_seconds: 600,
 		length: "123521",
 		mime_type: "audio/mpeg",
@@ -50,7 +52,7 @@ describe("Enclosure Graph Object", () => {
 	})
 
 	it("should resolve url", () => {
-		expect(enclosureFields.url.resolve(enclosureObject)).to.equals("http://anurl.test/afile.mp3");
+		expect(enclosureFields.url.resolve(enclosureObject, {}, context)).to.equals("http://"+context.hosts.stats+"/blog-de-toto/tata/enclosure.mp3?p=f");
 	})
 
 })

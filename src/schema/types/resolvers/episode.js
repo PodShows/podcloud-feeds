@@ -35,6 +35,7 @@ const Episode = {
         return "http://"+Podcast._host(item.feed, args, ctx)+"/"+item._slugs[item._slugs.length-1]+"/cover";
     },
     enclosure(item) {
+        item.enclosure.item = item;
         return item.enclosure;
     }
 };
