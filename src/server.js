@@ -8,7 +8,8 @@ const DEFAULT_CONFIG = {
 	typeDefs: null, 
 	resolvers: null, 
 	options: {}, 
-	port: 8888
+	port: 8888,
+	socket: null
 }
 
 function GraphQLServer(config = DEFAULT_CONFIG) {

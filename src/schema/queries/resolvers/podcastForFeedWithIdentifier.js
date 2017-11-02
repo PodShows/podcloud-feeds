@@ -99,7 +99,10 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
                                     debug("Setting cache "+k+"="+feed_id)
                                     return podcastIdentifiersCache.set(prefix+k, feed_id)
                                 })
-                            ).then(() => resolve(feed), (err) => { throw err });
+                            ).then(() => resolve(feed), (err) => { 
+                                /* istanbul ignore next */
+                                throw err
+                            });
                         } else {
                             resolve(feed);
                         }
@@ -107,7 +110,10 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
                 }
             });
 
-        }, (err) => { throw err })
+        }, (err) => {
+            /* istanbul ignore next */
+            throw err
+        })
 
     });
 };
