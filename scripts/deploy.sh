@@ -26,13 +26,15 @@ deploy() {
 
   ssh-keyscan $DEPLOY_HOST >> ~/.ssh/known_hosts
 
-  ssh $DEPLOY_USER@$DEPLOY_HOST /bin/bash bash -c "mkdir -p $DEPLOY_DIR"
+  ssh $DEPLOY_USER@$DEPLOY_HOST "mkdir -p $DEPLOY_DIR"
 
-  rsync -avzPL --delete-after $DIR/ $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_DIR
+  rsync -avzPL --delete-after --exclude=/.git --exclude=/node_modules $DIR/ $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_DIR
 
-  CMD="new_app=\$(pm2 show $APP_NAME > /dev/null 2>&1 ; echo \$?); [[ \$new_app = 1 ]] && cd $DEPLOY_DIR && /usr/bin/pm2 start $APP_BIN --name \"$APP_NAME\" -- $APP_ARGS || /usr/bin/pm2 restart $APP_NAME"
+  ssh $DEPLOY_USER@$DEPLOY_HOST "cd $DEPLOY_DIR && npm install" 
 
-  ssh $DEPLOY_USER@$DEPLOY_HOST /bin/bash -c "${CMD}"
+  CMD="(/usr/bin/pm2 show $APP_NAME > /dev/null 2>&1) && { /usr/bin/pm2 restart $APP_NAME; } || { cd $DEPLOY_DIR && /usr/bin/pm2 start $APP_BIN --name \"$APP_NAME\" -- $APP_ARGS; }"
+
+  ssh $DEPLOY_USER@$DEPLOY_HOST "${CMD}"
 }
 
 deploy_envs=("staging" "production")
