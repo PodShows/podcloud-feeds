@@ -23,12 +23,10 @@ before_deploy:
   - ssh-add /tmp/deploy_rsa
 
 deploy:
-  # deploy develop to the staging environment
   - provider: script
     script: scripts/deploy.sh staging
     on:
       branch: develop
-  # deploy master to production
   - provider: script
     script: scripts/deploy.sh production
     on:
