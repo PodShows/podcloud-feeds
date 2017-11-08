@@ -1,5 +1,5 @@
 {
-	"socket": "/tmp/podcloud.feeds.production.sock",
+	"port": 8081,
 	"mongodb": "mongodb://localhost/podcloud_development",
 	"hosts": {
 		"podcasts": "lepodcast.test",
