@@ -16,13 +16,14 @@ export const context = {
 };
 
 export function start(done) {
-  port = config.get("port")
+  port = config.has("port") ? config.get("port") : 8888;
+
   server = http.createServer(
     new Server({
       typeDefs, 
       resolvers,
       context,
-      port: port,
+      port,
       options: {
         debug: true,
         formatError: (err) => { 
