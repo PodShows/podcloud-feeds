@@ -1,0 +1,27 @@
+{
+    "apps": [
+        {
+            "name": "feeds",
+            "script": "/home/podcloud/production/feeds/index.js",
+            "watch": true,
+            "interpreter": "babel-node",
+            "env_production": {
+                "NODE_ENV": "production"
+            }
+        }
+    ],
+    "deploy": {
+        "production" : {
+          "user": "podcloud",
+          "host": "eve.podradio.fr",
+          "ref": "origin/master",
+          "repo": "git@github.com:PodShows/podcloud-feeds.git",
+          "path": "/home/podcloud/production/feeds",
+          "pre-deploy-local": "ssh-keyscan eve.podradio.fr >> ~/.ssh/known_hosts",
+          "post-deploy": "npm install && pm2 startOrRestart ecosystem.json --env production",
+          "env": {
+            "NODE_ENV": "production"
+          }
+        }
+    }
+}
