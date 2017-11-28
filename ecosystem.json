@@ -2,8 +2,7 @@
     "apps": [
         {
             "name": "feeds",
-            "script": "index.js",
-            "interpreter": "babel-node",
+            "script": "run.js",
             "instances": 3,
             "env_production": {
                 "NODE_ENV": "production"
