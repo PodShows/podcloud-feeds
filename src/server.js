@@ -50,7 +50,13 @@ function GraphQLServer(config = DEFAULT_CONFIG) {
 	server.use(compression());
 
 	config.prepare()
-	server.listen(config.port, config.listen)
+
+	let portOrUnix = config.socket;
+	if (typeof portOrUnix !== "string" || portOrUnix.trim() == "") {
+		portOrUnix = config.port;
+	}
+
+	server.listen(portOrUnix, config.listen)
 
 	return server;
 }
