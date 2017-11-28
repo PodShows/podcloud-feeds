@@ -4,6 +4,7 @@
             "name": "feeds",
             "script": "index.js",
             "interpreter": "babel-node",
+            "instances": 3,
             "env_production": {
                 "NODE_ENV": "production"
             }

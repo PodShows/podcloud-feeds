@@ -1,5 +1,7 @@
 upstream podcloud-feeds.production {
-  server unix:/tmp/podcloud.feeds.production.sock fail_timeout=0;
+  server unix:/tmp/podcloud.feeds.production.0.sock fail_timeout=0;
+  server unix:/tmp/podcloud.feeds.production.1.sock fail_timeout=0;
+  server unix:/tmp/podcloud.feeds.production.2.sock fail_timeout=0;
 }
 
 server {

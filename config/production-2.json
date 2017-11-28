@@ -1,0 +1,9 @@
+{
+	"socket": "/tmp/podcloud.feeds.production.sock",
+	"mongodb": "mongodb://localhost/podcloud",
+	"hosts": {
+		"podcasts": "lepodcast.fr",
+		"platform": "podcloud.fr",
+		"stats": "stats.podcloud.fr"
+	}
+}
