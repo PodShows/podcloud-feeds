@@ -12,6 +12,6 @@ if [[ -z "${1}" ]]; then
   exit 1
 fi
 
+npm install pm2
 PM2=$PROJECT_ROOT/node_modules/.bin/pm2;
-
 $PM2 deploy "${1}";
