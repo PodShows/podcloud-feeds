@@ -34,7 +34,7 @@ module.exports = {
           "repo": "git@github.com:PodShows/podcloud-feeds.git",
           "path": "/home/podcloud/production/feeds",
           "pre-deploy-local": "ssh-keyscan eve.podradio.fr >> ~/.ssh/known_hosts",
-          "post-deploy": "npm install && pm2 startOrReload ecosystem.json --env production",
+          "post-deploy": "npm install && pm2 startOrReload ecosystem.config.js --env production",
           "env": {
             "NODE_ENV": "production"
           }
@@ -46,7 +46,7 @@ module.exports = {
           "repo": "git@github.com:PodShows/podcloud-feeds.git",
           "path": "/home/podcloud/preprod/feeds",
           "pre-deploy-local": "ssh-keyscan eve.podradio.fr >> ~/.ssh/known_hosts",
-          "post-deploy": "npm install && pm2 startOrReload ecosystem.json --env preprod",
+          "post-deploy": "npm install && pm2 startOrReload ecosystem.config.js --env preprod",
           "env": {
             "NODE_ENV": "preprod"
           }

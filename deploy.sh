@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
-npm install pm2
-node_modules/.bin/pm2 deploy "${1}"
+npm install -g pm2
+pm2 deploy "${1}"
