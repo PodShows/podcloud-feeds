@@ -1,0 +1,9 @@
+{
+	"socket": "/tmp/podcloud.feeds.preprod.sock",
+	"mongodb": "mongodb://localhost/podcloud_beta",
+	"hosts": {
+		"podcasts": "pp.lepodcast.fr",
+		"platform": "pp.podcloud.fr",
+		"stats": "stats.pp.podcloud.fr"
+	}
+}
