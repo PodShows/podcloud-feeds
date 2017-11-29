@@ -1,7 +1,21 @@
-{
+const appendEnvIfNotProduction = (name) => {
+  let suffix = "-development"
+
+  if(typeof process.env === "object") {
+    if(typeof process.env.NODE_ENV === "string") {
+      if(process.env.NODE_ENV.trim() !== "") {
+        suffix = ("-"+process.env.NODE_ENV.trim().toLowerCase()).replace("-production", "")
+      }
+    }
+  }
+
+  return name+suffix;
+}
+
+module.exports = {
     "apps": [
         {
-            "name": "feeds",
+            "name": appendEnvIfNotProduction("feeds"),
             "script": "server.js",
             "instances": 3,
             "env_preprod": {
@@ -38,4 +52,4 @@
           }
         }
     }
-}
+};
