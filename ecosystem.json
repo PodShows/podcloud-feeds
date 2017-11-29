@@ -2,7 +2,7 @@
     "apps": [
         {
             "name": "feeds",
-            "script": "run.js",
+            "script": "server.js",
             "instances": 3,
             "env_production": {
                 "NODE_ENV": "production"
