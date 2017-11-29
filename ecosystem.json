@@ -4,6 +4,9 @@
             "name": "feeds",
             "script": "server.js",
             "instances": 3,
+            "env_preprod": {
+                "NODE_ENV": "preprod"
+            },
             "env_production": {
                 "NODE_ENV": "production"
             }
@@ -20,6 +23,18 @@
           "post-deploy": "npm install && pm2 startOrReload ecosystem.json --env production",
           "env": {
             "NODE_ENV": "production"
+          }
+        },
+        "dev" : {
+          "user": "podcloud",
+          "host": "eve.podradio.fr",
+          "ref": "origin/develop",
+          "repo": "git@github.com:PodShows/podcloud-feeds.git",
+          "path": "/home/podcloud/preprod/feeds",
+          "pre-deploy-local": "ssh-keyscan eve.podradio.fr >> ~/.ssh/known_hosts",
+          "post-deploy": "npm install && pm2 startOrReload ecosystem.json --env preprod",
+          "env": {
+            "NODE_ENV": "preprod"
           }
         }
     }

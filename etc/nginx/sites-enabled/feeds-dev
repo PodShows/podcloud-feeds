@@ -1,14 +1,14 @@
-upstream podcloud-feeds.production {
-  server unix:/tmp/podcloud.feeds.production.sock fail_timeout=0;
+upstream podcloud-feeds.preprod {
+  server unix:/tmp/podcloud.feeds.preprod.sock fail_timeout=0;
 }
 
 server {
   listen 80;
-  server_name feeds.podcloud.fr;
+  server_name feeds.pp.podcloud.fr;
   server_tokens off;
 
-  access_log  /var/log/nginx/podcloud_feeds_access.log;
-  error_log   /var/log/nginx/podcloud_feeds_error.log;
+  access_log  /var/log/nginx/preprod_podcloud_feeds_access.log;
+  error_log   /var/log/nginx/preprod_podcloud_feeds_error.log;
 
   location / {
     client_max_body_size 0;
@@ -25,7 +25,7 @@ server {
     proxy_set_header    X-Forwarded-For     $proxy_add_x_forwarded_for;
     proxy_set_header    X-Forwarded-Proto   $scheme;
 
-    proxy_pass http://podcloud-feeds.production;
+    proxy_pass http://podcloud-feeds.preprod;
   }
 
 }
