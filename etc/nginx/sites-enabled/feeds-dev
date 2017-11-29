@@ -4,7 +4,7 @@ upstream podcloud-feeds.preprod {
 
 server {
   listen 80;
-  server_name pp.feeds.podcloud.fr;
+  server_name feeds.pp.podcloud.fr;
   server_tokens off;
 
   access_log  /var/log/nginx/preprod_podcloud_feeds_access.log;
