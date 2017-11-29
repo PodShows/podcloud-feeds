@@ -25,10 +25,10 @@ before_deploy:
 
 deploy:
   - provider: script
-    script: node_modules/.bin/pm2 deploy preprod 
+    script: deploy.sh preprod 
     on:
       branch: develop
   - provider: script
-    script: node_modules/.bin/pm2 deploy production
+    script: deploy.sh production
     on:
       branch: master
