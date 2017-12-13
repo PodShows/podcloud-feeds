@@ -112,7 +112,7 @@ describe("Schema", () => {
 				  $or: [{ custom_domain: feed_identifier }, { identifier: feed_identifier }, { _slugs: feed_identifier }],
 				  draft: { $ne: true },
 				  external: { $ne: true },
-				  feed_to_takeover_id: { $exists: false }
+			      $or: [{ feed_to_takeover_id: {$exists: false}}, { feed_to_takeover_id: null }]
 				}, sinon.match.any)
 				.chain('exec')
 				.yields(null, feed_obj);
