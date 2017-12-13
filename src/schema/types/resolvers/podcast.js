@@ -1,7 +1,7 @@
 import moment from 'moment';
 import Item from "~/connectors/item";
 import { DateFormat } from '~/schema/enums';
-import { notEmpty } from "~/utils";
+import { notEmpty, empty } from "~/utils";
 
 import path from 'path';
 
@@ -91,11 +91,17 @@ const Podcast = {
         return !!feed.disabled;
     },
     feed_redirect_url(feed) {
+        if(empty(feed.feed_redirect_url)) {
+            return null;
+        }
         let fru = feed.feed_redirect_url;
         if(!((/^https?:\/\//i).test(fru))) fru = "http://"+fru;
         return fru;
     },
     web_redirect_url(feed) {
+        if(empty(feed.web_redirect_url)) {
+            return null;
+        }
         let wru = feed.web_redirect_url;
         if(!((/^https?:\/\//i).test(wru))) wru = "http://"+wru;
         return wru;            

@@ -390,7 +390,7 @@ describe("Podcast Graph Object", () => {
 		false
 	))
 
-	it("should include and resolve a required boolean itunes_category", testGraphQLProperty(
+	it("should include and resolve a string itunes_category", testGraphQLProperty(
 		fields,
 		"itunes_category",
 		graphql.GraphQLString,
@@ -398,7 +398,7 @@ describe("Podcast Graph Object", () => {
 		obj.itunes_category
 	))
 
-	it("should include and resolve a required boolean feed_redirect_url", testGraphQLProperty(
+	it("should include and resolve a string feed_redirect_url", testGraphQLProperty(
 		fields,
 		"feed_redirect_url",
 		graphql.GraphQLString,
@@ -406,13 +406,35 @@ describe("Podcast Graph Object", () => {
 		obj.feed_redirect_url
 	))
 
-	it("should include and resolve a required boolean web_redirect_url", testGraphQLProperty(
+	it("should include and resolve a null feed_redirect_url", () => {
+		obj.feed_redirect_url = "";
+		return testGraphQLProperty(
+			fields,
+			"feed_redirect_url",
+			graphql.GraphQLString,
+			obj,
+			null
+		)()
+	})
+
+	it("should include and resolve a string web_redirect_url", testGraphQLProperty(
 		fields,
 		"web_redirect_url",
 		graphql.GraphQLString,
 		obj,
 		obj.web_redirect_url
 	))
+
+	it("should include and resolve a null web_redirect_url", () => {
+		obj.web_redirect_url = "";
+		return testGraphQLProperty(
+			fields,
+			"web_redirect_url",
+			graphql.GraphQLString,
+			obj,
+			null
+		)()
+	})
 
 	it("should include a required list of PodcastItems", testGraphQLProperty(
 		fields,
