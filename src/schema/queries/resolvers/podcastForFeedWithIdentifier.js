@@ -53,12 +53,16 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
                 findArgs = [
                     {
                         draft: {"$ne": true},
-                        $or: [{ feed_to_takeover_id: {$exists: false}}, { feed_to_takeover_id: null }],
                         external: {"$ne": true},
-                        "$or": [
-                            { custom_domain: identifier_cleaned },
-                            { identifier: identifier_cleaned },
-                            { _slugs: identifier_cleaned }
+                        $and: [
+                            { $or: [{ feed_to_takeover_id: {$exists: false}}, { feed_to_takeover_id: null }] },
+                            { 
+                                $or: [
+                                    { custom_domain: identifier_cleaned },
+                                    { identifier: identifier_cleaned },
+                                    { _slugs: identifier_cleaned }
+                                ]
+                            }
                         ]
                     },
                     PodcastFields                                

@@ -109,10 +109,12 @@ describe("Schema", () => {
 				FeedMock
 				.expects('findOne')
 				.withArgs({
-				  $or: [{ custom_domain: feed_identifier }, { identifier: feed_identifier }, { _slugs: feed_identifier }],
+				  $and: [
+				  	{ $or: [{ feed_to_takeover_id: {$exists: false}}, { feed_to_takeover_id: null }] },
+					{ $or: [{ custom_domain: feed_identifier }, { identifier: feed_identifier }, { _slugs: feed_identifier }] }
+				  ],
 				  draft: { $ne: true },
-				  external: { $ne: true },
-			      $or: [{ feed_to_takeover_id: {$exists: false}}, { feed_to_takeover_id: null }]
+				  external: { $ne: true }
 				}, sinon.match.any)
 				.chain('exec')
 				.yields(null, feed_obj);
@@ -153,10 +155,12 @@ describe("Schema", () => {
 				FeedMock
 				.expects('findOne')
 				.withArgs({
-				  $or: [{ custom_domain: feed_identifier }, { identifier: feed_identifier }, { _slugs: feed_identifier }],
+				  $and: [
+				  	{ $or: [{ feed_to_takeover_id: {$exists: false}}, { feed_to_takeover_id: null }] },
+					{ $or: [{ custom_domain: feed_identifier }, { identifier: feed_identifier }, { _slugs: feed_identifier }] }
+				  ],
 				  draft: { $ne: true },
 				  external: { $ne: true },
-				  feed_to_takeover_id: { $exists: false }
 				}, sinon.match.any)
 				.chain('exec')
 				.yields(null, feed_obj);
@@ -184,10 +188,12 @@ describe("Schema", () => {
 						FeedMock
 						.expects('findOne')
 						.withArgs({
-						  $or: [{ custom_domain: feed_alias }, { identifier: feed_alias }, { _slugs: feed_alias }],
+						  $and: [
+							{ $or: [{ feed_to_takeover_id: {$exists: false}}, { feed_to_takeover_id: null }] },
+						  	{ $or: [{ custom_domain: feed_alias }, { identifier: feed_alias }, { _slugs: feed_alias }] }
+						  ],
 						  draft: { $ne: true },
 						  external: { $ne: true },
-						  feed_to_takeover_id: { $exists: false }
 						}, sinon.match.any)
 						.chain('exec')
 						.yields(null, feed_obj);
