@@ -1,7 +1,7 @@
 import moment from 'moment';
 import Podcast from "./podcast";
 import { DateFormat } from '~/schema/enums';
-import { notEmpty, markdown } from "~/utils";
+import { empty, markdown } from "~/utils";
 
 const Episode = {
     guid(item) {
@@ -17,7 +17,7 @@ const Episode = {
         return markdown(item.content);
     },
     author(item) {
-        return notEmpty(item.author) ? item.author : item.feed.author;
+        return !empty(item.author) ? item.author : item.feed.author;
     },
     explicit(item) {
         return !!item.explicit;
@@ -27,7 +27,7 @@ const Episode = {
         return moment.utc(item.published_at).format(DateFormat.resolve(args.format));
     },
     url(item, args, ctx) {
-        let url = notEmpty(item.link) ? item.link : "http://"+Podcast._host(item.feed, args, ctx)+"/"+item._slugs[item._slugs.length-1];
+        let url = !empty(item.link) ? item.link : "http://"+Podcast._host(item.feed, args, ctx)+"/"+item._slugs[item._slugs.length-1];
         if(!(/^https?:\/\//.test(url))) url = "http://"+url;
         return url;
     },
