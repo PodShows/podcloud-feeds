@@ -1,4 +1,4 @@
-import { notEmpty, empty } from "~/utils";
+import { empty } from "~/utils";
 import Feed from "~/connectors/feed";
 import cached from  "cached";
 
@@ -36,7 +36,7 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
             !args.hasOwnProperty("identifier") || 
             empty(args.identifier)
         ) {
-            console.error("args.identifier must be a non empty string!");
+            console.error("args.identifier must be a non-empty string!");
             reject("args.identifier must be a non-empty string!");
         }
         const identifier_cleaned = args.identifier.toLowerCase().trim();
@@ -45,7 +45,7 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
         podcastIdentifiersCache.get(cache_key).then((found) => {
             let findArgs;
 
-            if(notEmpty(found)) {
+            if(!empty(found)) {
                 debug("Found cached uid : "+found);
                 findArgs = [{_id: found}, PodcastFields];
             } else {
@@ -80,10 +80,10 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
                             ...feed._slugs,
                             feed.custom_domain
                         ].filter((item, pos, self) => {
-                            return self.indexOf(item) == pos && notEmpty(item);
+                            return self.indexOf(item) == pos && !empty(item);
                         })
                     }
-                    if(notEmpty(found) && (keys.indexOf(identifier_cleaned) === -1 || feed === null)) {
+                    if(!empty(found) && (keys.indexOf(identifier_cleaned) === -1 || feed === null)) {
                         debug("Found podcast doesn't include cached identifier, we need to invalidate cache");
                         debug("identifier_cleaned: "+identifier_cleaned);
                         debug("keys: ", keys);
