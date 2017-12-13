@@ -48,6 +48,12 @@ describe("Schema", () => {
 				return expect(query).to.be.eventually.rejected;
 			});
 
+			it("should reject the promise when identifier is an empty string", () => {
+				const query = podcastForFeedWithIdentifier({}, {identifier: null});
+				expect(query).to.be.a('promise');
+				return expect(query).to.be.eventually.rejected;
+			});
+
 			it("should reject the promise when database has an error", () => {
 				const err_msg = "Error occured (simulated at "+(+new Date()/1000)+")"
 	
@@ -56,7 +62,7 @@ describe("Schema", () => {
 				.chain('exec')
 				.yields(err_msg, null);
 
-				const query = podcastForFeedWithIdentifier({}, {identifier: ""})
+				const query = podcastForFeedWithIdentifier({}, {identifier: "unknown"})
 
 				expect(query).to.be.a('promise');
 				return expect(query).to.be.eventually.rejectedWith(err_msg);

@@ -1,4 +1,4 @@
-import { notEmpty } from "~/utils";
+import { notEmpty, empty } from "~/utils";
 import Feed from "~/connectors/feed";
 import cached from  "cached";
 
@@ -34,10 +34,10 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
         if(
             typeof args !== "object" || 
             !args.hasOwnProperty("identifier") || 
-            typeof args.identifier !== "string"
+            empty(args.identifier)
         ) {
-            console.error("args.identifier must be a string!");
-            reject("args.identifier must be a string!");
+            console.error("args.identifier must be a non empty string!");
+            reject("args.identifier must be a non-empty string!");
         }
         const identifier_cleaned = args.identifier.toLowerCase().trim();
         const cache_key = "identifier-uid-"+identifier_cleaned;
