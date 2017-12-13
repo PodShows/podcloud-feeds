@@ -1,7 +1,7 @@
 import moment from 'moment';
 import Item from "~/connectors/item";
 import { DateFormat } from '~/schema/enums';
-import { notEmpty } from "~/utils";
+import { empty } from "~/utils";
 
 import path from 'path';
 
@@ -70,7 +70,7 @@ const Podcast = {
         return url;  
     },
     website_url(feed, args, ctx) {
-        let url = notEmpty(feed.link) ? feed.link : `${Podcast._host(feed, args, ctx)}/`;
+        let url = !empty(feed.link) ? feed.link : `${Podcast._host(feed, args, ctx)}/`;
         if(!((/^https?:\/\//i).test(url))) url = "http://"+url;
 
         return url;
@@ -91,11 +91,17 @@ const Podcast = {
         return !!feed.disabled;
     },
     feed_redirect_url(feed) {
+        if(empty(feed.feed_redirect_url)) {
+            return null;
+        }
         let fru = feed.feed_redirect_url;
         if(!((/^https?:\/\//i).test(fru))) fru = "http://"+fru;
         return fru;
     },
     web_redirect_url(feed) {
+        if(empty(feed.web_redirect_url)) {
+            return null;
+        }
         let wru = feed.web_redirect_url;
         if(!((/^https?:\/\//i).test(wru))) wru = "http://"+wru;
         return wru;            
@@ -136,7 +142,7 @@ const Podcast = {
         })
     },
     _host(feed, args, ctx) {
-        if(notEmpty(feed.custom_domain))
+        if(!empty(feed.custom_domain))
             return feed.custom_domain
 
         let host = ctx.hosts.podcasts

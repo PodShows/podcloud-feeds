@@ -1,4 +1,4 @@
-import { notEmpty } from "~/utils";
+import { empty } from "~/utils";
 import Feed from "~/connectors/feed";
 import cached from  "cached";
 
@@ -34,10 +34,10 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
         if(
             typeof args !== "object" || 
             !args.hasOwnProperty("identifier") || 
-            typeof args.identifier !== "string"
+            empty(args.identifier)
         ) {
-            console.error("args.identifier must be a string!");
-            reject("args.identifier must be a string!");
+            console.error("args.identifier must be a non-empty string!");
+            reject("args.identifier must be a non-empty string!");
         }
         const identifier_cleaned = args.identifier.toLowerCase().trim();
         const cache_key = "identifier-uid-"+identifier_cleaned;
@@ -45,7 +45,7 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
         podcastIdentifiersCache.get(cache_key).then((found) => {
             let findArgs;
 
-            if(notEmpty(found)) {
+            if(!empty(found)) {
                 debug("Found cached uid : "+found);
                 findArgs = [{_id: found}, PodcastFields];
             } else {
@@ -53,12 +53,16 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
                 findArgs = [
                     {
                         draft: {"$ne": true},
-                        feed_to_takeover_id: {"$exists": false},
                         external: {"$ne": true},
-                        "$or": [
-                            { custom_domain: identifier_cleaned },
-                            { identifier: identifier_cleaned },
-                            { _slugs: identifier_cleaned }
+                        $and: [
+                            { $or: [{ feed_to_takeover_id: {$exists: false}}, { feed_to_takeover_id: null }] },
+                            { 
+                                $or: [
+                                    { custom_domain: identifier_cleaned },
+                                    { identifier: identifier_cleaned },
+                                    { _slugs: identifier_cleaned }
+                                ]
+                            }
                         ]
                     },
                     PodcastFields                                
@@ -80,10 +84,10 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
                             ...feed._slugs,
                             feed.custom_domain
                         ].filter((item, pos, self) => {
-                            return self.indexOf(item) == pos && notEmpty(item);
+                            return self.indexOf(item) == pos && !empty(item);
                         })
                     }
-                    if(notEmpty(found) && (keys.indexOf(identifier_cleaned) === -1 || feed === null)) {
+                    if(!empty(found) && (keys.indexOf(identifier_cleaned) === -1 || feed === null)) {
                         debug("Found podcast doesn't include cached identifier, we need to invalidate cache");
                         debug("identifier_cleaned: "+identifier_cleaned);
                         debug("keys: ", keys);

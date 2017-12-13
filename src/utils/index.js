@@ -41,10 +41,8 @@ const markdown = function(content, config) {
 	return content
 }
 
-const notEmpty = function(obj) {
-    return (typeof obj === "string" && obj.trim().length > 0);
+const empty = function(obj) {
+    return !(typeof obj === "string" && obj.trim().length > 0);
 };
 
-const empty = (obj) => { return !notEmpty(obj) }
-
-export { empty, notEmpty, markdown }
+export { empty, markdown }
