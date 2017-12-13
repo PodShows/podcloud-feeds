@@ -1,6 +1,6 @@
 {
   "name": "podcloud-feeds",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "description": "GraphQL API for podcloud",
   "scripts": {
     "test": "mocha --opts test/mocha.opts",
