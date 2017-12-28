@@ -112,6 +112,10 @@ const Podcast = {
                 feed_id: feed._id,
                 published_at: {
                     "$lte": new Date()
+                },
+                status: "published",
+                private: { 
+                    "$ne": true
                 }
             };
             

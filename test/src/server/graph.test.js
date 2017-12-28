@@ -154,11 +154,22 @@ describe("GraphQL Server", () => {
 			        	.to.be.an("array")			        	
 			        	.that.is.not.empty
 			        	
-			        expect(feed.items)
+							expect(feed.items)
 			        	.to.not.deep.include({
 			        		title: "Blog post dans le turfu"
 			        	})
-				})
+
+							expect(feed.items)
+			        	.to.not.deep.include({
+			        		title: "Blog post dans le passé mais cassé"
+			        	})
+
+							expect(feed.items)
+			        	.to.not.deep.include({
+			        		title: "Blog post dans le passé mais privé"
+			        	})
+
+					})
 			})
 
 			it("should respect items order", () => {
