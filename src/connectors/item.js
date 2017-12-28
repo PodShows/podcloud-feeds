@@ -20,9 +20,11 @@ const ItemSchema = new Mongoose.Schema({
     explicit: Boolean,
     author: String,
     link: String,
+    status: String,
     _slugs: [String],
     content: String,
     published_at: Date,
+    private: Boolean,
     enclosure: EnclosureSchema
 });
 
