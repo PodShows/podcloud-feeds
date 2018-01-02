@@ -45,7 +45,7 @@ describe("Episode Graph Object", () => {
 				"cover_url",
 				new graphql.GraphQLNonNull(graphql.GraphQLString),
 				obj,
-				`http://${obj.feed.identifier}.${context.hosts.podcasts}/abc/cover`
+				`http://${obj.feed.identifier}.${context.hosts.podcasts}/abc/enclosure/cover.png`
 			)()
 		})
 
@@ -56,7 +56,7 @@ describe("Episode Graph Object", () => {
 				"cover_url",
 				new graphql.GraphQLNonNull(graphql.GraphQLString),
 				o,
-				`http://${o.feed.custom_domain}/abc/cover`
+				`http://${o.feed.custom_domain}/abc/enclosure/cover.png`
 			)()
 		})
 
@@ -67,7 +67,7 @@ describe("Episode Graph Object", () => {
 				"cover_url",
 				new graphql.GraphQLNonNull(graphql.GraphQLString),
 				o,
-				`http://${o.feed.identifier}.${context.hosts.platform}/abc/cover`
+				`http://${o.feed.identifier}.${context.hosts.platform}/abc/enclosure/cover.png`
 			)()
 		})
 
