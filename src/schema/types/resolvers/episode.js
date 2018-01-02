@@ -32,7 +32,7 @@ const Episode = {
         return url;
     },
     cover_url(item, args, ctx) {
-        return "http://"+Podcast._host(item.feed, args, ctx)+"/"+item._slugs[item._slugs.length-1]+"/cover";
+        return "http://"+Podcast._host(item.feed, args, ctx)+"/"+item._slugs[item._slugs.length-1]+"/enclosure/cover.png";
     },
     enclosure(item) {
         item.enclosure.item = item;
