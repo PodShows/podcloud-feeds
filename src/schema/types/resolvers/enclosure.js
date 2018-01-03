@@ -2,7 +2,7 @@ import path from "path"
 
 const Enclosure = {
     duration(enclosure) {
-        return enclosure.duration_in_seconds;
+        return Math.max(+enclosure.duration_in_seconds, 0) || 0;
     },
     size(enclosure) {
         return parseInt(enclosure.length, 10);
