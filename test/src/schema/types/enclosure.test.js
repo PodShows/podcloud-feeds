@@ -25,7 +25,14 @@ describe("Enclosure Graph Object", () => {
 	})
 
 	it("should resolve duration", () => {
+		enclosureObject.duration_in_seconds = 600;
 		expect(enclosureFields.duration.resolve(enclosureObject)).to.equals(600);
+		enclosureObject.duration_in_seconds = -1;
+		expect(enclosureFields.duration.resolve(enclosureObject)).to.equals(0);
+		enclosureObject.duration_in_seconds = null;
+		expect(enclosureFields.duration.resolve(enclosureObject)).to.equals(0);
+		delete enclosureObject.duration_in_seconds;
+		expect(enclosureFields.duration.resolve(enclosureObject)).to.equals(0);
 	})
 
 	it("should include a required string size", () => {
