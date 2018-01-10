@@ -39,18 +39,18 @@
   },
   "devDependencies": {
     "babel-cli": "6.5.1",
-    "babel-istanbul": "^0.12.2",
-    "chai": "^4.1.2",
-    "codecov": "^2.3.0",
-    "debug": "^3.1.0",
-    "istanbul": "^0.4.5",
-    "lodash": "^4.17.4",
-    "mocha": "^3.5.3",
-    "nodemon": "^1.9.1",
-    "proxyquire": "^1.8.0",
-    "sinon": "^4.0.1",
-    "sinon-chai": "^2.14.0",
-    "sinon-mongoose": "^2.0.2",
-    "webpack": "^3.6.0"
+    "babel-istanbul": "0.12.2",
+    "chai": "4.1.2",
+    "codecov": "2.3.1",
+    "debug": "3.1.0",
+    "istanbul": "0.4.5",
+    "lodash": "4.17.4",
+    "mocha": "3.5.3",
+    "nodemon": "1.14.10",
+    "proxyquire": "1.8.0",
+    "sinon": "4.1.4",
+    "sinon-chai": "2.14.0",
+    "sinon-mongoose": "2.0.2",
+    "webpack": "3.10.0"
   }
 }
