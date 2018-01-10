@@ -1,6 +1,6 @@
 {
   "name": "podcloud-feeds",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "GraphQL API for podcloud",
   "scripts": {
     "test": "NODE_ENV=test mocha --opts test/mocha.opts",
@@ -28,6 +28,7 @@
     "config": "^1.26.2",
     "express": "4.13.4",
     "graphql": "^0.11.3",
+    "graphql-bigint": "^1.0.0",
     "graphql-date": "^1.0.3",
     "graphql-tools": "^1.2.3",
     "marked": "^0.3.6",
