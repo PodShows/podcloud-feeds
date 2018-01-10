@@ -1,10 +1,12 @@
+import { BigInt } from "~/schema/scalars";
+
 const Enclosure = `
 type Enclosure {
   duration: Int!
-  size: Int!
+  size: BigInt!
   type: String!
   url: String!  
 }
 `;
 
-export default () => [Enclosure];
+export default () => [Enclosure, BigInt.schema];
