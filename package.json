@@ -19,7 +19,7 @@
     "babel-loader": "6.2.3",
     "babel-plugin-root-import": "^5.1.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-polyfill": "6.5.0",
+    "babel-polyfill": "6.26.0",
     "babel-preset-env": "1.6.0",
     "body-parser": "^1.18.2",
     "cached": "^4.3.1",
