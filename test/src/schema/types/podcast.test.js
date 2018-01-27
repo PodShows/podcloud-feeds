@@ -28,7 +28,8 @@ describe("Podcast Graph Object", () => {
    	const created_at = new Date(Date.UTC(2009, 4, 1, 19, 30, 42))
 	const updated_at = new Date(Date.UTC(2009, 4, 1, 20, 30, 42))
 
-	const obj = {
+	const obj = {      
+		_id: ObjectId("a6b7321bf6ab350bcef47624"),
 		title: "test titre",
 		identifier: "testidentifier",
 		catchline: "test catchline",
@@ -59,6 +60,14 @@ describe("Podcast Graph Object", () => {
 	after(() => {
 		testGraphQLProperty.restore()
 	})
+
+	it("should include and resolve a required string _id", testGraphQLProperty(
+		fields,
+		"_id",
+		new graphql.GraphQLNonNull(graphql.GraphQLString),
+		obj,
+		obj._id.toString()
+	))
 
 	it("should include and resolve a required string title", testGraphQLProperty(
 		fields,

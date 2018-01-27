@@ -2,6 +2,7 @@ import { DateFormat } from '~/schema/enums';
 import PodcastItem from './podcastItem';
 
 const Podcast = `type Podcast {
+  _id: String!
   title: String!
   identifier: String!
   catchline: String!
