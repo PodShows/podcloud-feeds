@@ -22,6 +22,9 @@ const platform_subdomains = [
 ]
 
 const Podcast = {
+    _id(feed) {
+        return feed._id.toString();
+    },
     title(feed) {
         return feed.title;
     },
