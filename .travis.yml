@@ -24,10 +24,11 @@ before_deploy:
 
 deploy:
   - provider: script
-    script: ./deploy.sh preprod 
-    on:
-      branch: develop
-  - provider: script
     script: ./deploy.sh production
     on:
       branch: master
+# Disable preprod
+#  - provider: script
+#    script: ./deploy.sh preprod 
+#    on:
+#      branch: develop
