@@ -1,5 +1,5 @@
-import { DateFormat } from '~/schema/enums';
-import PodcastItem from './podcastItem';
+import { DateFormat } from "~/schema/enums"
+import PodcastItem from "./podcastItem"
 
 const Podcast = `type Podcast {
   _id: String!
@@ -28,6 +28,6 @@ const Podcast = `type Podcast {
   items: [PodcastItem]!
   _host: String!
 }
-`;
+`
 
-export default () => [DateFormat, PodcastItem, Podcast];
+export default () => [DateFormat, PodcastItem, Podcast]

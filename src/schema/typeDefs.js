@@ -1,13 +1,14 @@
-import { RootQuery } from './queries/typeDefs'
+import { RootQuery } from "./queries/typeDefs"
 
-const typeDefinitions = [RootQuery, `
+const typeDefinitions = [
+  RootQuery,
+  `
 schema {
   query: RootQuery
 }
-`]
+`
+]
 
-export {
-	typeDefinitions
-}
+export { typeDefinitions }
 
 export default typeDefinitions

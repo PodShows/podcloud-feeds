@@ -1,4 +1,4 @@
-import { BigInt } from "~/schema/scalars";
+import { BigInt } from "~/schema/scalars"
 
 const Enclosure = `
 type Enclosure {
@@ -7,6 +7,6 @@ type Enclosure {
   type: String!
   url: String!  
 }
-`;
+`
 
-export default () => [Enclosure, BigInt.schema];
+export default () => [Enclosure, BigInt.schema]

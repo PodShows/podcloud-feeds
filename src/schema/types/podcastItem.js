@@ -1,6 +1,6 @@
-import { DateFormat } from '~/schema/enums';
-import Episode from "./episode";
-import Post from "./post";
+import { DateFormat } from "~/schema/enums"
+import Episode from "./episode"
+import Post from "./post"
 
 const PodcastItem = `
 interface PodcastItem {
@@ -13,6 +13,6 @@ interface PodcastItem {
   author: String
   explicit: Boolean!
 }
-`;
+`
 
-export default () => [DateFormat, PodcastItem, Episode, Post];
+export default () => [DateFormat, PodcastItem, Episode, Post]

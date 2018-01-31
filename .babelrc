@@ -1,19 +1,28 @@
 {
   "presets": [
-    ["env", {
-      "targets": {
-        "node": "current"
+    [
+      "env",
+      {
+        "targets": {
+          "node": "6.10"
+        }
       }
-    }]
+    ]
   ],
   "plugins": [
-    ["babel-plugin-root-import", [{
-      "rootPathPrefix": "~",
-      "rootPathSuffix": "src"
-    },{
-      "rootPathPrefix": "#",
-      "rootPathSuffix": "test"
-    }]],
+    [
+      "babel-plugin-root-import",
+      [
+        {
+          "rootPathPrefix": "~",
+          "rootPathSuffix": "src"
+        },
+        {
+          "rootPathPrefix": "#",
+          "rootPathSuffix": "test"
+        }
+      ]
+    ],
     "transform-object-rest-spread"
   ]
 }

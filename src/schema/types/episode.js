@@ -1,6 +1,6 @@
-import PodcastItem from "./podcastItem";
-import { DateFormat } from '~/schema/enums';
-import Enclosure from "./enclosure";
+import PodcastItem from "./podcastItem"
+import { DateFormat } from "~/schema/enums"
+import Enclosure from "./enclosure"
 
 const Episode = `
 type Episode implements PodcastItem {
@@ -15,6 +15,6 @@ type Episode implements PodcastItem {
   author: String
   enclosure: Enclosure!
 }
-`;
+`
 
-export default () => [PodcastItem, DateFormat, Enclosure, Episode];
+export default () => [PodcastItem, DateFormat, Enclosure, Episode]
