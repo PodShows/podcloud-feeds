@@ -1,9 +1,9 @@
-import podcasts from './podcasts';
-import podcastForFeedWithIdentifier from './podcastForFeedWithIdentifier';
+import podcasts from "./podcasts"
+import podcastForFeedWithIdentifier from "./podcastForFeedWithIdentifier"
 
 const RootQuery = {
-	podcasts,
-	podcastForFeedWithIdentifier
-};
+  podcasts,
+  podcastForFeedWithIdentifier
+}
 
-export default RootQuery;
+export default RootQuery

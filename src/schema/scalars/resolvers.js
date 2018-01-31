@@ -1,7 +1,7 @@
-import BigIntScalar from "./bigInt";
+import BigIntScalar from "./bigInt"
 
-export const BigInt = BigIntScalar.resolve;
+export const BigInt = BigIntScalar.resolve
 
 export default {
   BigInt
-};
+}
