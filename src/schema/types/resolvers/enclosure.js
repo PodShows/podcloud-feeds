@@ -19,7 +19,7 @@ const Enclosure = {
       "/" +
       enclosure.item._slugs[enclosure.item._slugs.length - 1] +
       "/enclosure" +
-      path.extname(enclosure.meta_url.path) +
+      path.extname(enclosure.meta_url.path).replace(/(.*)\?.*$/, "$1") +
       "?p=f"
     )
   }
