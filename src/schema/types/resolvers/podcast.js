@@ -11,6 +11,7 @@ const ItemFields = [
   "_id",
   "title",
   "content",
+  "author",
   "published_at",
   "enclosure",
   "_slugs"
