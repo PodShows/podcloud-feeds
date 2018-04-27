@@ -42,25 +42,25 @@
   "devDependencies": {
     "babel-cli": "6.26.0",
     "babel-istanbul": "0.12.2",
-    "babel-loader": "^7.1.2",
+    "babel-loader": "7.1.4",
     "chai": "4.1.2",
     "codecov": "3.0.0",
     "debug": "3.1.0",
-    "eslint": "^4.16.0",
-    "eslint-config-prettier": "^2.9.0",
-    "eslint-loader": "^1.9.0",
-    "eslint-plugin-prettier": "^2.5.0",
+    "eslint": "4.19.1",
+    "eslint-config-prettier": "2.9.0",
+    "eslint-loader": "1.9.0",
+    "eslint-plugin-prettier": "2.6.0",
     "istanbul": "0.4.5",
     "lodash": "4.17.4",
     "mocha": "3.5.3",
     "nodemon": "1.14.11",
-    "prettier": "^1.10.2",
+    "prettier": "1.12.1",
     "proxyquire": "1.8.0",
     "sinon": "4.1.4",
     "sinon-chai": "2.14.0",
     "sinon-mongoose": "2.0.2",
-    "webpack": "^3.10.0",
-    "webpack-node-externals": "^1.6.0"
+    "webpack": "3.11.0",
+    "webpack-node-externals": "1.7.2"
   },
   "prettier": {
     "semi": false
