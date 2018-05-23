@@ -4070,13 +4070,13 @@ proxy-addr@~2.0.2:
     forwarded "~0.1.2"
     ipaddr.js "1.6.0"
 
-proxyquire@1.8.0:
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/proxyquire/-/proxyquire-1.8.0.tgz#02d514a5bed986f04cbb2093af16741535f79edc"
+proxyquire@2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/proxyquire/-/proxyquire-2.0.1.tgz#958d732be13d21d374cc2256645a5ff97c76a669"
   dependencies:
     fill-keys "^1.0.2"
     module-not-found-error "^1.0.0"
-    resolve "~1.1.7"
+    resolve "~1.5.0"
 
 prr@~1.0.1:
   version "1.0.1"
@@ -4419,13 +4419,19 @@ resolve-url@^0.2.1:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/resolve-url/-/resolve-url-0.2.1.tgz#2c637fe77c893afd2a663fe21aa9080068e2052a"
 
-resolve@1.1.x, resolve@~1.1.7:
+resolve@1.1.x:
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.1.7.tgz#203114d82ad2c5ed9e8e0411b3932875e889e97b"
 
 resolve@^1.1.0:
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.7.1.tgz#aadd656374fd298aee895bc026b8297418677fd3"
+  dependencies:
+    path-parse "^1.0.5"
+
+resolve@~1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/resolve/-/resolve-1.5.0.tgz#1f09acce796c9a762579f31b2c1cc4c3cddf9f36"
   dependencies:
     path-parse "^1.0.5"
 
