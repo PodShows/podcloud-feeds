@@ -44,7 +44,7 @@
     "babel-istanbul": "0.12.2",
     "babel-loader": "^7.1.2",
     "chai": "4.1.2",
-    "codecov": "3.0.0",
+    "codecov": "3.0.4",
     "debug": "3.1.0",
     "eslint": "^4.16.0",
     "eslint-config-prettier": "^2.9.0",
