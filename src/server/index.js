@@ -1,3 +1,7 @@
+import net from "net"
+import fs from "fs"
+import http from "http"
+
 import express from "express"
 import compression from "compression"
 import { graphqlExpress, graphiqlExpress } from "apollo-server-express"
@@ -51,12 +55,37 @@ function GraphQLServer(config = DEFAULT_CONFIG) {
 
   config.prepare()
 
-  let portOrUnix = config.socket
-  if (typeof portOrUnix !== "string" || portOrUnix.trim() == "") {
-    portOrUnix = config.port
-  }
+  const unix_socket =
+    typeof config.socket === "string" && config.socket.trim() !== ""
 
-  server.listen(portOrUnix, config.listen)
+  const portOrUnix = unix_socket ? config.socket : config.port
+
+  const http_server = http
+    .createServer(server)
+    .listen(portOrUnix, config.listen)
+
+  if (unix_socket) {
+    http_server.on("listening", () => {
+      // set permissions
+      return fs.chmod(config.socket, 0o777, err => err && console.error(err))
+    })
+
+    // double-check EADDRINUSE
+    http_server.on("error", e => {
+      if (e.code !== "EADDRINUSE") throw e
+      net
+        .connect({ path: config.socket }, () => {
+          // really in use: re-throw
+          throw e
+        })
+        .on("error", e => {
+          if (e.code !== "ECONNREFUSED") throw e
+          // not in use: delete it and re-listen
+          fs.unlinkSync(config.socket)
+          server.listen(config.socket, config.listen)
+        })
+    })
+  }
 
   return server
 }
