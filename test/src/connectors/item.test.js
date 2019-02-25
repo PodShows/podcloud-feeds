@@ -13,7 +13,7 @@ describe("Item", () => {
     MongoHelper.setup(done)
   })
 
-  it.only("should have author", done => {
+  it("should have author", done => {
     Item.find({}).exec(function(err, items) {
       if (err) {
         console.error(err)
