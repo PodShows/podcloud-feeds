@@ -142,10 +142,12 @@ const Podcast = {
           reject(err)
         } else {
           resolve(
-            items.map(item => {
-              item.feed = feed
-              return item
-            })
+            items
+              .filter(i => !!i && typeof i === "object" && !Array.isArray(i))
+              .map(item => {
+                item.feed = feed
+                return item
+              })
           )
         }
       })
