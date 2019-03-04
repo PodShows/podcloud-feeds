@@ -42,7 +42,7 @@ const Episode = {
       Podcast._host(item.feed, args, ctx) +
       "/" +
       item._slugs[item._slugs.length - 1] +
-      "/enclosure/cover.png"
+      "/enclosure/cover.jpg"
     )
   },
   enclosure(item) {
