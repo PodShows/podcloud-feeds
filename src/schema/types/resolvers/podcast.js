@@ -48,12 +48,7 @@ const Podcast = {
     return feed.author
   },
   cover_url(feed, args, ctx) {
-    return (
-      "http://" +
-      Podcast._host(feed, args, ctx) +
-      "/cover" +
-      (empty(feed.cover_filename) ? ".png" : path.extname(feed.cover_filename))
-    )
+    return "http://" + Podcast._host(feed, args, ctx) + "/cover.jpg"
   },
   created_at(feed, args = {}) {
     args.format = args.format || "RFC822"

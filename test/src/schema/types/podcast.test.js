@@ -164,9 +164,7 @@ describe("Podcast Graph Object", () => {
       it("for standard podcasts", () => {
         const feed = { ...obj }
         const identifier = feed.identifier
-        const ext = feed.cover_filename
-          ? path.extname(feed.cover_filename)
-          : ".png"
+        const ext = ".jpg"
 
         testGraphQLProperty(
           fields,
@@ -180,9 +178,7 @@ describe("Podcast Graph Object", () => {
       it("for custom domain podcasts", () => {
         const feed = { ...obj, custom_domain: "monposcast.com" }
         const custom_domain = feed.custom_domain
-        const ext = feed.cover_filename
-          ? path.extname(feed.cover_filename)
-          : ".png"
+        const ext = ".jpg"
 
         testGraphQLProperty(
           fields,
@@ -196,9 +192,7 @@ describe("Podcast Graph Object", () => {
       it("for platform subdomain feeds", () => {
         const feed = { ...obj, identifier: "blog" }
         const identifier = feed.identifier
-        const ext = feed.cover_filename
-          ? path.extname(feed.cover_filename)
-          : ".png"
+        const ext = ".jpg"
 
         testGraphQLProperty(
           fields,
