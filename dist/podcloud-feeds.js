@@ -217,7 +217,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const debug = __webpack_require__(15)("podcloud-feeds:types:resolvers:podcast");
 
-const ItemFields = ["_id", "title", "content", "published_at", "enclosure", "_slugs"];
+const ItemFields = ["_id", "title", "content", "author", "published_at", "enclosure", "_slugs"];
 
 const platform_subdomains = ["faq", "blog", "devblog", "astuces", "changelog"];
 
@@ -250,7 +250,7 @@ const Podcast = {
     return feed.author;
   },
   cover_url(feed, args, ctx) {
-    return "http://" + Podcast._host(feed, args, ctx) + "/cover" + ((0, _utils.empty)(feed.cover_filename) ? ".png" : _path2.default.extname(feed.cover_filename));
+    return "http://" + Podcast._host(feed, args, ctx) + "/cover.jpg";
   },
   created_at(feed, args = {}) {
     args.format = args.format || "RFC822";
@@ -334,7 +334,7 @@ const Podcast = {
         if (err) {
           reject(err);
         } else {
-          resolve(items.map(item => {
+          resolve(items.filter(i => !!i && typeof i === "object" && !Array.isArray(i)).map(item => {
             item.feed = feed;
             return item;
           }));
@@ -786,7 +786,7 @@ var _server2 = _interopRequireDefault(_server);
 
 var _utils = __webpack_require__(1);
 
-var _config = __webpack_require__(45);
+var _config = __webpack_require__(48);
 
 var _config2 = _interopRequireDefault(_config);
 
@@ -1422,7 +1422,7 @@ const Episode = {
     return url;
   },
   cover_url(item, args, ctx) {
-    return "http://" + _podcast2.default._host(item.feed, args, ctx) + "/" + item._slugs[item._slugs.length - 1] + "/enclosure/cover.png";
+    return "http://" + _podcast2.default._host(item.feed, args, ctx) + "/" + item._slugs[item._slugs.length - 1] + "/enclosure/cover.jpg";
   },
   enclosure(item) {
     item.enclosure.item = item;
@@ -1460,7 +1460,7 @@ const Enclosure = {
     return enclosure.mime_type;
   },
   url(enclosure, args, ctx) {
-    return "http://" + ctx.hosts.stats + "/" + enclosure.item.feed.identifier + "/" + enclosure.item._slugs[enclosure.item._slugs.length - 1] + "/enclosure" + _path2.default.extname(enclosure.meta_url.path) + "?p=f";
+    return "http://" + ctx.hosts.stats + "/" + enclosure.item.feed.identifier + "/" + enclosure.item._slugs[enclosure.item._slugs.length - 1] + "/enclosure" + _path2.default.extname(enclosure.meta_url.path).replace(/(.*)\?.*$/, "$1") + "?p=f";
   }
 };
 
@@ -1487,7 +1487,10 @@ _mongoose2.default.Promise = global.Promise;
 
 function mongo_connect(conn_str) {
   const mongo = _mongoose2.default.connect(conn_str, {
-    useMongoClient: true
+    useMongoClient: true,
+    autoReconnect: true,
+    reconnectTries: Number.MAX_VALUE,
+    bufferMaxEntries: 0
   }, err => {
     if (err) {
       console.error("Could not connect to MongoDB on port 27017");
@@ -1512,19 +1515,31 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _express = __webpack_require__(40);
+var _net = __webpack_require__(40);
+
+var _net2 = _interopRequireDefault(_net);
+
+var _fs = __webpack_require__(41);
+
+var _fs2 = _interopRequireDefault(_fs);
+
+var _http = __webpack_require__(42);
+
+var _http2 = _interopRequireDefault(_http);
+
+var _express = __webpack_require__(43);
 
 var _express2 = _interopRequireDefault(_express);
 
-var _compression = __webpack_require__(41);
+var _compression = __webpack_require__(44);
 
 var _compression2 = _interopRequireDefault(_compression);
 
-var _apolloServerExpress = __webpack_require__(42);
+var _apolloServerExpress = __webpack_require__(45);
 
-var _graphqlTools = __webpack_require__(43);
+var _graphqlTools = __webpack_require__(46);
 
-var _bodyParser = __webpack_require__(44);
+var _bodyParser = __webpack_require__(47);
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
@@ -1567,12 +1582,32 @@ function GraphQLServer(config = DEFAULT_CONFIG) {
 
   config.prepare();
 
-  let portOrUnix = config.socket;
-  if (typeof portOrUnix !== "string" || portOrUnix.trim() == "") {
-    portOrUnix = config.port;
-  }
+  const unix_socket = typeof config.socket === "string" && config.socket.trim() !== "";
 
-  server.listen(portOrUnix, config.listen);
+  const portOrUnix = unix_socket ? config.socket : config.port;
+
+  const http_server = _http2.default.createServer(server).listen(portOrUnix, config.listen);
+
+  if (unix_socket) {
+    http_server.on("listening", () => {
+      // set permissions
+      return _fs2.default.chmod(config.socket, 0o777, err => err && console.error(err));
+    });
+
+    // double-check EADDRINUSE
+    http_server.on("error", e => {
+      if (e.code !== "EADDRINUSE") throw e;
+      _net2.default.connect({ path: config.socket }, () => {
+        // really in use: re-throw
+        throw e;
+      }).on("error", e => {
+        if (e.code !== "ECONNREFUSED") throw e;
+        // not in use: delete it and re-listen
+        _fs2.default.unlinkSync(config.socket);
+        server.listen(config.socket, config.listen);
+      });
+    });
+  }
 
   return server;
 }
@@ -1583,34 +1618,52 @@ exports.default = GraphQLServer;
 /* 40 */
 /***/ (function(module, exports) {
 
-module.exports = require("express");
+module.exports = require("net");
 
 /***/ }),
 /* 41 */
 /***/ (function(module, exports) {
 
-module.exports = require("compression");
+module.exports = require("fs");
 
 /***/ }),
 /* 42 */
 /***/ (function(module, exports) {
 
-module.exports = require("apollo-server-express");
+module.exports = require("http");
 
 /***/ }),
 /* 43 */
 /***/ (function(module, exports) {
 
-module.exports = require("graphql-tools");
+module.exports = require("express");
 
 /***/ }),
 /* 44 */
 /***/ (function(module, exports) {
 
-module.exports = require("body-parser");
+module.exports = require("compression");
 
 /***/ }),
 /* 45 */
+/***/ (function(module, exports) {
+
+module.exports = require("apollo-server-express");
+
+/***/ }),
+/* 46 */
+/***/ (function(module, exports) {
+
+module.exports = require("graphql-tools");
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports) {
+
+module.exports = require("body-parser");
+
+/***/ }),
+/* 48 */
 /***/ (function(module, exports) {
 
 module.exports = require("config");
