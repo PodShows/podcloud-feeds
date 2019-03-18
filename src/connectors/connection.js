@@ -1,49 +1,34 @@
 import Mongoose from "mongoose"
 Mongoose.Promise = global.Promise
 
-const mongo = {
-  conn: null,
-  retries: 5,
-  tried: 0,
-  spaced: 2
+const connect_opts = {
+  useMongoClient: true,
+  autoReconnect: true,
+  reconnectTries: Number.MAX_VALUE,
+  bufferMaxEntries: 0
 }
 
-const connect = conn_str => {
-  mongo.tried++
+const connect = (conn_str, opts) => {
+  opts.tried++
 
-  return Mongoose.connect(
-    conn_str,
-    {
-      useMongoClient: true,
-      autoReconnect: true,
-      reconnectTries: Number.MAX_VALUE,
-      bufferMaxEntries: 0
-    },
-    err => {
-      if (err) {
-        const retry_in = Math.floor(mongo.tried / 2 * mongo.spaced)
-        console.error(
-          `Could not connect to MongoDB (try ${mongo.tried}/${
-            mongo.retries
-          }, will retry in ${retry_in} seconds)`,
-          err
-        )
-        if (mongo.tried >= mongo.retries) {
-          process.exit(1)
-        } else {
-          setTimeout(connect.bind(this, conn_str), retry_in * 1000)
-        }
-      } else console.log("Connected to MongoDB")
-    }
-  )
+  return new Promise((resolve, reject) => {
+    Mongoose.connect(conn_str, connect_opts).then(resolve, err => {
+      console.error(
+        `Failed to connect to MongoDB (${opts.tried}/${opts.retries})`,
+        err
+      )
+
+      if (opts.tried >= opts.retries) return reject(err)
+
+      const retry_in = Math.floor(opts.tried / 2 * opts.spaced)
+      console.error(`Will retry to connect in ${retry_in} seconds`)
+      setTimeout(() => resolve(connect(conn_str, opts)), retry_in * 1000)
+    })
+  })
 }
 
-function mongo_connect(conn_str) {
-  if (!mongo.conn) {
-    mongo.conn = connect(conn_str)
-  }
-
-  return mongo.conn
+function mongo_connect(conn_str, { retries = 5, spaced = 2 } = {}) {
+  return connect(conn_str, { retries, spaced, tried: 0 })
 }
 
 export default mongo_connect

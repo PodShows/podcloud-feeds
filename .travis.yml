@@ -1,30 +1,37 @@
 language: node_js
 sudo: false
-
 node_js:
-  - 10
-
+- 10
 services:
-  - mongodb
-
+- mongodb
 install:
-  - npm install
-
+- npm install
 env:
+  global:
   - NODE_ENV=test
-
+  - COMMIT=${TRAVIS_COMMIT::8}
+  - secure: i+RQZrT6EPZb+0bMI5Eh66H+oBn6Cd8z2eu2Z1C0ZcX31OdF+9LmJg+61+KdoncarrDdNQJnF59GgXDXSiY6ASw/53GAIhwcDFsgR2w9SO/ACogpe4lQflRmIMKtAtLAI0N9IlwnxZF28kgNbePkn46jEBYjcXv8C/PnRMLHC3r9m3jVxgQEakqFRbYBVhbTF4DMuXYdLYzuPrZpmHxJofg21To30BmSza2OJtTYKl7/OpbPqWZ6xnDZXb+bHjYXHyWUq4n103+sXgop+szzOhGYlsUURJBlGTkBOMKOEWEF6SnIy9a19Oj29F8TazrrZ9QWUy47eQuOT0EI2+IksTz5yQ+K7Ht8qZZlDZmHWu8zLcb0h+nilintt8Gl98nyfKt5p+P5WHOjWOUNfrbX1I5FfnZwVqXwyiVDSP9ALdvcwRkj6SaXJrjxOzlXrwxFyRhbkXZv+RpTcET7U64ic+iN+mkkq9hgM1osMmBGa8jLD1qTLf73vAZChOC0kUTnoux+pDcvMBQOedMQfqnF3lPyPOcfbfy5yme2ZUM0InWNQNQSfAzHacOMm2CRPt82NaJImFwIneOlN+ShUb1AMPyJ1XDFXAQOZ2VwFh4IYWUuKHWaWbenmgMHqd7CgTnF2AY5bPc5Ro7bVXCzd57uOxJiSm9HuDizV39xC2ApT1Y=
+  - secure: APnBYe0sRBlVHjQHWHhUZyJqMmwqFHXpq0jliXWieZHuu/4Q2iOWCYZbf021y1tGl/Nf6XgAr6OJJnq4FyVW9rdd2vR+kgkGXHv7aRqVRVjiT+9+siR54jYBVTL2TeZ28hBjRtKxS6Lq7S6nHwt98VPWkPeoUWWBkhH8p8YRBsaiFh6b6Q0z4/2iMeo5mWlT5Ke1LKRJIIjLkBgkO5n8EpeFTgOgG8UvGb8/akIBynl2jXK0jgKbYdBHq3Qd+voFlpb5qlYN0zqHX1Qtw53CaZGrVLffSFpZaMkOwB1Uu1yudMzOxlgKfjJEgZjYwD7/eOoubUE8SnQ8KJUDVSUb72XEJOR9cOA9lvHA8Lk1mYT7F0dZtHefSiGQhCe9lYs3qIMEa7O71G0L02xey2MVRIz2ZV39IS7Y7RkpAo0jxeUBc9pppVrEFloc9niYA7ah8EA0RPQb5KQxoJZ24EuT5/qpcTge7FOZTtFwL1AmUxJg7iDh2G1VjZxOBIVN+UVazgv+bfp/tUa9/o3pkzSRQulah1Gyf6aDsxcd45W6YuyPFZIwGia8S+72EAdoZ0bWWUY/creqLbDKXaRtIinodvhdbeM5WzDwRzl+juMdqlyi9phQbhA1qFHTPrlPcLuZmwqE0S8kVBtDSDhmTDMLAUHjSW4lSaYdT07NW2Fk2do=
 script:
-  - npm run codecov
-
+- npm run codecov
+after_success:
+- docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+- export REPO=podshows/podcloud-feeds
+- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH
+  ; fi`
+- docker build -f Dockerfile -t $REPO:$COMMIT .
+- docker tag $REPO:$COMMIT $REPO:$TAG
+- docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
+- docker push $REPO
 before_deploy:
-  - openssl aes-256-cbc -K $encrypted_aa2fbc2a7417_key -iv $encrypted_aa2fbc2a7417_iv -in .deploy_rsa.enc -out /tmp/deploy_rsa -d
-  - eval "$(ssh-agent -s)"
-  - chmod 600 /tmp/deploy_rsa
-  - ssh-add /tmp/deploy_rsa
-  - ssh-keyscan barry.podshows.fr >> ~/.ssh/known_hosts
-
+- openssl aes-256-cbc -K $encrypted_59ebeb376ce5_key -iv $encrypted_59ebeb376ce5_iv
+  -in .deploy_rsa.enc -out /tmp/deploy_rsa -d
+- eval "$(ssh-agent -s)"
+- chmod 600 /tmp/deploy_rsa
+- ssh-add /tmp/deploy_rsa
+- ssh-keyscan barry.podshows.fr >> ~/.ssh/known_hosts
 deploy:
-  - provider: script
-    script: ./deploy.sh production
-    on:
-      branch: master
+- provider: script
+  script: "./deploy.sh"
+  on:
+    branch: master
