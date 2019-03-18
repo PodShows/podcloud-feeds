@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
-cd $DIR/../..
+cd $DIR
 
 SSH_HOST=podcloud@barry.podshows.fr
 RELEASEN=$(date +%Y%m%d%H%M%S)
@@ -16,23 +16,28 @@ ssh $SSH_HOST 'bash -s' <<'CMD'
 CMD
 
 echo "Creating release"
-rsync -avzP . $SSH_HOST:$BASE/$RELEASEN
+rsync -avzPhc docker-compose.production.yml $SSH_HOST:$BASE/$RELEASEN/docker-compose.yml
+rsync -avzPhc config $SSH_HOST:$BASE/$RELEASEN/config
 
-ssh $SSH_HOST KEEP_RELEASES=$KEEP_RELEASES RELEASEN=$RELEASEN 'bash -s' <<'CMD'
+ssh $SSH_HOST BASE=$BASE KEEP_RELEASES=$KEEP_RELEASES RELEASEN=$RELEASEN 'bash -s' <<'CMD'
 echo "Building release" &&
-cd $BASE/releases/$RELEASEN && ./up.sh &&
+cd $BASE/releases/$RELEASEN &&
+scale=$(sed -rn 's#[ \t]*([A-z_-]+):.*scale=([0-9]+)#\1=\2#p' docker-compose.yml) &&
+[ ! -z $scale ] && scale="--scale $scale" &&
+
+docker-compose pull &&
+eval docker-compose up $scale -d --remove-orphans &&
 
 echo "Linking release" &&
-ln -nfs $BASE/releases/$RELEASEN $BASE/current;
+ln -nfs $BASE/releases/$RELEASEN $BASE/current &&
 
-echo "Cleaning old releases"
-cd $BASE/releases;
+echo "Cleaning old releases" &&
+cd $BASE/releases; &&
 
 RELEASES=$(ls -d */ | sort -r);
 COUNT=$(echo "$RELEASES" | wc -l);
 
-if [ "$COUNT" -gt "$KEEP_RELEASES" ]; then
-    echo "$RELEASES" | tail -n -$(($COUNT-2)) | xargs rm -rvf;
+[ "$COUNT" -gt "$KEEP_RELEASES" ] && echo "$RELEASES" | tail -n -$(($COUNT-2)) | xargs rm -rvf;
 fi
 CMD
 

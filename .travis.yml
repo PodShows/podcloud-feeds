@@ -1,30 +1,39 @@
 language: node_js
 sudo: false
-
 node_js:
-  - 10
-
+- 10
 services:
-  - mongodb
-
+- mongodb
 install:
-  - npm install
-
+- npm install
 env:
+  global:
   - NODE_ENV=test
-
+  - secure: tp5/m72CYycwYcHDwH/wSzFMiBLEh5sFRS0gmWhsmcD+/AbH6OVUl7IN90DLeBiMLDRbjRII8hFnjOhJ/ZoI2aWzVacLyfPHhCp0dhvm4zgMEtVopVFlu6Qe0Qe0TECBM/xaZi66c9HbRRqbCONJ6pQB/lpPT7k9+s3ZRVWdO+N3tBnGOIskTaJU26ybX3Hewgbk4AvWIi6g/UdA0j0psytZ9ZxN7JPMLR4av2Loog4nZpQkHd/FS1BhhweWS1R921y072byzmPpJ/052YkLJqAAk8mzFNp4q3e/2gC2gYKVhcVT8L4MCm+JF3ha3Pfdmf5gQo3X29R9lO+lUV52D9rzMB44X2gHYPiPKeHIzxnnn43qilLijzKVUe6GMr1KGzB45/LsOr5C12hovVHrdjBTACGrMHIoAmAAzDYZj4ymNH9BxeLBhakO38XXmzaNpnD4/7sk+CD6X8MgIA8/QL6pJxnFK8mHRcOSQpdbwbpOxjBxrzf18RXqH+v5gZBeBpdPUYErIp212SmwMhi5i4dljrDt9Dm/8aSI/9YqZaKSjtybXBhGaMM0TFsF/4CSo9ZpixXdBTSSRelYOigWlOA49h8MDAqs2UWpdJozKFGDxmUOcahOZYMvc+i41bJSDlUfQGO7tCYTH/Q0FJ7ujAhsnrbbPryMIVWO4Kbd1DE=
+  - secure: sY9pmMJguQhrp64AQtnMggVo/52hFCQAtmH23cOPsZU1w2eRlGOEu5+mtRk2HDadvMiDEfYbS+A9KUFFWZ3cZd3bLVAUP/2w3ekPhiEthYog4ldmdnIC0ujPu1/75KRdkP29plTAm25DI3PQXB3XpBNhg7WzTb1qNnAsoZHLKKll56osXohrIs+6bo5uPB+vrTpOlzW1Wci5zDF0o79tYN6JrUeuLOHrXTImGyPi9Sj1x8kQAbLm7tv0R1EGg2ZJqWKbRY1M8xvWNZ0XGXUQF8/klR3xKIVyM8mCOC/l7hgT96+69dU7bTE1zqn2op0iL5TOLLNK9uCvx/G28l1Z74LmTGKqrgdPi9ZwScV3r8p4S3Mxrn/9O8TH5u/xzgWu//tZSUk6aiRqIuBRg3BbB/ld5+VtYso05xRc93nhGq5afaDZOftFz/DNZma6DMqDXOrqsleoR8Et5V56jDNH1cKItcDmFiQp8YJcsCiduhYzQorxT+7en2E+m7cUkIQ/SJ+SrfWa/HB3j6BE4VT0stv+jzTYTAIDduF4sXAcbLX5FkmDZ84BuQUTw6cCTKhAzE44cdnSGujybwrvBS7uHQOOiM386r/m1LBGEI45dlIVMwQg+539xI/vHAdi7LmEdjj7f6W/13Meuq1THHVcH9cCdlBlrfaLptSwRUDnRQ0=
+  - secure: Ffsc6r3fIydz3AFyekyvA9tKJXtR9EQypgYxvZu9hJk+xqhZzh6ahK+vFBnKXFP82/Tj3iwHq1LPA7fYEtXyVmxi1QtogQ39uu/UfUTEOf37r5HzgSH35wexWGfFoHpdR2nwZD2x/YDhuSbhcyZ+Fi0c1YykFohRpEs1hxrIdUhUWrPMUm6JuQAuHDTj7CooG/Uc5VbRqhBUpnQWBGH3CuTZ7B1J7w1UHoLUL2aUuxORR20P8g/7IoxpQvzvQsVGosymKKlPqkxT6r93hJ9zuU5SqBmXHnD0VJAQpeJIe/pmh37F2joZfrCSuvHvoyikNK1gQ9Afk+8bq0QTWtVHzqysjG8zLf6genPwSUm1hWz3CjABKWRlInzanQAP+vzx41DlQ3veuQay5uMfSNlp5oloWJs1UVqSGJbEsVC3fXrRSqsOF0keSZaIvcWGSUAuAJbFltBUMHU/XxAZC/Ww89x4vmaajaCqCvywAlFkqHTNQmJrVk2yYpi4RoDMBFZQdUBg89RnuLCsabeQSYJW2/nKHZRZVJEDrq55uwZiRq3gG1F2lrm6rOfkd+4T3oz6XWQZ7hv7Yi+C5xK4lYa3XzF8+0Fujp62IbLcdWkGLDS+oyn1TFBzbiJzwwQYnmxt56H52YOyvbm3585uk9p6L2h3S/xw3xJgAy//Qpgc4sI=
+  - secure: OT3Wfw5ye/VMfVjw3bGNXbi18rP3OTp17KLza57ab3F2TPRF+nxR50qWuBPT2L00ZJCtbvRx9raRSixdjAnknwX6rs8V+vBLhyHCl5doEh4OCFjbPzVdjoqcSQD70ZbKzha+B8aqq1koHRApZnPEEXTqdcE8HG3FMbKvu1Zk4Mcj57tPOWitfrrnAGLvE06L+M6o4WJr7nIUugpRWZPMvEqo0/7KJwgzETePyFh6rEczqSkJDJHJ6GCapCmmIfrfkNYpAASxV5DlEFwKWqe3Xfz9NmWXy+p8B/4nAeG+RR341kP6pxO4Fw7AnzSUbaRIcEK2GMpC2IXV5c2lRDVQoCwx3XBtZwtcKJwaVEUUuhUgWI6fgnlPaJaOhuO8iTwgYeoXmaERTnkfVqQpAZmOQFyi3UbyRVOqbsgqi6hoiHKvJ0T+Eth6cGlSCUOj3vJ2DIUfGWPZqHg3R/rN+0M8nrbwTTCFkNudU4gwdTW/D+0x6zsEMegUw9cgo07faX0Y3bysGRCm/JS+nZFoWNH/m+hp1FrXzYQolcDr/GhFqrCZrrdbsxOP4iS1g1qSHnFHu9n5We3skGzj4OkHuXgyjit3WZ5y3FP4Q6kp2y4+hWvQY5ZHdyP6qiSDoTCMWNFFSOzJZMrgr9PbCxIDY3eytQ0QDd9hxn6Mrc6zvD/a0g8=
+  - COMMIT=${TRAVIS_COMMIT::8}
 script:
-  - npm run codecov
-
+- npm run codecov
+after_success:
+- docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+- export REPO=podshows/podcloud-feeds
+- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH
+  ; fi`
+- docker build -f Dockerfile -t $REPO:$COMMIT .
+- docker tag $REPO:$COMMIT $REPO:$TAG
+- docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
+- docker push $REPO
 before_deploy:
-  - openssl aes-256-cbc -K $encrypted_aa2fbc2a7417_key -iv $encrypted_aa2fbc2a7417_iv -in .deploy_rsa.enc -out /tmp/deploy_rsa -d
-  - eval "$(ssh-agent -s)"
-  - chmod 600 /tmp/deploy_rsa
-  - ssh-add /tmp/deploy_rsa
-  - ssh-keyscan barry.podshows.fr >> ~/.ssh/known_hosts
-
+- openssl aes-256-cbc -K $encrypted_59ebeb376ce5_key -iv $encrypted_59ebeb376ce5_iv
+  -in .deploy_rsa.enc -out /tmp/deploy_rsa -d
+- eval "$(ssh-agent -s)"
+- chmod 600 /tmp/deploy_rsa
+- ssh-add /tmp/deploy_rsa
+- ssh-keyscan barry.podshows.fr >> ~/.ssh/known_hosts
 deploy:
-  - provider: script
-    script: ./deploy.sh production
-    on:
-      branch: master
+- provider: script
+  script: "./deploy.sh"
+  on:
+    branch: master
