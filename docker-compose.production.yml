@@ -1,3 +1,4 @@
+# project_name=podcloud
 version: "3"
 services:
   feeds: # scale=3

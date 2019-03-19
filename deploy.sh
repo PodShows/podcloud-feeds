@@ -32,11 +32,8 @@ set -e
 
 echo "Launching release"
 cd $BASE/releases/$RELEASEN
-scale=$(sed -rn 's@[ \t]*([a-Z0-9_\-]+):.*scale=([0-9]+)@\1=\2@p' docker-compose.yml | paste -s)
-[ ! -z $scale ] && scale="--scale $scale"
-
 docker-compose pull
-eval COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME docker-compose up $scale -d --remove-orphans
+./containerctl.sh up -d --remove-orphans
 
 echo "Linking release"
 ln -nfs $BASE/releases/$RELEASEN $BASE/current
