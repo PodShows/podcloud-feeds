@@ -22,6 +22,6 @@ const server = new Server({
   listen: () =>
     console.log(
       "GraphQL Server is now running on " +
-        (port ? `http://localhost:${port}/graphql` : socket)
+        (port ? `http://[::]:${port}/graphql` : socket)
     )
 })
