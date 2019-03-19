@@ -23,9 +23,7 @@ ssh $SSH_HOST BASE=$BASE RELEASEN=$RELEASEN 'bash -s' <<'CMD'
  mkdir -vp $BASE/releases/$RELEASEN
 CMD
 
-rsync -avzPhc docker-compose.production.yml $SSH_HOST:$BASE/releases/$RELEASEN/docker-compose.yml
-rsync -avzPhc containerctl.sh $SSH_HOST:$BASE/releases/$RELEASEN/containerctl.sh
-rsync -avzPhc config/ $SSH_HOST:$BASE/releases/$RELEASEN/config
+rsync -avzPhc docker-compose.production.yml containerctl.sh config $SSH_HOST:$BASE/releases/$RELEASEN/
 
 ssh $SSH_HOST BASE=$BASE KEEP_RELEASES=$KEEP_RELEASES RELEASEN=$RELEASEN COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME 'bash -s' <<'CMD'
 # exit when any command fails
@@ -33,7 +31,10 @@ set -e
 
 echo "Launching release"
 cd $BASE/releases/$RELEASEN
-docker-compose pull
+
+mv docker-compose.production.yml docker-compose.yml
+
+./containerctl.sh pull
 ./containerctl.sh up -d --remove-orphans
 
 echo "Linking release"

@@ -10,6 +10,7 @@ scales=$(sed -rn 's@[ \t]*([a-zA-Z0-9_\-]+):.*scale=([0-9]+)@\1=\2@p' $COMPOSE_F
 case "$1" in
 
 up)
+    shift # shift arguments to remove "up"
     docker-compose up $scales $@
     ;;
 *)
