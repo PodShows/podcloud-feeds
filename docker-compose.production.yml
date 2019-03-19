@@ -1,10 +1,10 @@
 version: "3"
 services:
   feeds: # scale=3
+    container_name: "podcloud-feeds"
     image: podshows/podcloud-feeds:latest
     volumes:
       - ./config:/usr/src/app/config
     labels:
       traefik.backend: "podcloud-feeds"
-      traefik.frontend: "podcloud-feeds"
       traefik.frontend.rule: "HostRegexp:feeds.podcloud.fr"
