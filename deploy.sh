@@ -42,12 +42,12 @@ ln -nfs $BASE/releases/$RELEASEN $BASE/current
 
 cd $BASE/releases
 
-RELEASES=$(ls -d */ | sort -r)
+RELEASES=$(ls -1d */ | sort -r)
 COUNT=$(echo "$RELEASES" | wc -l)
 
 if [ "$COUNT" -gt "$KEEP_RELEASES" ]; then
   echo "Cleaning old releases"
-  echo "$RELEASES" | tail -n -$(($COUNT-2)) | xargs rm -rvf
+  echo "$RELEASES" | tail -n +3 | xargs rm -rvf
 fi
 CMD
 
