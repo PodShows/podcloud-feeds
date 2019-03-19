@@ -5,5 +5,6 @@ services:
     volumes:
       - ./config:/usr/src/app/config
     labels:
+      traefik.enabled: true
       traefik.backend: "podcloud-feeds"
       traefik.frontend.rule: "HostRegexp:feeds.podcloud.fr"
