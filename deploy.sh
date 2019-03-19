@@ -23,8 +23,6 @@ ssh $SSH_HOST BASE=$BASE 'bash -s' <<'CMD'
  mkdir -p $BASE/releases
 CMD
 
-exit_code=$?
-test $exit_code -ne 0 && exit($exit_code)
 echo "Creating release"
 rsync -avzPhc docker-compose.production.yml $SSH_HOST:$BASE/$RELEASEN/docker-compose.yml
 rsync -avzPhc config $SSH_HOST:$BASE/$RELEASEN/config
