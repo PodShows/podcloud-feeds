@@ -12,6 +12,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 cd $DIR
 
 SSH_HOST=podcloud@barry.podshows.fr
+COMPOSE_PROJECT_NAME=podcloud
 BASE=/home/podcloud/production/services/feeds
 KEEP_RELEASES=2
 
@@ -25,7 +26,7 @@ CMD
 rsync -avzPhc docker-compose.production.yml $SSH_HOST:$BASE/releases/$RELEASEN/docker-compose.yml
 rsync -avzPhc config/ $SSH_HOST:$BASE/releases/$RELEASEN/config
 
-ssh $SSH_HOST BASE=$BASE KEEP_RELEASES=$KEEP_RELEASES RELEASEN=$RELEASEN 'bash -s' <<'CMD'
+ssh $SSH_HOST BASE=$BASE KEEP_RELEASES=$KEEP_RELEASES RELEASEN=$RELEASEN COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME 'bash -s' <<'CMD'
 # exit when any command fails
 set -e
 
@@ -35,7 +36,7 @@ scale=$(sed -rn 's@[ \t]*([a-Z0-9_\-]+):.*scale=([0-9]+)@\1=\2@p' docker-compose
 [ ! -z $scale ] && scale="--scale $scale"
 
 docker-compose pull
-eval docker-compose up $scale -d --remove-orphans
+eval COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME docker-compose up $scale -d --remove-orphans
 
 echo "Linking release"
 ln -nfs $BASE/releases/$RELEASEN $BASE/current

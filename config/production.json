@@ -1,6 +1,6 @@
 {
-  "socket": "/tmp/podcloud.feeds.production.sock",
-  "mongodb": "mongodb://barry.podshows.fr,eve.podshows.fr/podcloud",
+  "port": 80,
+  "mongodb": "mongodb://barry.podshows.fr/podcloud",
   "hosts": {
     "podcasts": "lepodcast.fr",
     "platform": "podcloud.fr",
