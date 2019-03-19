@@ -8,6 +8,8 @@ import { graphqlExpress, graphiqlExpress } from "apollo-server-express"
 import { makeExecutableSchema } from "graphql-tools"
 import bodyParser from "body-parser"
 
+import pino from "express-pino-logger"
+
 const DEFAULT_CONFIG = {
   typeDefs: null,
   resolvers: null,
@@ -35,6 +37,8 @@ function GraphQLServer(config = DEFAULT_CONFIG) {
   }
 
   const server = express()
+
+  server.use(pino())
 
   server.use(
     "/graphql",

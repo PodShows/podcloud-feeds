@@ -1,0 +1,20 @@
+version: "3.4"
+services:
+  feeds:
+    image: "podcloud-feeds"
+    build:
+      context: .
+      target: runner
+    volumes:
+      - .:/usr/src/app
+    networks:
+      - traefik
+      - podcloud
+    labels:
+        traefik.frontend.rule: "HostRegexp:feeds.{host:podcloud}.test"
+
+networks:
+  podcloud:
+    external: true
+  traefik:
+    external: true
