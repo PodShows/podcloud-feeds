@@ -23,7 +23,7 @@ ssh $SSH_HOST BASE=$BASE RELEASEN=$RELEASEN 'bash -s' <<'CMD'
  mkdir -vp $BASE/releases/$RELEASEN
 CMD
 
-rsync -avzPhc docker-compose.production.yml containerctl.sh config $SSH_HOST:$BASE/releases/$RELEASEN/
+rsync -avzPhc --recursive --files-from=deploy.files . $SSH_HOST:$BASE/releases/$RELEASEN/
 
 ssh $SSH_HOST BASE=$BASE KEEP_RELEASES=$KEEP_RELEASES RELEASEN=$RELEASEN COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME 'bash -s' <<'CMD'
 # exit when any command fails
