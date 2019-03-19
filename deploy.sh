@@ -23,7 +23,7 @@ ssh $SSH_HOST BASE=$BASE RELEASEN=$RELEASEN 'bash -s' <<'CMD'
 CMD
 
 rsync -avzPhc docker-compose.production.yml $SSH_HOST:$BASE/releases/$RELEASEN/docker-compose.yml
-rsync -avzPhc config $SSH_HOST:$BASE/releases/$RELEASEN/config
+rsync -avzPhc config/ $SSH_HOST:$BASE/releases/$RELEASEN/config
 
 ssh $SSH_HOST BASE=$BASE KEEP_RELEASES=$KEEP_RELEASES RELEASEN=$RELEASEN 'bash -s' <<'CMD'
 # exit when any command fails
