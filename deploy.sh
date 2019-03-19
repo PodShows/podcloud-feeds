@@ -16,7 +16,7 @@ COMPOSE_PROJECT_NAME=podcloud
 BASE=/home/podcloud/production/services/feeds
 KEEP_RELEASES=2
 
-RELEASEN=$(date +%Y%m%d%H%M%S)
+RELEASEN=$(date -u +%Y%m%d%H%M%S)
 
 echo "Creating release"
 ssh $SSH_HOST BASE=$BASE RELEASEN=$RELEASEN 'bash -s' <<'CMD'
