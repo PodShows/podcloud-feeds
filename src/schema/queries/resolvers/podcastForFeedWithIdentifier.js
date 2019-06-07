@@ -22,6 +22,7 @@ const PodcastFields = [
   "description",
   "identifier",
   "language",
+  "copyright",
   "contact_email",
   "author",
   "explicit",
