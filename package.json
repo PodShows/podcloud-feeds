@@ -9,7 +9,7 @@
     "codecov": "npm run coverage && codecov",
     "watch": "nodemon --watch . --exec 'npm test || true'",
     "build": "webpack",
-    "prettier": "prettier --write 'src/**/*.js'"
+    "prettier": "prettier --write '{src,test}/**/*.js'"
   },
   "main": "index.js",
   "keywords": [],

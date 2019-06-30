@@ -9,6 +9,9 @@ interface PodcastItem {
   text_content: String!
   formatted_content: String!
   published_at(format: DateFormat = RFC822): String!
+  episode_type: String
+  season: Int
+  episode: Int
   url: String!
   author: String
   explicit: Boolean!

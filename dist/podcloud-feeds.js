@@ -172,6 +172,9 @@ interface PodcastItem {
   text_content: String!
   formatted_content: String!
   published_at(format: DateFormat = RFC822): String!
+  episode_type: String
+  season: Int
+  episode: Int
   url: String!
   author: String
   explicit: Boolean!
@@ -217,7 +220,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const debug = __webpack_require__(15)("podcloud-feeds:types:resolvers:podcast");
 
-const ItemFields = ["_id", "title", "content", "author", "published_at", "enclosure", "_slugs"];
+const ItemFields = ["_id", "title", "content", "author", "published_at", "enclosure", "episode_type", "season", "episode", "_slugs"];
 
 const platform_subdomains = ["faq", "blog", "devblog", "astuces", "changelog"];
 
@@ -417,6 +420,9 @@ type Episode implements PodcastItem {
   text_content: String!
   formatted_content: String!
   published_at(format: DateFormat = RFC822): String!
+  episode_type: String
+  season: Int
+  episode: Int
   url: String!
   explicit: Boolean!
   cover_url: String!
@@ -525,6 +531,9 @@ type Post implements PodcastItem {
   text_content: String!
   formatted_content: String!
   published_at(format: DateFormat = RFC822): String!
+  episode_type: String
+  season: Int
+  episode: Int
   url: String!
   author: String
   explicit: Boolean!
@@ -661,7 +670,7 @@ const podcastIdentifiersCache = (0, _cached2.default)("podcastIdentifiersCache",
   }
 });
 
-const PodcastFields = ["_id", "title", "catchline", "description", "identifier", "language", "contact_email", "author", "explicit", "tags", "cover_filename", "parent_feed", "external", "block_itunes", "itunes_category", "disabled", "feed_redirect_url", "web_redirect_url", "created_at", "ordering", "updated_at", "_slugs"];
+const PodcastFields = ["_id", "title", "catchline", "description", "identifier", "language", "copyright", "contact_email", "author", "explicit", "tags", "cover_filename", "parent_feed", "external", "block_itunes", "itunes_category", "disabled", "feed_redirect_url", "web_redirect_url", "created_at", "ordering", "updated_at", "_slugs"];
 
 const podcastForFeedWithIdentifier = function (obj, args, context, info) {
   debug("called");
@@ -786,9 +795,13 @@ var _server2 = _interopRequireDefault(_server);
 
 var _utils = __webpack_require__(1);
 
-var _config = __webpack_require__(48);
+var _config = __webpack_require__(49);
 
 var _config2 = _interopRequireDefault(_config);
+
+var _process = __webpack_require__(50);
+
+var _process2 = _interopRequireDefault(_process);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -803,8 +816,8 @@ const server = new _server2.default({
   context: {
     hosts: _config2.default.get("hosts")
   },
-  prepare: () => (0, _connection2.default)(_config2.default.get("mongodb")),
-  listen: () => console.log("GraphQL Server is now running on " + (port ? `http://localhost:${port}/graphql` : socket))
+  prepare: () => (0, _connection2.default)(_config2.default.get("mongodb")).catch(() => _process2.default.exit(1)),
+  listen: () => console.log("GraphQL Server is now running on " + (port ? `http://[::]:${port}/graphql` : socket))
 });
 
 /***/ }),
@@ -1280,6 +1293,10 @@ const ItemSchema = new _mongoose2.default.Schema({
   content: String,
   published_at: Date,
   private: Boolean,
+  episode_type: String,
+  season: Number,
+  episode: Number,
+  inferred_type_season_and_episode: Boolean,
   enclosure: EnclosureSchema
 });
 
@@ -1359,6 +1376,16 @@ const Post = {
     args.format = args.format || "RFC822";
     return _moment2.default.utc(item.published_at).format(_enums.DateFormat.resolve(args.format));
   },
+  episode_type(item) {
+    return (/^(full|bonus|trailer)$/.test(item.episode_type) ? item.episode_type : null
+    );
+  },
+  season(item) {
+    return +item.season > 0 ? item.season : null;
+  },
+  episode(item) {
+    return +item.episode > 0 ? item.episode : null;
+  },
   url(item, args, ctx) {
     let url = !(0, _utils.empty)(item.link) ? item.link : "http://" + _podcast2.default._host(item.feed, args, ctx) + "/" + item._slugs[item._slugs.length - 1];
     if (!/^https?:\/\//.test(url)) url = "http://" + url;
@@ -1424,6 +1451,16 @@ const Episode = {
   cover_url(item, args, ctx) {
     return "http://" + _podcast2.default._host(item.feed, args, ctx) + "/" + item._slugs[item._slugs.length - 1] + "/enclosure/cover.jpg";
   },
+  episode_type(item) {
+    return (/^(full|bonus|trailer)$/.test(item.episode_type) ? item.episode_type : null
+    );
+  },
+  season(item) {
+    return +item.season > 0 ? item.season : null;
+  },
+  episode(item) {
+    return +item.episode > 0 ? item.episode : null;
+  },
   enclosure(item) {
     item.enclosure.item = item;
     return item.enclosure;
@@ -1485,19 +1522,31 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _mongoose2.default.Promise = global.Promise;
 
-function mongo_connect(conn_str) {
-  const mongo = _mongoose2.default.connect(conn_str, {
-    useMongoClient: true,
-    autoReconnect: true,
-    reconnectTries: Number.MAX_VALUE,
-    bufferMaxEntries: 0
-  }, err => {
-    if (err) {
-      console.error("Could not connect to MongoDB on port 27017");
-    }
-  });
+const connect_opts = {
+  useMongoClient: true,
+  autoReconnect: true,
+  reconnectTries: Number.MAX_VALUE,
+  bufferMaxEntries: 0
+};
 
-  return mongo;
+const connect = (conn_str, opts) => {
+  opts.tried++;
+
+  return new Promise((resolve, reject) => {
+    _mongoose2.default.connect(conn_str, connect_opts).then(resolve, err => {
+      console.error(`Failed to connect to MongoDB (${opts.tried}/${opts.retries})`, err);
+
+      if (opts.tried >= opts.retries) return reject(err);
+
+      const retry_in = Math.floor(opts.tried / 2 * opts.spaced);
+      console.error(`Will retry to connect in ${retry_in} seconds`);
+      setTimeout(() => resolve(connect(conn_str, opts)), retry_in * 1000);
+    });
+  });
+};
+
+function mongo_connect(conn_str, { retries = 5, spaced = 2 } = {}) {
+  return connect(conn_str, { retries, spaced, tried: 0 });
 }
 
 exports.default = mongo_connect;
@@ -1543,6 +1592,10 @@ var _bodyParser = __webpack_require__(47);
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
+var _expressPinoLogger = __webpack_require__(48);
+
+var _expressPinoLogger2 = _interopRequireDefault(_expressPinoLogger);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const DEFAULT_CONFIG = {
@@ -1570,6 +1623,8 @@ function GraphQLServer(config = DEFAULT_CONFIG) {
 
   const server = (0, _express2.default)();
 
+  server.use((0, _expressPinoLogger2.default)());
+
   server.use("/graphql", _bodyParser2.default.json({ type: "*/*" }), (0, _apolloServerExpress.graphqlExpress)(graphqlExpressOptions));
 
   server.use("/graphiql", (0, _apolloServerExpress.graphiqlExpress)({
@@ -1584,9 +1639,9 @@ function GraphQLServer(config = DEFAULT_CONFIG) {
 
   const unix_socket = typeof config.socket === "string" && config.socket.trim() !== "";
 
-  const portOrUnix = unix_socket ? config.socket : config.port;
+  const srvCfg = unix_socket ? { path: config.socket } : { host: "::", port: config.port };
 
-  const http_server = _http2.default.createServer(server).listen(portOrUnix, config.listen);
+  const http_server = _http2.default.createServer(server).listen(srvCfg, config.listen);
 
   if (unix_socket) {
     http_server.on("listening", () => {
@@ -1666,7 +1721,19 @@ module.exports = require("body-parser");
 /* 48 */
 /***/ (function(module, exports) {
 
+module.exports = require("express-pino-logger");
+
+/***/ }),
+/* 49 */
+/***/ (function(module, exports) {
+
 module.exports = require("config");
+
+/***/ }),
+/* 50 */
+/***/ (function(module, exports) {
+
+module.exports = require("process");
 
 /***/ })
 /******/ ]);
