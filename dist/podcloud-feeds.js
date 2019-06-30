@@ -312,6 +312,9 @@ const Podcast = {
     if (!/^https?:\/\//i.test(wru)) wru = "http://" + wru;
     return wru;
   },
+  ordering(feed) {
+    return feed.ordering == "asc" ? "asc" : "desc";
+  },
   items(feed) {
     return new Promise((resolve, reject) => {
       const findArgs = {
@@ -1007,6 +1010,7 @@ const Podcast = `type Podcast {
   feed_redirect_url: String
   web_redirect_url: String
   items: [PodcastItem]!
+  ordering: String!
   _host: String!
 }
 `;
