@@ -26,6 +26,7 @@ const Podcast = `type Podcast {
   feed_redirect_url: String
   web_redirect_url: String
   items: [PodcastItem]!
+  ordering: String!
   _host: String!
 }
 `
