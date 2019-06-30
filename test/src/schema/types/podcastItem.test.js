@@ -72,6 +72,21 @@ describe("PodcastItem Graph Object", () => {
     )
   })
 
+  it("should expose a episode_type string", () => {
+    expect(fields).to.have.property("episode_type")
+    expect(fields.episode_type.type).to.deep.equals(graphql.GraphQLString)
+  })
+
+  it("should expose a season integer", () => {
+    expect(fields).to.have.property("season")
+    expect(fields.season.type).to.deep.equals(graphql.GraphQLInt)
+  })
+
+  it("should expose an episode integer", () => {
+    expect(fields).to.have.property("episode")
+    expect(fields.episode.type).to.deep.equals(graphql.GraphQLInt)
+  })
+
   it("should resolve to Post when no enclosure is available", () => {
     const obj = {}
     const resolvedType = graph_interface.resolveType(obj, {}, { schema })
@@ -167,7 +182,10 @@ http://unlienauto.com/
 
         describe("without link", () => {
           it("without custom_domain", () => {
-            const o = { ...obj, link: undefined }
+            const o = {
+              ...obj,
+              link: undefined
+            }
             expect(resolvedFields).to.have.property("url")
             expect(resolvedFields.url.resolve(o, {}, context)).to.equals(
               `http://${o.feed.identifier}.${context.hosts.podcasts}/${
@@ -220,6 +238,71 @@ http://unlienauto.com/
         expect(resolvedFields.explicit.resolve(obj)).to.be[
           obj.explicit ? "true" : "false"
         ]
+      })
+
+      describe("should resolve episode_type, season, and episode", () => {
+        it("with full type", () => {
+          const o = { ...obj, episode_type: "full" }
+          expect(resolvedFields).to.have.property("episode_type")
+          expect(resolvedFields.episode_type.resolve(o, {}, context)).to.equals(
+            o.episode_type
+          )
+        })
+
+        it("with trailer type", () => {
+          const o = { ...obj, episode_type: "trailer" }
+          expect(resolvedFields).to.have.property("episode_type")
+          expect(resolvedFields.episode_type.resolve(o, {}, context)).to.equals(
+            o.episode_type
+          )
+        })
+
+        it("with bonus type", () => {
+          const o = { ...obj, episode_type: "bonus" }
+          expect(resolvedFields).to.have.property("episode_type")
+          expect(resolvedFields.episode_type.resolve(o, {}, context)).to.equals(
+            o.episode_type
+          )
+        })
+
+        it("with bad type", () => {
+          const o = { ...obj, episode_type: "wtf" }
+          expect(resolvedFields).to.have.property("episode_type")
+          expect(resolvedFields.episode_type.resolve(o, {}, context)).to.be.null
+        })
+
+        it("with season", () => {
+          const o = { ...obj, season: 1 }
+          expect(resolvedFields).to.have.property("season")
+          expect(resolvedFields.season.resolve(o, {}, context)).to.equals(1)
+        })
+
+        it("without season", () => {
+          const o = { ...obj, season: 0 }
+          expect(resolvedFields).to.have.property("season")
+          expect(resolvedFields.season.resolve(o, {}, context)).to.be.null
+
+          o.season = undefined
+
+          expect(resolvedFields).to.have.property("season")
+          expect(resolvedFields.season.resolve(o, {}, context)).to.be.null
+        })
+
+        it("with episode", () => {
+          const o = { ...obj, episode: 1 }
+          expect(resolvedFields).to.have.property("episode")
+          expect(resolvedFields.episode.resolve(o, {}, context)).to.equals(1)
+        })
+        it("without episode", () => {
+          const o = { ...obj, episode: 0 }
+          expect(resolvedFields).to.have.property("episode")
+          expect(resolvedFields.episode.resolve(o, {}, context)).to.be.null
+
+          o.episode = undefined
+
+          expect(resolvedFields).to.have.property("episode")
+          expect(resolvedFields.episode.resolve(o, {}, context)).to.be.null
+        })
       })
     })
   })

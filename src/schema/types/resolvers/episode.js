@@ -45,6 +45,17 @@ const Episode = {
       "/enclosure/cover.jpg"
     )
   },
+  episode_type(item) {
+    return /^(full|bonus|trailer)$/.test(item.episode_type)
+      ? item.episode_type
+      : null
+  },
+  season(item) {
+    return +item.season > 0 ? item.season : null
+  },
+  episode(item) {
+    return +item.episode > 0 ? item.episode : null
+  },
   enclosure(item) {
     item.enclosure.item = item
     return item.enclosure

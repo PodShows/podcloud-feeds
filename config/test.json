@@ -1,9 +1,9 @@
 {
-	"port": 8880,
-	"mongodb": "mongodb://localhost/podcloud_test",
-	"hosts": {
-		"podcasts": "lepodcast.test",
-		"platform": "podcloud.test",
-		"stats": "stats.podcloud.test"
-	}
+  "port": 8880,
+  "mongodb": "mongodb://172.23.0.2/podcloud_test",
+  "hosts": {
+    "podcasts": "lepodcast.test",
+    "platform": "podcloud.test",
+    "stats": "stats.podcloud.test"
+  }
 }
