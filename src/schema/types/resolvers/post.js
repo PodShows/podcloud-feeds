@@ -26,6 +26,17 @@ const Post = {
     args.format = args.format || "RFC822"
     return moment.utc(item.published_at).format(DateFormat.resolve(args.format))
   },
+  episode_type(item) {
+    return /^(full|bonus|trailer)$/.test(item.episode_type)
+      ? item.episode_type
+      : null
+  },
+  season(item) {
+    return +item.season > 0 ? item.season : null
+  },
+  episode(item) {
+    return +item.episode > 0 ? item.episode : null
+  },
   url(item, args, ctx) {
     let url = !empty(item.link)
       ? item.link

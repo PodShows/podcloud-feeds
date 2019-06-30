@@ -62,11 +62,11 @@ function GraphQLServer(config = DEFAULT_CONFIG) {
   const unix_socket =
     typeof config.socket === "string" && config.socket.trim() !== ""
 
-  const srvCfg = unix_socket ? { path: config.socket } : { host: "::", port: config.port }
+  const srvCfg = unix_socket
+    ? { path: config.socket }
+    : { host: "::", port: config.port }
 
-  const http_server = http
-    .createServer(server)
-    .listen(srvCfg, config.listen)
+  const http_server = http.createServer(server).listen(srvCfg, config.listen)
 
   if (unix_socket) {
     http_server.on("listening", () => {

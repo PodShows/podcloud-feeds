@@ -25,6 +25,10 @@ const ItemSchema = new Mongoose.Schema({
   content: String,
   published_at: Date,
   private: Boolean,
+  episode_type: String,
+  season: Number,
+  episode: Number,
+  inferred_type_season_and_episode: Boolean,
   enclosure: EnclosureSchema
 })
 

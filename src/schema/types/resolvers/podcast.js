@@ -14,6 +14,9 @@ const ItemFields = [
   "author",
   "published_at",
   "enclosure",
+  "episode_type",
+  "season",
+  "episode",
   "_slugs"
 ]
 
