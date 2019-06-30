@@ -40,6 +40,7 @@ describe("Podcast Graph Object", () => {
     cover_filename: "toto.png",
     created_at,
     updated_at,
+    ordering: "asc",
     external: false,
     parent_feed: "http://parent_feed.com",
     link: "http://parent_web.com",
@@ -101,6 +102,17 @@ describe("Podcast Graph Object", () => {
       new graphql.GraphQLNonNull(graphql.GraphQLString),
       obj,
       obj.catchline
+    )
+  )
+
+  it(
+    "should include and resolve a string ordering",
+    testGraphQLProperty(
+      fields,
+      "ordering",
+      new graphql.GraphQLNonNull(graphql.GraphQLString),
+      obj,
+      obj.ordering
     )
   )
 

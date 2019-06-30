@@ -114,6 +114,9 @@ const Podcast = {
     if (!/^https?:\/\//i.test(wru)) wru = "http://" + wru
     return wru
   },
+  ordering(feed) {
+    return feed.ordering == "asc" ? "asc" : "desc"
+  },
   items(feed) {
     return new Promise((resolve, reject) => {
       const findArgs = {
