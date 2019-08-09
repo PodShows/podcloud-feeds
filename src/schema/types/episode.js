@@ -14,7 +14,6 @@ type Episode implements PodcastItem {
   episode: Int
   url: String!
   explicit: Boolean!
-  cover_url: String!
   author: String
   enclosure: Enclosure!
 }

@@ -18,10 +18,30 @@ const Enclosure = {
       enclosure.item.feed.identifier +
       "/" +
       enclosure.item._slugs[enclosure.item._slugs.length - 1] +
-      "/enclosure" +
+      "/enclosure." +
+      +enclosure.item.updated_at +
       path.extname(enclosure.meta_url.path).replace(/(.*)\?.*$/, "$1") +
       "?p=f"
     )
+  },
+  cover(enclosure) {
+    let cover = null
+
+    switch (enclosure.cover_choice) {
+      case "detected":
+        cover = enclosure.cover_detected
+        break
+      case "custom":
+        cover = enclosure.cover_custom
+        break
+      default:
+        cover = enclosure.item.feed.feed_cover
+    }
+
+    cover.feed = enclosure.item.feed
+    cover.item = enclosure.item
+
+    return cover
   }
 }
 

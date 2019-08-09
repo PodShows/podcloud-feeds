@@ -1,4 +1,6 @@
 import Mongoose from "mongoose"
+import CoverSchema from "./cover_schema"
+
 Mongoose.Promise = global.Promise
 
 const ObjectId = Mongoose.Schema.Types.ObjectId
@@ -11,7 +13,10 @@ const EnclosureSchema = new Mongoose.Schema({
   duration_in_seconds: Number,
   length: String,
   mime_type: String,
-  meta_url: EnclosureUrlSchema
+  meta_url: EnclosureUrlSchema,
+  cover_detected: CoverSchema,
+  cover_custom: CoverSchema,
+  cover_choice: String
 })
 
 const ItemSchema = new Mongoose.Schema({
@@ -24,6 +29,7 @@ const ItemSchema = new Mongoose.Schema({
   _slugs: [String],
   content: String,
   published_at: Date,
+  updated_at: Date,
   private: Boolean,
   episode_type: String,
   season: Number,

@@ -1,6 +1,6 @@
 {
   "port": 80,
-  "mongodb": "mongodb://barry.podshows.fr/podcloud",
+  "mongodb": "mongodb://172.4.0.1/podcloud",
   "hosts": {
     "podcasts": "lepodcast.fr",
     "platform": "podcloud.fr",
