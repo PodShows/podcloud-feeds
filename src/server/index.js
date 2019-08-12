@@ -32,7 +32,10 @@ function GraphQLServer(config = DEFAULT_CONFIG) {
       (typeof config.options === "object" ? config.options.context : {}),
     schema: makeExecutableSchema({
       typeDefs: config.typeDefs,
-      resolvers: config.resolvers
+      resolvers: config.resolvers,
+      resolverValidationOptions: {
+        requireResolversForNonScalar: true
+      }
     })
   }
 

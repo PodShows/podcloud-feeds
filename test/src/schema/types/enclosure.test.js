@@ -11,7 +11,11 @@ describe("Enclosure Graph Object", () => {
   const enclosureFields = schema.getType("Enclosure").getFields()
 
   const enclosureObject = {
-    item: { _slugs: ["toto", "tata"], feed: { identifier: "blog-de-toto" } },
+    item: {
+      _slugs: ["toto", "tata"],
+      feed: { identifier: "blog-de-toto" },
+      updated_at: new Date(1970, 0, 1, 0, 22, 17)
+    },
     duration_in_seconds: 600,
     length: "123521",
     mime_type: "audio/mpeg",
@@ -78,7 +82,11 @@ describe("Enclosure Graph Object", () => {
 
   it("should resolve url", () => {
     expect(enclosureFields.url.resolve(enclosureObject, {}, context)).to.equals(
-      "http://" + context.hosts.stats + "/blog-de-toto/tata/enclosure.mp3?p=f"
+      "http://" +
+        context.hosts.stats +
+        "/blog-de-toto/tata/enclosure." +
+        1337 +
+        ".mp3?p=f"
     )
   })
 })
