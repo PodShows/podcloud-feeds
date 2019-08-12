@@ -9,7 +9,7 @@ export function buildSchema() {
     typeDefs,
     resolvers,
     resolverValidationOptions: {
-      requireResolversForAllFields: true
+      requireResolversForNonScalar: true
     }
   })
 }

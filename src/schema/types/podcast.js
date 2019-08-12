@@ -1,4 +1,5 @@
 import { DateFormat } from "~/schema/enums"
+import Cover from "./podcastItem"
 import PodcastItem from "./podcastItem"
 
 const Podcast = `type Podcast {
@@ -11,7 +12,7 @@ const Podcast = `type Podcast {
   language: String!
   contact_email: String
   author: String
-  cover_url: String!
+  cover: Cover!
   created_at(format: DateFormat = RFC822): String!
   updated_at(format: DateFormat = RFC822): String!
   internal: Boolean!
@@ -31,4 +32,4 @@ const Podcast = `type Podcast {
 }
 `
 
-export default () => [DateFormat, PodcastItem, Podcast]
+export default () => [DateFormat, PodcastItem, Podcast, Cover]

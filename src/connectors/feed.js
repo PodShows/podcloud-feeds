@@ -1,4 +1,6 @@
 import Mongoose from "mongoose"
+import CoverSchema from "./cover_schema"
+
 Mongoose.Promise = global.Promise
 
 const ObjectId = Mongoose.Schema.Types.ObjectId
@@ -8,7 +10,7 @@ const FeedSchema = new Mongoose.Schema({
   catchline: String,
   description: String,
   copyright: String,
-  cover_filename: String,
+  feed_cover: CoverSchema,
   identifier: String,
   custom_domain: String,
   feed_to_takeover_id: ObjectId,
