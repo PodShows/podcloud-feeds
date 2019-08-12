@@ -12,11 +12,15 @@ const ItemFields = [
   "title",
   "content",
   "author",
+  "updated_at",
   "published_at",
   "enclosure",
   "episode_type",
   "season",
   "episode",
+  "cover_choice",
+  "cover_detected",
+  "cover_custom",
   "_slugs"
 ]
 
@@ -50,9 +54,6 @@ const Podcast = {
   author(feed) {
     return feed.author
   },
-  cover_url(feed, args, ctx) {
-    return "http://" + Podcast._host(feed, args, ctx) + "/cover.jpg"
-  },
   created_at(feed, args = {}) {
     args.format = args.format || "RFC822"
     return moment.utc(feed.created_at).format(DateFormat.resolve(args.format))
@@ -66,6 +67,10 @@ const Podcast = {
   },
   external(feed) {
     return feed.external
+  },
+  cover(feed, args, ctx) {
+    feed.feed_cover.feed = feed
+    return feed.feed_cover
   },
   feed_url(feed, args, ctx) {
     let url = feed.external

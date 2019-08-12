@@ -36,15 +36,6 @@ const Episode = {
     if (!/^https?:\/\//.test(url)) url = "http://" + url
     return url
   },
-  cover_url(item, args, ctx) {
-    return (
-      "http://" +
-      Podcast._host(item.feed, args, ctx) +
-      "/" +
-      item._slugs[item._slugs.length - 1] +
-      "/enclosure/cover.jpg"
-    )
-  },
   episode_type(item) {
     return /^(full|bonus|trailer)$/.test(item.episode_type)
       ? item.episode_type

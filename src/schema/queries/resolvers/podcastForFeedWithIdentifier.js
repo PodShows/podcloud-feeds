@@ -38,6 +38,7 @@ const PodcastFields = [
   "created_at",
   "ordering",
   "updated_at",
+  "feed_cover",
   "_slugs"
 ]
 

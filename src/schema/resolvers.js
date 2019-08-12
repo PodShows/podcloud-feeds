@@ -5,7 +5,8 @@ export {
   Episode,
   Podcast,
   PodcastItem,
-  Post
+  Post,
+  Cover
 } from "./types/resolvers"
 
 export { BigInt } from "./scalars/resolvers"

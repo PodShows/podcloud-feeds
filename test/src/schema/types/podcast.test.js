@@ -171,60 +171,6 @@ describe("Podcast Graph Object", () => {
     )
   )
 
-  describe("should include and resolve a required string cover_url", () => {
-    const run_tests = obj => {
-      it("for standard podcasts", () => {
-        const feed = { ...obj }
-        const identifier = feed.identifier
-        const ext = ".jpg"
-
-        testGraphQLProperty(
-          fields,
-          "cover_url",
-          new graphql.GraphQLNonNull(graphql.GraphQLString),
-          feed,
-          `http://${identifier}.${context.hosts.podcasts}/cover${ext}`
-        )()
-      })
-
-      it("for custom domain podcasts", () => {
-        const feed = { ...obj, custom_domain: "monposcast.com" }
-        const custom_domain = feed.custom_domain
-        const ext = ".jpg"
-
-        testGraphQLProperty(
-          fields,
-          "cover_url",
-          new graphql.GraphQLNonNull(graphql.GraphQLString),
-          feed,
-          `http://${custom_domain}/cover${ext}`
-        )()
-      })
-
-      it("for platform subdomain feeds", () => {
-        const feed = { ...obj, identifier: "blog" }
-        const identifier = feed.identifier
-        const ext = ".jpg"
-
-        testGraphQLProperty(
-          fields,
-          "cover_url",
-          new graphql.GraphQLNonNull(graphql.GraphQLString),
-          feed,
-          `http://${identifier}.${context.hosts.platform}/cover${ext}`
-        )()
-      })
-    }
-
-    describe("with a feed cover", () => {
-      run_tests({ ...obj, cover_filename: "cover_full.png" })
-    })
-
-    describe("without a feed cover", () => {
-      run_tests({ ...obj, cover_filename: undefined })
-    })
-  })
-
   it(
     "should include and resolve a required string published_at",
     testGraphQLProperty(
