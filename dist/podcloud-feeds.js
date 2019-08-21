@@ -95,9 +95,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.markdown = exports.empty = undefined;
+exports.sanitize = exports.markdown = exports.empty = undefined;
 
-var _marked = __webpack_require__(32);
+var _sanitizeHtml = __webpack_require__(32);
+
+var _sanitizeHtml2 = _interopRequireDefault(_sanitizeHtml);
+
+var _marked = __webpack_require__(33);
 
 var _marked2 = _interopRequireDefault(_marked);
 
@@ -139,8 +143,14 @@ const empty = function (obj) {
   return !(typeof obj === "string" && obj.trim().length > 0);
 };
 
+const sanitize = text => empty(text) ? "" : (0, _sanitizeHtml2.default)(text.replace(/<\/(p|div)>/, "</$1><br />").replace(/<br.*\/?>\s*<br.*\/?>/g, "<br />"), {
+  allowedTags: [],
+  allowedAttributes: {}
+}).trim();
+
 exports.empty = empty;
 exports.markdown = markdown;
+exports.sanitize = sanitize;
 
 /***/ }),
 /* 2 */
@@ -204,7 +214,7 @@ var _moment = __webpack_require__(5);
 
 var _moment2 = _interopRequireDefault(_moment);
 
-var _item = __webpack_require__(35);
+var _item = __webpack_require__(36);
 
 var _item2 = _interopRequireDefault(_item);
 
@@ -720,7 +730,7 @@ var _feed = __webpack_require__(14);
 
 var _feed2 = _interopRequireDefault(_feed);
 
-var _cached = __webpack_require__(33);
+var _cached = __webpack_require__(34);
 
 var _cached2 = _interopRequireDefault(_cached);
 
@@ -852,21 +862,21 @@ module.exports = __webpack_require__(20);
 
 var _schema = __webpack_require__(21);
 
-var _connection = __webpack_require__(41);
+var _connection = __webpack_require__(42);
 
 var _connection2 = _interopRequireDefault(_connection);
 
-var _server = __webpack_require__(42);
+var _server = __webpack_require__(43);
 
 var _server2 = _interopRequireDefault(_server);
 
 var _utils = __webpack_require__(1);
 
-var _config = __webpack_require__(52);
+var _config = __webpack_require__(53);
 
 var _config2 = _interopRequireDefault(_config);
 
-var _process = __webpack_require__(53);
+var _process = __webpack_require__(54);
 
 var _process2 = _interopRequireDefault(_process);
 
@@ -1143,7 +1153,7 @@ Object.defineProperty(exports, "RootQuery", {
   }
 });
 
-var _resolvers2 = __webpack_require__(34);
+var _resolvers2 = __webpack_require__(35);
 
 Object.defineProperty(exports, "Enclosure", {
   enumerable: true,
@@ -1263,16 +1273,22 @@ exports.default = RootQuery;
 /* 32 */
 /***/ (function(module, exports) {
 
-module.exports = require("marked");
+module.exports = require("sanitize-html");
 
 /***/ }),
 /* 33 */
 /***/ (function(module, exports) {
 
-module.exports = require("cached");
+module.exports = require("marked");
 
 /***/ }),
 /* 34 */
+/***/ (function(module, exports) {
+
+module.exports = require("cached");
+
+/***/ }),
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1291,7 +1307,7 @@ Object.defineProperty(exports, "Podcast", {
   }
 });
 
-var _podcastItem = __webpack_require__(36);
+var _podcastItem = __webpack_require__(37);
 
 Object.defineProperty(exports, "PodcastItem", {
   enumerable: true,
@@ -1300,7 +1316,7 @@ Object.defineProperty(exports, "PodcastItem", {
   }
 });
 
-var _post = __webpack_require__(37);
+var _post = __webpack_require__(38);
 
 Object.defineProperty(exports, "Post", {
   enumerable: true,
@@ -1309,7 +1325,7 @@ Object.defineProperty(exports, "Post", {
   }
 });
 
-var _episode = __webpack_require__(38);
+var _episode = __webpack_require__(39);
 
 Object.defineProperty(exports, "Episode", {
   enumerable: true,
@@ -1318,7 +1334,7 @@ Object.defineProperty(exports, "Episode", {
   }
 });
 
-var _enclosure = __webpack_require__(39);
+var _enclosure = __webpack_require__(40);
 
 Object.defineProperty(exports, "Enclosure", {
   enumerable: true,
@@ -1327,7 +1343,7 @@ Object.defineProperty(exports, "Enclosure", {
   }
 });
 
-var _cover = __webpack_require__(40);
+var _cover = __webpack_require__(41);
 
 Object.defineProperty(exports, "Cover", {
   enumerable: true,
@@ -1339,7 +1355,7 @@ Object.defineProperty(exports, "Cover", {
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1401,7 +1417,7 @@ const Item = _mongoose2.default.model("items", ItemSchema);
 exports.default = Item;
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1425,7 +1441,7 @@ const PodcastItem = {
 exports.default = PodcastItem;
 
 /***/ }),
-/* 37 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1463,7 +1479,7 @@ const Post = {
     return !!item.explicit;
   },
   text_content(item) {
-    return item.content;
+    return (0, _utils.sanitize)(item.content);
   },
   formatted_content(item) {
     return (0, _utils.markdown)(item.content);
@@ -1492,7 +1508,7 @@ const Post = {
 exports.default = Post;
 
 /***/ }),
-/* 38 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1524,7 +1540,7 @@ const Episode = {
     return item.title;
   },
   text_content(item) {
-    return item.content;
+    return (0, _utils.sanitize)(item.content);
   },
   formatted_content(item) {
     return (0, _utils.markdown)(item.content);
@@ -1563,7 +1579,7 @@ const Episode = {
 exports.default = Episode;
 
 /***/ }),
-/* 39 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1616,7 +1632,7 @@ const Enclosure = {
 exports.default = Enclosure;
 
 /***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1651,7 +1667,7 @@ const Cover = {
 exports.default = Cover;
 
 /***/ }),
-/* 41 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1699,7 +1715,7 @@ function mongo_connect(conn_str, { retries = 5, spaced = 2 } = {}) {
 exports.default = mongo_connect;
 
 /***/ }),
-/* 42 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1711,35 +1727,35 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _net = __webpack_require__(43);
+var _net = __webpack_require__(44);
 
 var _net2 = _interopRequireDefault(_net);
 
-var _fs = __webpack_require__(44);
+var _fs = __webpack_require__(45);
 
 var _fs2 = _interopRequireDefault(_fs);
 
-var _http = __webpack_require__(45);
+var _http = __webpack_require__(46);
 
 var _http2 = _interopRequireDefault(_http);
 
-var _express = __webpack_require__(46);
+var _express = __webpack_require__(47);
 
 var _express2 = _interopRequireDefault(_express);
 
-var _compression = __webpack_require__(47);
+var _compression = __webpack_require__(48);
 
 var _compression2 = _interopRequireDefault(_compression);
 
-var _apolloServerExpress = __webpack_require__(48);
+var _apolloServerExpress = __webpack_require__(49);
 
-var _graphqlTools = __webpack_require__(49);
+var _graphqlTools = __webpack_require__(50);
 
-var _bodyParser = __webpack_require__(50);
+var _bodyParser = __webpack_require__(51);
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
-var _expressPinoLogger = __webpack_require__(51);
+var _expressPinoLogger = __webpack_require__(52);
 
 var _expressPinoLogger2 = _interopRequireDefault(_expressPinoLogger);
 
@@ -1820,67 +1836,67 @@ function GraphQLServer(config = DEFAULT_CONFIG) {
 exports.default = GraphQLServer;
 
 /***/ }),
-/* 43 */
+/* 44 */
 /***/ (function(module, exports) {
 
 module.exports = require("net");
 
 /***/ }),
-/* 44 */
+/* 45 */
 /***/ (function(module, exports) {
 
 module.exports = require("fs");
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports) {
 
 module.exports = require("http");
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports) {
 
 module.exports = require("express");
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports) {
 
 module.exports = require("compression");
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports) {
 
 module.exports = require("apollo-server-express");
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports) {
 
 module.exports = require("graphql-tools");
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports) {
 
 module.exports = require("body-parser");
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports) {
 
 module.exports = require("express-pino-logger");
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports) {
 
 module.exports = require("config");
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports) {
 
 module.exports = require("process");
