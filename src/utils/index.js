@@ -1,3 +1,4 @@
+import sanitizeHtml from "sanitize-html"
 import marked from "marked"
 
 const renderer = new marked.Renderer()
@@ -39,4 +40,17 @@ const empty = function(obj) {
   return !(typeof obj === "string" && obj.trim().length > 0)
 }
 
-export { empty, markdown }
+const sanitize = text =>
+  empty(text)
+    ? ""
+    : sanitizeHtml(
+        text
+          .replace(/<\/(p|div)>/, "</$1><br />")
+          .replace(/<br.*\/?>\s*<br.*\/?>/g, "<br />"),
+        {
+          allowedTags: [],
+          allowedAttributes: {}
+        }
+      ).trim()
+
+export { empty, markdown, sanitize }

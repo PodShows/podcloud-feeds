@@ -4,8 +4,7 @@
   "description": "GraphQL API for podcloud",
   "scripts": {
     "test": "NODE_ENV=test mocha --opts test/mocha.opts",
-    "coverage":
-      "node_modules/.bin/babel-node node_modules/.bin/babel-istanbul cover node_modules/.bin/_mocha -- --opts test/mocha.opts",
+    "coverage": "node_modules/.bin/babel-node node_modules/.bin/babel-istanbul cover node_modules/.bin/_mocha -- --opts test/mocha.opts",
     "codecov": "npm run coverage && codecov",
     "watch": "nodemon --watch . --exec 'npm test || true'",
     "build": "webpack",
@@ -18,11 +17,11 @@
   "homepage": "https://podcloud.fr/",
   "dependencies": {
     "apollo-server-express": "^1.1.2",
-    "debug": "3.1.0",
     "body-parser": "^1.18.2",
     "cached": "^4.3.1",
     "compression": "^1.7.1",
     "config": "^1.26.2",
+    "debug": "3.1.0",
     "express": "4.16.2",
     "express-pino-logger": "^4.0.0",
     "graphql": "0.11.7",
@@ -34,7 +33,8 @@
     "mongoose": "^4.4.12",
     "mongoose-fixture-loader": "^1.0.2",
     "request": "^2.83.0",
-    "request-promise": "^4.0.0"
+    "request-promise": "^4.0.0",
+    "sanitize-html": "^1.20.1"
   },
   "devDependencies": {
     "babel-cli": "6.26.0",

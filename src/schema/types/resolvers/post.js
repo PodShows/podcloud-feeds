@@ -1,6 +1,6 @@
 import moment from "moment"
 import { DateFormat } from "~/schema/enums"
-import { empty, markdown } from "~/utils"
+import { empty, markdown, sanitize } from "~/utils"
 import Podcast from "./podcast"
 
 const Post = {
@@ -17,7 +17,7 @@ const Post = {
     return !!item.explicit
   },
   text_content(item) {
-    return item.content
+    return sanitize(item.content)
   },
   formatted_content(item) {
     return markdown(item.content)

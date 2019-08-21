@@ -1,7 +1,7 @@
 import moment from "moment"
 import Podcast from "./podcast"
 import { DateFormat } from "~/schema/enums"
-import { empty, markdown } from "~/utils"
+import { empty, markdown, sanitize } from "~/utils"
 
 const Episode = {
   guid(item) {
@@ -11,7 +11,7 @@ const Episode = {
     return item.title
   },
   text_content(item) {
-    return item.content
+    return sanitize(item.content)
   },
   formatted_content(item) {
     return markdown(item.content)
