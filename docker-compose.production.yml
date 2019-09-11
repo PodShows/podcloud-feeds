@@ -1,4 +1,4 @@
-# project_name=podcloud
+# project_name=podcloud-feeds
 version: "3"
 services:
   feeds: # scale=3
@@ -12,7 +12,7 @@ services:
     labels:
       traefik.enable: true
       traefik.backend: "podcloud-feeds"
-      traefik.frontend.priority: 2000
+      traefik.frontend.priority: 500
       traefik.frontend.rule: "HostRegexp:feeds.podcloud.fr"
 
 networks:

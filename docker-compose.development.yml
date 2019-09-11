@@ -1,4 +1,4 @@
-# project_name=podcloud
+# project_name=podcloud-feeds
 version: "3.4"
 services:
   feeds:
