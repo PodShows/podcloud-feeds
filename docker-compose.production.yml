@@ -5,13 +5,17 @@ services:
     image: podshows/podcloud-feeds:latest
     networks:
       - traefik
+      - podcloud
     volumes:
       - ./config:/usr/src/app/config
+    restart: always
     labels:
       traefik.enable: true
       traefik.backend: "podcloud-feeds"
       traefik.frontend.rule: "HostRegexp:feeds.podcloud.fr"
 
 networks:
+  podcloud:
+    external: true
   traefik:
     external: true
