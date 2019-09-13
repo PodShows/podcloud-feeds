@@ -189,7 +189,7 @@ http://unlienauto.com/
             }
             expect(resolvedFields).to.have.property("url")
             expect(resolvedFields.url.resolve(o, {}, context)).to.equals(
-              `http://${o.feed.identifier}.${context.hosts.podcasts}/${
+              `https://${o.feed.identifier}.${context.hosts.podcasts}/${
                 o._slugs[o._slugs.length - 1]
               }`
             )
@@ -211,7 +211,7 @@ http://unlienauto.com/
             const o = { ...obj, feed: { identifier: "blog" }, link: undefined }
             expect(resolvedFields).to.have.property("url")
             expect(resolvedFields.url.resolve(o, {}, context)).to.equals(
-              `http://${o.feed.identifier}.${context.hosts.platform}/${
+              `https://${o.feed.identifier}.${context.hosts.platform}/${
                 o._slugs[o._slugs.length - 1]
               }`
             )

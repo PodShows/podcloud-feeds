@@ -12,7 +12,7 @@ const Enclosure = {
   },
   url(enclosure, args, ctx) {
     return (
-      "http://" +
+      "https://" +
       ctx.hosts.stats +
       "/" +
       enclosure.item.feed.identifier +

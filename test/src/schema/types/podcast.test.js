@@ -229,7 +229,7 @@ describe("Podcast Graph Object", () => {
           "feed_url",
           new graphql.GraphQLNonNull(graphql.GraphQLString),
           feed,
-          `http://${feed.identifier}.${context.hosts.podcasts}/rss`
+          `https://${feed.identifier}.${context.hosts.podcasts}/rss`
         )()
       })
 
@@ -251,7 +251,7 @@ describe("Podcast Graph Object", () => {
           "feed_url",
           new graphql.GraphQLNonNull(graphql.GraphQLString),
           o,
-          `http://${o.identifier}.${context.hosts.platform}/rss`
+          `https://${o.identifier}.${context.hosts.platform}/rss`
         )()
       })
     })
