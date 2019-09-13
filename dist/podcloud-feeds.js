@@ -282,12 +282,14 @@ const Podcast = {
   },
   feed_url(feed, args, ctx) {
     let url = feed.external ? feed.parent_feed : `${Podcast._host(feed, args, ctx)}/rss`;
+
     if (!/^https?:\/\//i.test(url)) url = "http://" + url;
 
     return url;
   },
   website_url(feed, args, ctx) {
     let url = !(0, _utils.empty)(feed.link) ? feed.link : `${Podcast._host(feed, args, ctx)}/`;
+
     if (!/^https?:\/\//i.test(url)) url = "http://" + url;
 
     return url;
@@ -312,6 +314,7 @@ const Podcast = {
       return null;
     }
     let fru = feed.feed_redirect_url;
+
     if (!/^https?:\/\//i.test(fru)) fru = "http://" + fru;
     return fru;
   },
@@ -320,6 +323,7 @@ const Podcast = {
       return null;
     }
     let wru = feed.web_redirect_url;
+
     if (!/^https?:\/\//i.test(wru)) wru = "http://" + wru;
     return wru;
   },
@@ -366,7 +370,7 @@ const Podcast = {
 
     if (platform_subdomains.includes(feed.identifier)) host = ctx.hosts.platform;
 
-    return `${feed.identifier}.${host}`;
+    return `https://${feed.identifier}.${host}`;
   }
 };
 
@@ -1500,8 +1504,10 @@ const Post = {
     return +item.episode > 0 ? item.episode : null;
   },
   url(item, args, ctx) {
-    let url = !(0, _utils.empty)(item.link) ? item.link : "http://" + _podcast2.default._host(item.feed, args, ctx) + "/" + item._slugs[item._slugs.length - 1];
+    let url = !(0, _utils.empty)(item.link) ? item.link : _podcast2.default._host(item.feed, args, ctx) + "/" + item._slugs[item._slugs.length - 1];
+
     if (!/^https?:\/\//.test(url)) url = "http://" + url;
+
     return url;
   }
 };
@@ -1557,8 +1563,10 @@ const Episode = {
     return _moment2.default.utc(item.published_at).format(_enums.DateFormat.resolve(args.format));
   },
   url(item, args, ctx) {
-    let url = !(0, _utils.empty)(item.link) ? item.link : "http://" + _podcast2.default._host(item.feed, args, ctx) + "/" + item._slugs[item._slugs.length - 1];
+    let url = !(0, _utils.empty)(item.link) ? item.link : _podcast2.default._host(item.feed, args, ctx) + "/" + item._slugs[item._slugs.length - 1];
+
     if (!/^https?:\/\//.test(url)) url = "http://" + url;
+
     return url;
   },
   episode_type(item) {
@@ -1607,7 +1615,7 @@ const Enclosure = {
     return enclosure.mime_type;
   },
   url(enclosure, args, ctx) {
-    return "http://" + ctx.hosts.stats + "/" + enclosure.item.feed.identifier + "/" + enclosure.item._slugs[enclosure.item._slugs.length - 1] + "/enclosure." + +enclosure.item.updated_at / 1000 + _path2.default.extname(enclosure.meta_url.filename).replace(/(.*)\?.*$/, "$1") + "?p=f";
+    return "https://" + ctx.hosts.stats + "/" + enclosure.item.feed.identifier + "/" + enclosure.item._slugs[enclosure.item._slugs.length - 1] + "/enclosure." + +(enclosure.item.updated_at / 1000) + _path2.default.extname(enclosure.meta_url.filename).replace(/(.*)\?.*$/, "$1") + "?p=f";
   },
   cover(enclosure) {
     let cover = null;
