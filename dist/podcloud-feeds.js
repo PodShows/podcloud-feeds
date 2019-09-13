@@ -1384,7 +1384,6 @@ _mongoose2.default.Promise = global.Promise;
 const ObjectId = _mongoose2.default.Schema.Types.ObjectId;
 
 const EnclosureUrlSchema = new _mongoose2.default.Schema({
-  filename: String,
   path: String
 });
 
@@ -1393,6 +1392,7 @@ const EnclosureSchema = new _mongoose2.default.Schema({
   length: String,
   mime_type: String,
   meta_url: EnclosureUrlSchema,
+  filename: String,
   cover_detected: _cover_schema2.default,
   cover_custom: _cover_schema2.default,
   cover_choice: String
@@ -1615,7 +1615,7 @@ const Enclosure = {
     return enclosure.mime_type;
   },
   url(enclosure, args, ctx) {
-    return "https://" + ctx.hosts.stats + "/" + enclosure.item.feed.identifier + "/" + enclosure.item._slugs[enclosure.item._slugs.length - 1] + "/enclosure." + +(enclosure.item.updated_at / 1000) + _path2.default.extname(enclosure.meta_url.filename).replace(/(.*)\?.*$/, "$1") + "?p=f";
+    return "https://" + ctx.hosts.stats + "/" + enclosure.item.feed.identifier + "/" + enclosure.item._slugs[enclosure.item._slugs.length - 1] + "/enclosure." + +(enclosure.item.updated_at / 1000) + _path2.default.extname(enclosure.filename).replace(/(.*)\?.*$/, "$1") + "?p=f";
   },
   cover(enclosure) {
     let cover = null;

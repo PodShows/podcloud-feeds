@@ -19,9 +19,9 @@ describe("Enclosure Graph Object", () => {
     duration_in_seconds: 600,
     length: "123521",
     mime_type: "audio/mpeg",
+    filename: "afile.mp3",
     meta_url: {
-      path: "http://anurl.test/afile.mp3?p=f",
-      filename: "afile.mp3"
+      path: "http://anurl.test/afile.mp3?p=f"
     }
   }
 
