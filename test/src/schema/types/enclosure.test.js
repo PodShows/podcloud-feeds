@@ -14,13 +14,14 @@ describe("Enclosure Graph Object", () => {
     item: {
       _slugs: ["toto", "tata"],
       feed: { identifier: "blog-de-toto" },
-      updated_at: new Date(1970, 0, 1, 0, 22, 17)
+      updated_at: new Date(1337 * 1000)
     },
     duration_in_seconds: 600,
     length: "123521",
     mime_type: "audio/mpeg",
     meta_url: {
-      path: "http://anurl.test/afile.mp3?p=f"
+      path: "http://anurl.test/afile.mp3?p=f",
+      filename: "afile.mp3"
     }
   }
 

@@ -1380,6 +1380,7 @@ _mongoose2.default.Promise = global.Promise;
 const ObjectId = _mongoose2.default.Schema.Types.ObjectId;
 
 const EnclosureUrlSchema = new _mongoose2.default.Schema({
+  filename: String,
   path: String
 });
 
@@ -1606,7 +1607,7 @@ const Enclosure = {
     return enclosure.mime_type;
   },
   url(enclosure, args, ctx) {
-    return "http://" + ctx.hosts.stats + "/" + enclosure.item.feed.identifier + "/" + enclosure.item._slugs[enclosure.item._slugs.length - 1] + "/enclosure." + +enclosure.item.updated_at / 1000 + _path2.default.extname(enclosure.meta_url.path).replace(/(.*)\?.*$/, "$1") + "?p=f";
+    return "http://" + ctx.hosts.stats + "/" + enclosure.item.feed.identifier + "/" + enclosure.item._slugs[enclosure.item._slugs.length - 1] + "/enclosure." + +enclosure.item.updated_at / 1000 + _path2.default.extname(enclosure.meta_url.filename).replace(/(.*)\?.*$/, "$1") + "?p=f";
   },
   cover(enclosure) {
     let cover = null;

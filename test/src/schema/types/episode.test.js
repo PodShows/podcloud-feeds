@@ -17,7 +17,8 @@ describe("Episode Graph Object", () => {
       length: "123521",
       mime_type: "audio/mpeg",
       meta_url: {
-        path: "http://anurl.test/afile.mp3"
+        path: "http://anurl.test/afile.mp3",
+        filename: "filename.mp3"
       }
     }
   }

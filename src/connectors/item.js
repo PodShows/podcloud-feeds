@@ -6,6 +6,7 @@ Mongoose.Promise = global.Promise
 const ObjectId = Mongoose.Schema.Types.ObjectId
 
 const EnclosureUrlSchema = new Mongoose.Schema({
+  filename: String,
   path: String
 })
 
