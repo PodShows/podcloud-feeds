@@ -6,7 +6,6 @@ Mongoose.Promise = global.Promise
 const ObjectId = Mongoose.Schema.Types.ObjectId
 
 const EnclosureUrlSchema = new Mongoose.Schema({
-  filename: String,
   path: String
 })
 
@@ -15,6 +14,7 @@ const EnclosureSchema = new Mongoose.Schema({
   length: String,
   mime_type: String,
   meta_url: EnclosureUrlSchema,
+  filename: String,
   cover_detected: CoverSchema,
   cover_custom: CoverSchema,
   cover_choice: String

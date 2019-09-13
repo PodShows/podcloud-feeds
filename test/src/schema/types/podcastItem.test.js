@@ -97,9 +97,9 @@ describe("PodcastItem Graph Object", () => {
   it("should resolve an Episode when an enclosure is available", () => {
     const obj = {
       enclosure: {
+        filename: "arealfile.mp3",
         meta_url: {
-          path: "http://anurl.test/afile-123",
-          filename: "arealfile.mp3"
+          path: "http://anurl.test/afile-123"
         }
       }
     }
