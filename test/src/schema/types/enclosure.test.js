@@ -83,7 +83,7 @@ describe("Enclosure Graph Object", () => {
 
   it("should resolve url", () => {
     expect(enclosureFields.url.resolve(enclosureObject, {}, context)).to.equals(
-      "http://" +
+      "https://" +
         context.hosts.stats +
         "/blog-de-toto/tata/enclosure." +
         1337 +

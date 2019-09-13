@@ -76,6 +76,7 @@ const Podcast = {
     let url = feed.external
       ? feed.parent_feed
       : `${Podcast._host(feed, args, ctx)}/rss`
+
     if (!/^https?:\/\//i.test(url)) url = "http://" + url
 
     return url
@@ -84,6 +85,7 @@ const Podcast = {
     let url = !empty(feed.link)
       ? feed.link
       : `${Podcast._host(feed, args, ctx)}/`
+
     if (!/^https?:\/\//i.test(url)) url = "http://" + url
 
     return url
@@ -108,6 +110,7 @@ const Podcast = {
       return null
     }
     let fru = feed.feed_redirect_url
+
     if (!/^https?:\/\//i.test(fru)) fru = "http://" + fru
     return fru
   },
@@ -116,6 +119,7 @@ const Podcast = {
       return null
     }
     let wru = feed.web_redirect_url
+
     if (!/^https?:\/\//i.test(wru)) wru = "http://" + wru
     return wru
   },
@@ -166,7 +170,7 @@ const Podcast = {
 
     if (platform_subdomains.includes(feed.identifier)) host = ctx.hosts.platform
 
-    return `${feed.identifier}.${host}`
+    return `https://${feed.identifier}.${host}`
   }
 }
 

@@ -40,11 +40,12 @@ const Post = {
   url(item, args, ctx) {
     let url = !empty(item.link)
       ? item.link
-      : "http://" +
-        Podcast._host(item.feed, args, ctx) +
+      : Podcast._host(item.feed, args, ctx) +
         "/" +
         item._slugs[item._slugs.length - 1]
+
     if (!/^https?:\/\//.test(url)) url = "http://" + url
+
     return url
   }
 }
