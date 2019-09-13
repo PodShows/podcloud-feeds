@@ -98,7 +98,8 @@ describe("PodcastItem Graph Object", () => {
     const obj = {
       enclosure: {
         meta_url: {
-          path: "http://anurl.test/afile.mp3"
+          path: "http://anurl.test/afile-123",
+          filename: "arealfile.mp3"
         }
       }
     }
