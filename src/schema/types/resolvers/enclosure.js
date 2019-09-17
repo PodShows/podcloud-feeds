@@ -20,7 +20,7 @@ const Enclosure = {
       enclosure.item._slugs[enclosure.item._slugs.length - 1] +
       "/enclosure." +
       +(enclosure.item.updated_at / 1000) +
-      path.extname(enclosure.filename).replace(/(.*)\?.*$/, "$1") +
+      path.extname(`${enclosure.filename}`).replace(/(.*)\?.*$/, "$1") +
       "?p=f"
     )
   },

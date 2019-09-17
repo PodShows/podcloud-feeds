@@ -13,7 +13,7 @@ services:
       - podcloud
     labels:
         traefik.frontend.rule: "HostRegexp:feeds.{host:podcloud}.test"
-        traefik.frontend.priority: 9999
+        traefik.frontend.priority: 500
 
 networks:
   podcloud:
