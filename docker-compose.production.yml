@@ -1,7 +1,7 @@
 # project_name=podcloud-feeds
 version: "3"
 services:
-  feeds: # scale=3
+  feeds: # scale=10
     image: podshows/podcloud-feeds:latest
     networks:
       - traefik
