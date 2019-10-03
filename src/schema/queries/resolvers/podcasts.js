@@ -15,6 +15,7 @@ const PodcastFields = [
   "parent_feed",
   "external",
   "block_itunes",
+  "block_google_podcasts",
   "itunes_category",
   "disabled",
   "feed_redirect_url",

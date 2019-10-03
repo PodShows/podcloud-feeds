@@ -21,6 +21,7 @@ const Podcast = `type Podcast {
   website_url: String!
   explicit: Boolean!
   tags: [String!]
+  googleplay_block: Boolean!
   itunes_block: Boolean!
   itunes_category: String
   disabled: Boolean!
