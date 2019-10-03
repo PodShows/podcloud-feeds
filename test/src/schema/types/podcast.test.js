@@ -47,6 +47,7 @@ describe("Podcast Graph Object", () => {
     explicit: true,
     tags: "test,tags,lol",
     block_itunes: false,
+    block_google_podcasts: false,
     itunes_category: "comedy",
     disabled: false,
     feed_redirect_url: "http://redirect_feed",
@@ -415,6 +416,17 @@ describe("Podcast Graph Object", () => {
     testGraphQLProperty(
       fields,
       "itunes_block",
+      new graphql.GraphQLNonNull(graphql.GraphQLBoolean),
+      obj,
+      false
+    )
+  )
+
+  it(
+    "should include and resolve a required boolean googleplay_block",
+    testGraphQLProperty(
+      fields,
+      "googleplay_block",
       new graphql.GraphQLNonNull(graphql.GraphQLBoolean),
       obj,
       false

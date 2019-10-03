@@ -300,8 +300,11 @@ const Podcast = {
   tags(feed) {
     return (feed.tags || "").split(",");
   },
+  googleplay_block(feed) {
+    return !!feed.block_google_podcasts;
+  },
   itunes_block(feed) {
-    return feed.block_itunes;
+    return !!feed.block_itunes;
   },
   itunes_category(feed) {
     return feed.itunes_category;
@@ -606,7 +609,7 @@ var _feed2 = _interopRequireDefault(_feed);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const PodcastFields = ["_id", "title", "catchline", "description", "identifier", "language", "contact_email", "author", "explicit", "tags", "cover_filename", "parent_feed", "external", "block_itunes", "itunes_category", "disabled", "feed_redirect_url", "web_redirect_url", "created_at", "ordering", "updated_at", "feed_cover", "_slugs"];
+const PodcastFields = ["_id", "title", "catchline", "description", "identifier", "language", "contact_email", "author", "explicit", "tags", "cover_filename", "parent_feed", "external", "block_itunes", "block_google_podcasts", "itunes_category", "disabled", "feed_redirect_url", "web_redirect_url", "created_at", "ordering", "updated_at", "feed_cover", "_slugs"];
 
 const podcasts = function () {
   return new Promise((resolve, reject) => {
@@ -751,7 +754,7 @@ const podcastIdentifiersCache = (0, _cached2.default)("podcastIdentifiersCache",
   }
 });
 
-const PodcastFields = ["_id", "title", "catchline", "description", "identifier", "language", "copyright", "contact_email", "author", "explicit", "tags", "cover_filename", "parent_feed", "external", "block_itunes", "itunes_category", "disabled", "feed_redirect_url", "web_redirect_url", "created_at", "ordering", "updated_at", "feed_cover", "_slugs"];
+const PodcastFields = ["_id", "title", "catchline", "description", "identifier", "language", "copyright", "contact_email", "author", "explicit", "tags", "cover_filename", "parent_feed", "external", "block_itunes", "block_google_podcasts", "itunes_category", "disabled", "feed_redirect_url", "web_redirect_url", "created_at", "ordering", "updated_at", "feed_cover", "_slugs"];
 
 const podcastForFeedWithIdentifier = function (obj, args, context, info) {
   debug("called");
@@ -1087,6 +1090,7 @@ const Podcast = `type Podcast {
   website_url: String!
   explicit: Boolean!
   tags: [String!]
+  googleplay_block: Boolean!
   itunes_block: Boolean!
   itunes_category: String
   disabled: Boolean!
@@ -1615,7 +1619,7 @@ const Enclosure = {
     return enclosure.mime_type;
   },
   url(enclosure, args, ctx) {
-    return "https://" + ctx.hosts.stats + "/" + enclosure.item.feed.identifier + "/" + enclosure.item._slugs[enclosure.item._slugs.length - 1] + "/enclosure." + +(enclosure.item.updated_at / 1000) + _path2.default.extname(enclosure.filename).replace(/(.*)\?.*$/, "$1") + "?p=f";
+    return "https://" + ctx.hosts.stats + "/" + enclosure.item.feed.identifier + "/" + enclosure.item._slugs[enclosure.item._slugs.length - 1] + "/enclosure." + +(enclosure.item.updated_at / 1000) + _path2.default.extname(`${enclosure.filename}`).replace(/(.*)\?.*$/, "$1") + "?p=f";
   },
   cover(enclosure) {
     let cover = null;

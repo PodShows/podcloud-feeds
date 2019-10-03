@@ -96,8 +96,11 @@ const Podcast = {
   tags(feed) {
     return (feed.tags || "").split(",")
   },
+  googleplay_block(feed) {
+    return !!feed.block_google_podcasts
+  },
   itunes_block(feed) {
-    return feed.block_itunes
+    return !!feed.block_itunes
   },
   itunes_category(feed) {
     return feed.itunes_category
