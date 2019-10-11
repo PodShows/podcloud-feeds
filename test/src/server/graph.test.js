@@ -99,6 +99,27 @@ describe("GraphQL Server", () => {
         })
     })
 
+    it("should return an external podcast", () => {
+      return testServer
+        .graphqlQuery(
+          `
+				{
+				  podcastForFeedWithIdentifier(identifier: "france-bleu-auvergne") {
+				  	identifier
+				  }
+				}
+			`
+        )
+        .then(response => {
+          expect(response.statusCode).to.equal(200)
+          expect(response.body.data).to.deep.equal({
+            podcastForFeedWithIdentifier: {
+              identifier: "france-bleu-auvergne"
+            }
+          })
+        })
+    })
+
     it("should not return drafts", () => {
       return testServer
         .graphqlQuery(
@@ -137,25 +158,6 @@ describe("GraphQL Server", () => {
               identifier: "fiction",
               catchline: "Fictionite" // Not "Takeovering"
             }
-          })
-        })
-    })
-
-    it("should not return an external podcast", () => {
-      return testServer
-        .graphqlQuery(
-          `
-				{
-				  podcastForFeedWithIdentifier(identifier: "france-bleu-auvergne") {
-				  	identifier
-				  }
-				}
-			`
-        )
-        .then(response => {
-          expect(response.statusCode).to.equal(200)
-          expect(response.body.data).to.deep.equal({
-            podcastForFeedWithIdentifier: null
           })
         })
     })
