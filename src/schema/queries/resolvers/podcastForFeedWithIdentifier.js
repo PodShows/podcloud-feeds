@@ -70,7 +70,6 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
           findArgs = [
             {
               draft: { $ne: true },
-              external: { $ne: true },
               $and: [
                 {
                   $or: [

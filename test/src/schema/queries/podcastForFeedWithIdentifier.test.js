@@ -146,8 +146,7 @@ describe("Schema", () => {
                   ]
                 }
               ],
-              draft: { $ne: true },
-              external: { $ne: true }
+              draft: { $ne: true }
             },
             sinon.match.any
           )
@@ -207,8 +206,7 @@ describe("Schema", () => {
                   ]
                 }
               ],
-              draft: { $ne: true },
-              external: { $ne: true }
+              draft: { $ne: true }
             },
             sinon.match.any
           )
@@ -254,8 +252,7 @@ describe("Schema", () => {
                       ]
                     }
                   ],
-                  draft: { $ne: true },
-                  external: { $ne: true }
+                  draft: { $ne: true }
                 },
                 sinon.match.any
               )
