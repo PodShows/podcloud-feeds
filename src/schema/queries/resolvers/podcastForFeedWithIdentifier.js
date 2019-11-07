@@ -64,91 +64,121 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
 
         if (!empty(found)) {
           debug("Found cached uid : " + found)
-          findArgs = [{ _id: found }, PodcastFields]
+          findArgs = { _id: found }
         } else {
           debug("Cached uid not found, executing big ass query")
-          findArgs = [
-            {
-              draft: { $ne: true },
-              $and: [
-                {
-                  $or: [
-                    { feed_to_takeover_id: { $exists: false } },
-                    { feed_to_takeover_id: null }
-                  ]
-                },
-                {
-                  $or: [
-                    { custom_domain: identifier_cleaned },
-                    { identifier: identifier_cleaned },
-                    { _slugs: identifier_cleaned }
-                  ]
-                }
-              ]
-            },
-            PodcastFields
-          ]
+          findArgs = {
+            draft: { $ne: true },
+            $and: [
+              {
+                $or: [
+                  { feed_to_takeover_id: { $exists: false } },
+                  { feed_to_takeover_id: null }
+                ]
+              },
+              {
+                $or: [
+                  { custom_domain: identifier_cleaned },
+                  { identifier: identifier_cleaned },
+                  { _slugs: identifier_cleaned }
+                ]
+              }
+            ]
+          }
         }
 
-        Feed.findOne(...findArgs).exec(function(err, feed) {
-          if (err) {
-            console.error(err)
-            reject(err)
+        const resolveFeed = feed => {
+          let keys
+          if (feed === null) {
+            keys = []
           } else {
-            let keys
-            if (feed === null) {
-              keys = []
-            } else {
-              debug("Found podcast.", feed)
-              keys = [
-                feed.identifier,
-                ...feed._slugs,
-                feed.custom_domain
-              ].filter((item, pos, self) => {
+            debug("Found podcast.", feed)
+            keys = [feed.identifier, ...feed._slugs, feed.custom_domain].filter(
+              (item, pos, self) => {
                 return self.indexOf(item) == pos && !empty(item)
-              })
-            }
-            if (
-              !empty(found) &&
-              (keys.indexOf(identifier_cleaned) === -1 || feed === null)
-            ) {
-              debug(
-                "Found podcast doesn't include cached identifier, we need to invalidate cache"
-              )
-              debug("identifier_cleaned: " + identifier_cleaned)
-              debug("keys: ", keys)
-              // cached value is not valid anymore
-              podcastIdentifiersCache.unset(cache_key).then(
-                () => {
-                  resolve(null)
-                },
+              }
+            )
+          }
+          if (
+            !empty(found) &&
+            (keys.indexOf(identifier_cleaned) === -1 || feed === null)
+          ) {
+            debug(
+              "Found podcast doesn't include cached identifier, we need to invalidate cache"
+            )
+            debug("identifier_cleaned: " + identifier_cleaned)
+            debug("keys: ", keys)
+            // cached value is not valid anymore
+            podcastIdentifiersCache.unset(cache_key).then(
+              () => {
+                resolve(null)
+              },
+              err => {
+                throw err
+              }
+            )
+          } else {
+            if (feed !== null) {
+              debug("Updating cache with up to date data")
+              const feed_id = feed._id.toString()
+              const prefix = "identifier-uid-"
+              Promise.all(
+                keys.map(k => {
+                  debug("Setting cache " + k + "=" + feed_id)
+                  return podcastIdentifiersCache.set(prefix + k, feed_id)
+                })
+              ).then(
+                () => resolve(feed),
                 err => {
+                  /* istanbul ignore next */
                   throw err
                 }
               )
             } else {
-              if (feed !== null) {
-                debug("Updating cache with up to date data")
-                const feed_id = feed._id.toString()
-                const prefix = "identifier-uid-"
-                Promise.all(
-                  keys.map(k => {
-                    debug("Setting cache " + k + "=" + feed_id)
-                    return podcastIdentifiersCache.set(prefix + k, feed_id)
-                  })
-                ).then(
-                  () => resolve(feed),
-                  err => {
-                    /* istanbul ignore next */
-                    throw err
-                  }
-                )
-              } else {
-                resolve(feed)
-              }
+              resolve(feed)
             }
           }
-        })
+        }
+
+        const doReq = () =>
+          Feed.findOne(findArgs, PodcastFields).exec(function(err, feed) {
+            if (err) {
+              console.error(err)
+              reject(err)
+            } else {
+              debug("Got a feed")
+              resolveFeed(feed)
+            }
+          })
+
+        const tryInternalFirst = () =>
+          Feed.findOne(
+            { ...findArgs, external: { $ne: true } },
+            PodcastFields
+          ).exec(function(err, feed) {
+            if (err) {
+              console.error(err)
+              reject(err)
+            } else {
+              debug("Tried internal first")
+              if (feed === null) {
+                debug("Got null")
+                debug("Do request now")
+                doReq()
+              } else {
+                debug("Got a feed")
+                resolveFeed(feed)
+              }
+            }
+          })
+
+        if (findArgs._id) {
+          debug("Do request now")
+          doReq()
+        } else {
+          debug("Try internal first")
+          tryInternalFirst()
+        }
       },
       err => {
         /* istanbul ignore next */
