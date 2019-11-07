@@ -79,6 +79,10 @@ describe("Schema", () => {
           .chain("exec")
           .yields(undefined, null)
 
+        FeedMock.expects("findOne")
+          .chain("exec")
+          .yields(undefined, null)
+
         const query = podcastForFeedWithIdentifier(
           {},
           { identifier: "unknown" }
@@ -146,7 +150,8 @@ describe("Schema", () => {
                   ]
                 }
               ],
-              draft: { $ne: true }
+              draft: { $ne: true },
+              external: { $ne: true }
             },
             sinon.match.any
           )
@@ -206,7 +211,8 @@ describe("Schema", () => {
                   ]
                 }
               ],
-              draft: { $ne: true }
+              draft: { $ne: true },
+              external: { $ne: true }
             },
             sinon.match.any
           )
@@ -218,7 +224,9 @@ describe("Schema", () => {
           {
             identifier: feed_identifier
           }
-        ).then(() => {
+        ).then(feed => {
+          expect(feed).to.not.be.null
+
           feed_obj._slugs = [feed_identifier]
 
           // use cache, and update it
@@ -252,7 +260,8 @@ describe("Schema", () => {
                       ]
                     }
                   ],
-                  draft: { $ne: true }
+                  draft: { $ne: true },
+                  external: { $ne: true }
                 },
                 sinon.match.any
               )
