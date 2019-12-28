@@ -12,6 +12,7 @@ const EnclosureUrlSchema = new Mongoose.Schema({
 const EnclosureSchema = new Mongoose.Schema({
   duration_in_seconds: Number,
   length: String,
+  media_type: String,
   mime_type: String,
   meta_url: EnclosureUrlSchema,
   filename: String,
