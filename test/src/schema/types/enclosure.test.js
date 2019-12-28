@@ -18,7 +18,7 @@ describe("Enclosure Graph Object", () => {
     },
     duration_in_seconds: 600,
     length: "123521",
-    mime_type: "audio/mpeg",
+    mime_type: "audio/mpeg+test",
     filename: "afile.mp3",
     meta_url: {
       path: "http://anurl.test/afile.mp3?p=f"
@@ -71,6 +71,21 @@ describe("Enclosure Graph Object", () => {
   it("should resolve type", () => {
     expect(enclosureFields.type.resolve(enclosureObject)).to.equals(
       "audio/mpeg"
+    )
+  })
+
+  it("should resolve mpeg type with mp3 media type", () => {
+    expect(
+      enclosureFields.type.resolve({
+        ...enclosureObject,
+        media_type: "mp3"
+      })
+    ).to.equals("audio/mpeg")
+  })
+
+  it("should resolve type", () => {
+    expect(enclosureFields.type.resolve(enclosureObject)).to.equals(
+      "audio/mpeg+test"
     )
   })
 

@@ -8,7 +8,7 @@ const Enclosure = {
     return parseInt(enclosure.length, 10)
   },
   type(enclosure) {
-    return enclosure.mime_type
+    return enclosure.media_type == "mp3" ? "audio/mpeg" : enclosure.mime_type
   },
   url(enclosure, args, ctx) {
     return (
