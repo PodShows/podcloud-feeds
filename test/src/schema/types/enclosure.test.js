@@ -68,12 +68,6 @@ describe("Enclosure Graph Object", () => {
     )
   })
 
-  it("should resolve type", () => {
-    expect(enclosureFields.type.resolve(enclosureObject)).to.equals(
-      "audio/mpeg"
-    )
-  })
-
   it("should resolve mpeg type with mp3 media type", () => {
     expect(
       enclosureFields.type.resolve({
