@@ -4,6 +4,9 @@ node_js:
 - 10
 services:
 - mongodb
+addons:
+  hosts:
+    - dave
 install:
 - npm install
 env:
