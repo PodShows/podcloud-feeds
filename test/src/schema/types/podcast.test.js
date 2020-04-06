@@ -332,7 +332,7 @@ describe("Podcast Graph Object", () => {
       })
     })
 
-    it("external website with http", () => {
+    it("external website with https", () => {
       const o = {
         ...obj,
         external: true,

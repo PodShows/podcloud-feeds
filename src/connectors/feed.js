@@ -13,6 +13,7 @@ const FeedSchema = new Mongoose.Schema({
   feed_cover: CoverSchema,
   identifier: String,
   custom_domain: String,
+  link: String,
   feed_to_takeover_id: ObjectId,
   language: String,
   contact_email: String,

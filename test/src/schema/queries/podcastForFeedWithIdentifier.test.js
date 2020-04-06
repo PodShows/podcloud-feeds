@@ -52,7 +52,9 @@ describe("Schema", () => {
       })
 
       it("should reject the promise when identifier is an empty string", () => {
+        FeedMock.expects("findOne")
         const query = podcastForFeedWithIdentifier({}, { identifier: " " })
+
         expect(query).to.be.a("promise")
         return expect(query).to.be.eventually.rejected
       })
