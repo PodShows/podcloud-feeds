@@ -29,6 +29,8 @@ const PodcastFields = [
   "tags",
   "cover_filename",
   "parent_feed",
+  "custom_domain",
+  "link",
   "external",
   "block_itunes",
   "block_google_podcasts",

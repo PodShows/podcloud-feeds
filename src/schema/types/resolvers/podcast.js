@@ -21,6 +21,7 @@ const ItemFields = [
   "cover_choice",
   "cover_detected",
   "cover_custom",
+  "link",
   "_slugs"
 ]
 
