@@ -7,6 +7,7 @@ import compression from "compression"
 import { graphqlExpress, graphiqlExpress } from "apollo-server-express"
 import { makeExecutableSchema } from "graphql-tools"
 import bodyParser from "body-parser"
+import cors from "cors"
 
 import pino from "express-pino-logger"
 
@@ -45,6 +46,7 @@ function GraphQLServer(config = DEFAULT_CONFIG) {
 
   server.use(
     "/graphql",
+    cors(),
     bodyParser.json({ type: "*/*" }),
     graphqlExpress(graphqlExpressOptions)
   )
