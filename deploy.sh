@@ -12,6 +12,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 cd $DIR
 
 SSH_HOST=podcloud@barry.podshows.fr
+SSH_PORT=4242
 COMPOSE_PROJECT_NAME=podcloud
 BASE=/home/podcloud/production/services/feeds
 KEEP_RELEASES=2
@@ -19,13 +20,13 @@ KEEP_RELEASES=2
 RELEASEN=$(date -u +%Y%m%d%H%M%S)
 
 echo "Creating release"
-ssh $SSH_HOST BASE=$BASE RELEASEN=$RELEASEN 'bash -s' <<'CMD'
+ssh -p$SSH_PORT $SSH_HOST BASE=$BASE RELEASEN=$RELEASEN 'bash -s' <<'CMD'
  mkdir -vp $BASE/releases/$RELEASEN
 CMD
 
-rsync -avzPhc --recursive --files-from=deploy.files . $SSH_HOST:$BASE/releases/$RELEASEN/
+rsync -e "ssh -p$SSH_PORT" -avzPhc --recursive --files-from=deploy.files . $SSH_HOST:$BASE/releases/$RELEASEN/
 
-ssh $SSH_HOST BASE=$BASE KEEP_RELEASES=$KEEP_RELEASES RELEASEN=$RELEASEN COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME 'bash -s' <<'CMD'
+ssh -p$SSH_PORT $SSH_HOST BASE=$BASE KEEP_RELEASES=$KEEP_RELEASES RELEASEN=$RELEASEN COMPOSE_PROJECT_NAME=$COMPOSE_PROJECT_NAME 'bash -s' <<'CMD'
 # exit when any command fails
 set -e
 
