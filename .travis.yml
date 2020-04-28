@@ -32,7 +32,7 @@ before_deploy:
 - eval "$(ssh-agent -s)"
 - chmod 600 /tmp/deploy_rsa
 - ssh-add /tmp/deploy_rsa
-- ssh-keyscan barry.podshows.fr >> ~/.ssh/known_hosts
+- ssh-keyscan -p4242 barry.podshows.fr >> ~/.ssh/known_hosts
 deploy:
 - provider: script
   script: "./deploy.sh"
