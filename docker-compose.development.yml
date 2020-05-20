@@ -11,8 +11,6 @@ services:
     networks:
       - traefik
       - podcloud
-    environment:
-      DEBUG: "*"
     labels:
         traefik.frontend.rule: "HostRegexp:feeds.{host:podcloud}.test"
         traefik.frontend.priority: 500

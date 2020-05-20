@@ -2,17 +2,13 @@ import Podcast from "./podcast"
 
 const Cover = {
   url(cover, args, ctx) {
-    let url = `${Podcast._host(cover.feed, args, ctx)}`
-
-    if (cover.item) {
-      url += "/" + cover.item._slugs[cover.item._slugs.length - 1]
-    }
-
-    url += `/cover.${cover.sha1}.jpg`
-
-    if (!/^https?:\/\//i.test(url)) url = "http://" + url
-
-    return url
+    return `https://${ctx.hosts.uploads}/${
+      typeof cover.sha1 === "string" && cover.sha1.trim().length > 0
+        ? `uploads/covers/${cover.sha1.match(/([\w]{4})/g).join("/")}/${
+            cover.sha1
+          }.jpg`
+        : `images/nocover.jpg`
+    }`
   }
 }
 
