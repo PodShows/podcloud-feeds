@@ -30,6 +30,7 @@
     "graphql-date": "^1.0.3",
     "graphql-tools": "^2.0.0",
     "marked": "^0.3.12",
+    "mime-types": "^2.1.27",
     "moment": "^2.18.1",
     "mongoose": "^4.4.12",
     "mongoose-fixture-loader": "^1.0.2",

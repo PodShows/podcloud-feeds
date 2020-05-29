@@ -18,8 +18,9 @@ describe("Enclosure Graph Object", () => {
     },
     duration_in_seconds: 600,
     length: "123521",
+    media_type: null,
     mime_type: "audio/mpeg+test",
-    filename: "afile.mp3",
+    filename: "afile.ext",
     meta_url: {
       path: "http://anurl.test/afile.mp3?p=f"
     }
@@ -77,10 +78,29 @@ describe("Enclosure Graph Object", () => {
     ).to.equals("audio/mpeg")
   })
 
-  it("should resolve type", () => {
+  it("should resolve stored mime-type with unknown media type", () => {
+    expect(
+      enclosureFields.type.resolve({
+        ...enclosureObject,
+        media_type: "unknown"
+      })
+    ).to.equals(enclosureObject.mime_type)
+  })
+
+  it("should resolve stored mime-type when media_type is null or undefined", () => {
     expect(enclosureFields.type.resolve(enclosureObject)).to.equals(
       "audio/mpeg+test"
     )
+  })
+
+  it("should resolve default mime-type with unknown media type and no stored mime-type", () => {
+    expect(
+      enclosureFields.type.resolve({
+        ...enclosureObject,
+        media_type: "unknown",
+        mime_type: null
+      })
+    ).to.equals("application/octet-stream")
   })
 
   it("should include a required string url", () => {
@@ -90,8 +110,56 @@ describe("Enclosure Graph Object", () => {
     )
   })
 
-  it("should resolve url", () => {
-    expect(enclosureFields.url.resolve(enclosureObject, {}, context)).to.equals(
+  it("should resolve url with correct media_type", () => {
+    expect(
+      enclosureFields.url.resolve(
+        {
+          ...enclosureObject,
+          media_type: "pouet"
+        },
+        {},
+        context
+      )
+    ).to.equals(
+      "https://" +
+        context.hosts.stats +
+        "/blog-de-toto/tata/enclosure." +
+        1337 +
+        ".pouet?p=f"
+    )
+  })
+
+  it("should resolve url using filename ext with incorrect media_type", () => {
+    expect(
+      enclosureFields.url.resolve(
+        {
+          ...enclosureObject,
+          media_type: null
+        },
+        {},
+        context
+      )
+    ).to.equals(
+      "https://" +
+        context.hosts.stats +
+        "/blog-de-toto/tata/enclosure." +
+        1337 +
+        ".ext?p=f"
+    )
+  })
+
+  it("should resolve url using default ext with incorrect media_type and filename", () => {
+    expect(
+      enclosureFields.url.resolve(
+        {
+          ...enclosureObject,
+          media_type: null,
+          filename: null
+        },
+        {},
+        context
+      )
+    ).to.equals(
       "https://" +
         context.hosts.stats +
         "/blog-de-toto/tata/enclosure." +

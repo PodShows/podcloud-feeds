@@ -1,14 +1,20 @@
 import path from "path"
+import mime from "mime-types"
+import { empty } from "~/utils"
 
 const Enclosure = {
   duration(enclosure) {
     return Math.max(+enclosure.duration_in_seconds, 0) || 0
   },
   size(enclosure) {
-    return parseInt(enclosure.length, 10)
+    return parseInt(enclosure.length, 10) || 0
   },
   type(enclosure) {
-    return enclosure.media_type == "mp3" ? "audio/mpeg" : enclosure.mime_type
+    return (
+      mime.lookup(enclosure.media_type) ||
+      enclosure.mime_type ||
+      "application/octet-stream"
+    )
   },
   url(enclosure, args, ctx) {
     return (
@@ -19,8 +25,11 @@ const Enclosure = {
       "/" +
       enclosure.item._slugs[enclosure.item._slugs.length - 1] +
       "/enclosure." +
-      +(enclosure.item.updated_at / 1000) +
-      path.extname(`${enclosure.filename}`).replace(/(.*)\?.*$/, "$1") +
+      Math.round(enclosure.item.updated_at / 1000) +
+      ((!empty(enclosure.media_type)
+        ? `.${enclosure.media_type}`
+        : path.extname(`${enclosure.filename}`).replace(/(.*)\?.*$/, "$1")) ||
+        ".mp3") +
       "?p=f"
     )
   },
