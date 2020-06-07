@@ -57,27 +57,6 @@ describe("GraphQL Server", () => {
         })
     })
 
-    it("should return a podcast using its custom_domain", () => {
-      return testServer
-        .graphqlQuery(
-          `
-				{
-				  podcastForFeedWithIdentifier(identifier: "lagreluchedoree.fr") {
-				  	identifier
-				  }
-				}
-			`
-        )
-        .then(response => {
-          expect(response.statusCode).to.equal(200)
-          expect(response.body.data).to.deep.equal({
-            podcastForFeedWithIdentifier: {
-              identifier: "fiction"
-            }
-          })
-        })
-    })
-
     it("should return a podcast using an older identifier", () => {
       return testServer
         .graphqlQuery(

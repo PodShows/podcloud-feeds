@@ -42,7 +42,6 @@ const feeds = [
     explicit: true,
     tags: "explicit,fiction,lol",
     _slugs: ["fiction"],
-    custom_domain: "lagreluchedoree.fr",
     parent_feed: "http://parent.test/feed",
     external: false,
     created_at: new Date(),

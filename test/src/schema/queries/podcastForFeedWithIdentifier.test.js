@@ -146,7 +146,6 @@ describe("Schema", () => {
                 },
                 {
                   $or: [
-                    { custom_domain: feed_identifier },
                     { identifier: feed_identifier },
                     { _slugs: feed_identifier }
                   ]
@@ -207,7 +206,6 @@ describe("Schema", () => {
                 },
                 {
                   $or: [
-                    { custom_domain: feed_identifier },
                     { identifier: feed_identifier },
                     { _slugs: feed_identifier }
                   ]
@@ -255,11 +253,7 @@ describe("Schema", () => {
                       ]
                     },
                     {
-                      $or: [
-                        { custom_domain: feed_alias },
-                        { identifier: feed_alias },
-                        { _slugs: feed_alias }
-                      ]
+                      $or: [{ identifier: feed_alias }, { _slugs: feed_alias }]
                     }
                   ],
                   draft: { $ne: true },

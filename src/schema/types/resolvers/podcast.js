@@ -168,8 +168,6 @@ const Podcast = {
     })
   },
   _host(feed, args, ctx) {
-    if (!empty(feed.custom_domain)) return feed.custom_domain
-
     let host = ctx.hosts.podcasts
 
     if (platform_subdomains.includes(feed.identifier)) host = ctx.hosts.platform

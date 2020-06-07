@@ -167,4 +167,31 @@ describe("Enclosure Graph Object", () => {
         ".mp3?p=f"
     )
   })
+
+  it("should resolve url with url_prefix if present", () => {
+    expect(
+      enclosureFields.url.resolve(
+        {
+          ...enclosureObject,
+          media_type: null,
+          filename: null,
+          item: {
+            ...enclosureObject.item,
+            feed: {
+              ...enclosureObject.item.feed,
+              url_prefix: "https://michel.stats/"
+            }
+          }
+        },
+        {},
+        context
+      )
+    ).to.equals(
+      "https://michel.stats/https://" +
+        context.hosts.stats +
+        "/blog-de-toto/tata/enclosure." +
+        1337 +
+        ".mp3?p=f"
+    )
+  })
 })
