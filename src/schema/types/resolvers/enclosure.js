@@ -19,9 +19,8 @@ const Enclosure = {
   url(enclosure, args, ctx) {
     return (
       (empty(enclosure.item.feed.url_prefix)
-        ? ""
+        ? "https://"
         : enclosure.item.feed.url_prefix) +
-      "https://" +
       ctx.hosts.stats +
       "/" +
       enclosure.item.feed.identifier +

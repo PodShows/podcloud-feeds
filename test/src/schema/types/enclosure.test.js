@@ -187,7 +187,7 @@ describe("Enclosure Graph Object", () => {
         context
       )
     ).to.equals(
-      "https://michel.stats/https://" +
+      "https://michel.stats/" +
         context.hosts.stats +
         "/blog-de-toto/tata/enclosure." +
         1337 +
