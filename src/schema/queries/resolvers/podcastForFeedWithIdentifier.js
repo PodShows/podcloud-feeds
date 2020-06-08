@@ -29,7 +29,7 @@ const PodcastFields = [
   "tags",
   "cover_filename",
   "parent_feed",
-  "custom_domain",
+  "url_prefix",
   "link",
   "external",
   "block_itunes",
@@ -80,7 +80,6 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
               },
               {
                 $or: [
-                  { custom_domain: identifier_cleaned },
                   { identifier: identifier_cleaned },
                   { _slugs: identifier_cleaned }
                 ]
@@ -95,7 +94,7 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
             keys = []
           } else {
             debug("Found podcast.", feed)
-            keys = [feed.identifier, ...feed._slugs, feed.custom_domain].filter(
+            keys = [feed.identifier, ...feed._slugs].filter(
               (item, pos, self) => {
                 return self.indexOf(item) == pos && !empty(item)
               }

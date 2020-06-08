@@ -182,7 +182,7 @@ http://unlienauto.com/
         })
 
         describe("without link", () => {
-          it("without custom_domain", () => {
+          it("without platform subdomain", () => {
             const o = {
               ...obj,
               link: undefined
@@ -192,18 +192,6 @@ http://unlienauto.com/
               `https://${o.feed.identifier}.${context.hosts.podcasts}/${
                 o._slugs[o._slugs.length - 1]
               }`
-            )
-          })
-
-          it("with custom_domain", () => {
-            const o = {
-              ...obj,
-              feed: { custom_domain: "monpodcast.com" },
-              link: undefined
-            }
-            expect(resolvedFields).to.have.property("url")
-            expect(resolvedFields.url.resolve(o, {}, context)).to.equals(
-              `http://monpodcast.com/${o._slugs[o._slugs.length - 1]}`
             )
           })
 

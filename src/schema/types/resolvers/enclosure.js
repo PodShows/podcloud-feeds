@@ -18,6 +18,9 @@ const Enclosure = {
   },
   url(enclosure, args, ctx) {
     return (
+      (empty(enclosure.item.feed.url_prefix)
+        ? ""
+        : enclosure.item.feed.url_prefix) +
       "https://" +
       ctx.hosts.stats +
       "/" +

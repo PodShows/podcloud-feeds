@@ -224,24 +224,13 @@ describe("Podcast Graph Object", () => {
         identifier: "toto"
       }
 
-      it("without custom domain", () => {
+      it("without platform subdomain", () => {
         testGraphQLProperty(
           fields,
           "feed_url",
           new graphql.GraphQLNonNull(graphql.GraphQLString),
           feed,
           `https://${feed.identifier}.${context.hosts.podcasts}/rss`
-        )()
-      })
-
-      it("with custom domain", () => {
-        const o = { ...feed, custom_domain: "monpodcast.fr" }
-        testGraphQLProperty(
-          fields,
-          "feed_url",
-          new graphql.GraphQLNonNull(graphql.GraphQLString),
-          o,
-          `http://${o.custom_domain}/rss`
         )()
       })
 
@@ -299,24 +288,13 @@ describe("Podcast Graph Object", () => {
         link: null
       }
 
-      it("without custom domain", () => {
+      it("without platform subdomain", () => {
         testGraphQLProperty(
           fields,
           "website_url",
           new graphql.GraphQLNonNull(graphql.GraphQLString),
           feed,
-          `http://${feed.identifier}.${context.hosts.podcasts}/`
-        )()
-      })
-
-      it("with custom domain", () => {
-        const o = { ...feed, custom_domain: "monpodcast.fr" }
-        testGraphQLProperty(
-          fields,
-          "website_url",
-          new graphql.GraphQLNonNull(graphql.GraphQLString),
-          o,
-          `http://${o.custom_domain}/`
+          `https://${feed.identifier}.${context.hosts.podcasts}/`
         )()
       })
 
@@ -327,7 +305,7 @@ describe("Podcast Graph Object", () => {
           "website_url",
           new graphql.GraphQLNonNull(graphql.GraphQLString),
           o,
-          `http://${o.identifier}.${context.hosts.platform}/`
+          `https://${o.identifier}.${context.hosts.platform}/`
         )()
       })
     })
