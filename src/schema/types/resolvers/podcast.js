@@ -1,7 +1,7 @@
 import moment from "moment"
 import Item from "~/connectors/item"
 import { DateFormat } from "~/schema/enums"
-import { empty } from "~/utils"
+import { empty, nullIfEmpty } from "~/utils"
 
 import path from "path"
 
@@ -129,6 +129,53 @@ const Podcast = {
   },
   ordering(feed) {
     return feed.ordering == "asc" ? "asc" : "desc"
+  },
+  platforms(feed) {
+    return {
+      apple: nullIfEmpty(feed.itunes),
+      google: nullIfEmpty(feed.google_podcasts),
+      spotify: nullIfEmpty(feed.spotify),
+      deezer: nullIfEmpty(feed.deezer),
+      podcloud: feed.identifier
+    }
+  },
+  socials(feed) {
+    return {
+      youtube: nullIfEmpty(feed.youtube),
+      soundcloud: nullIfEmpty(feed.soundcloud),
+      dailymotion: nullIfEmpty(feed.dailymotion),
+      twitch: nullIfEmpty(feed.twitch),
+      twitter: nullIfEmpty(feed.twitter),
+      facebook: nullIfEmpty(feed.facebook),
+      instagram: nullIfEmpty(feed.instagram)
+    }
+  },
+  wiki_url(feed) {
+    const url = feed.wiki
+
+    if (empty(url)) return null
+
+    if (!/^https?:\/\//i.test(url)) url = "http://" + url
+
+    return url
+  },
+  shop_url(feed) {
+    const url = feed.shop
+
+    if (empty(url)) return null
+
+    if (!/^https?:\/\//i.test(url)) url = "http://" + url
+
+    return url
+  },
+  donate_url(feed) {
+    const url = feed.donate
+
+    if (empty(url)) return null
+
+    if (!/^https?:\/\//i.test(url)) url = "http://" + url
+
+    return url
   },
   items(feed) {
     return new Promise((resolve, reject) => {
