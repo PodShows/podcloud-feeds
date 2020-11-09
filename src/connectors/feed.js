@@ -31,7 +31,22 @@ const FeedSchema = new Mongoose.Schema({
   itunes_category: String,
   disabled: Boolean,
   feed_redirect_url: String,
-  web_redirect_url: String
+  web_redirect_url: String,
+  itunes: String,
+  google_podcasts: String,
+  spotify: String,
+  deezer: String,
+  podcloud: String,
+  youtube: String,
+  soundcloud: String,
+  dailymotion: String,
+  twitch: String,
+  twitter: String,
+  facebook: String,
+  instagram: String,
+  wiki: String,
+  shop: String,
+  donate: String
 })
 
 const Feed = Mongoose.model("feeds", FeedSchema)

@@ -42,7 +42,22 @@ const PodcastFields = [
   "ordering",
   "updated_at",
   "feed_cover",
-  "_slugs"
+  "_slugs",
+  "itunes",
+  "google_podcasts",
+  "spotify",
+  "deezer",
+  "podcloud",
+  "youtube",
+  "soundcloud",
+  "dailymotion",
+  "twitch",
+  "twitter",
+  "facebook",
+  "instagram",
+  "wiki",
+  "shop",
+  "donate"
 ]
 
 const podcastForFeedWithIdentifier = function(obj, args, context, info) {

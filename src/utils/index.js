@@ -40,6 +40,10 @@ const empty = function(obj) {
   return !(typeof obj === "string" && obj.trim().length > 0)
 }
 
+const nullIfEmpty = function(obj) {
+  return empty(obj) ? null : obj
+}
+
 const sanitize = text =>
   empty(text)
     ? ""
@@ -53,4 +57,4 @@ const sanitize = text =>
         }
       ).trim()
 
-export { empty, markdown, sanitize }
+export { empty, nullIfEmpty, markdown, sanitize }
