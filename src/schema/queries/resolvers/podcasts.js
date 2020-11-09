@@ -24,7 +24,19 @@ const PodcastFields = [
   "ordering",
   "updated_at",
   "feed_cover",
-  "_slugs"
+  "_slugs",
+  "twitter",
+  "facebook",
+  "instagram",
+  "youtube",
+  "itunes",
+  "wiki",
+  "spotify",
+  "google_podcasts",
+  "deezer",
+  "soundcloud",
+  "shop",
+  "donate"
 ]
 
 const podcasts = function() {

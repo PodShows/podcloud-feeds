@@ -1,6 +1,8 @@
 import { DateFormat } from "~/schema/enums"
 import Cover from "./podcastItem"
 import PodcastItem from "./podcastItem"
+import Platforms from "./platforms"
+import Socials from "./socials"
 
 const Podcast = `type Podcast {
   _id: String!
@@ -27,10 +29,22 @@ const Podcast = `type Podcast {
   disabled: Boolean!
   feed_redirect_url: String
   web_redirect_url: String
+  platforms: Platforms!
+  socials: Socials!
+  wiki_url: String
+  shop_url: String
+  donate_url: String
   items: [PodcastItem]!
   ordering: String!
   _host: String!
 }
 `
 
-export default () => [DateFormat, PodcastItem, Podcast, Cover]
+export default () => [
+  DateFormat,
+  PodcastItem,
+  Podcast,
+  Cover,
+  Platforms,
+  Socials
+]
