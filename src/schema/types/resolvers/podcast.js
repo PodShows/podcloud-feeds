@@ -151,7 +151,7 @@ const Podcast = {
     }
   },
   wiki_url(feed) {
-    const url = feed.wiki
+    let url = feed.wiki
 
     if (empty(url)) return null
 
@@ -160,7 +160,7 @@ const Podcast = {
     return url
   },
   shop_url(feed) {
-    const url = feed.shop
+    let url = feed.shop
 
     if (empty(url)) return null
 
@@ -169,7 +169,7 @@ const Podcast = {
     return url
   },
   donate_url(feed) {
-    const url = feed.donate
+    let url = feed.donate
 
     if (empty(url)) return null
 
