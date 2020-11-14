@@ -8,7 +8,7 @@ import "sinon-mongoose"
 import { Types } from "mongoose"
 const ObjectId = Types.ObjectId
 
-import Feed from "~/connectors/feed"
+import Item from "~/connectors/item"
 
 const expect = chai.expect
 chai.use(sinonChai)
@@ -18,25 +18,25 @@ describe("Schema", () => {
   describe("queries", () => {
     describe("podcastItem", () => {
       var podcastItem
-      var FeedMock
+      var ItemMock
 
       beforeEach(function() {
-        FeedMock = sinon.mock(Feed)
+        ItemMock = sinon.mock(Item)
 
         podcastItem = proxyquire(
           "../../../../src/schema/queries/resolvers/podcastItem",
           {
-            Feed
+            Item
           }
         ).default
       })
 
       beforeEach(function() {
-        FeedMock.restore()
+        ItemMock.restore()
       })
 
       it("should return a promise", () => {
-        const query = podcastItem()
+        const query = podcastItem({}, { _id: "" })
         expect(query).to.be.a("promise")
       })
 
@@ -44,14 +44,14 @@ describe("Schema", () => {
         const err_msg =
           "Error occured (simulated at " + +new Date() / 1000 + ")"
 
-        FeedMock.expects("find")
+        ItemMock.expects("findOne")
           .chain("exec")
           .yields(err_msg, null)
 
-        const query = podcastItem()
+        const query = podcastItem({}, { _id: "" })
 
         expect(query).to.be.a("promise")
-        FeedMock.verify()
+        ItemMock.verify()
 
         return expect(query).to.be.eventually.rejectedWith(err_msg)
       })

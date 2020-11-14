@@ -3,7 +3,7 @@ import Podcast from "./podcast"
 const build_url = (ctx, cover, size) => {
   const host = ctx.hosts.uploads
   const sha1 = cover.sha1
-  const external = (cover.item || cover.feed).external
+  const external = (cover.item || cover.feed || {}).external == true
 
   let size_prefix = `${size || ""}`.trim()
   if (size_prefix.length > 0) {
