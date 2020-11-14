@@ -2,9 +2,7 @@ import { empty } from "~/utils"
 import Feed from "~/connectors/feed"
 import cached from "cached"
 
-const debug = require("debug")(
-  "podcloud-feeds:queries:podcastForFeedWithIdentifier"
-)
+const debug = require("debug")("podcloud-feeds:queries:podcast")
 
 const podcastIdentifiersCache = cached("podcastIdentifiersCache", {
   backend: {

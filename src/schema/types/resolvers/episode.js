@@ -56,19 +56,7 @@ const Episode = {
     return item.enclosure
   },
   podcast(item) {
-    return (
-      item.feed ||
-      Feed.findOne({ _id: item.feed_id }).exec(function(err, feed) {
-        if (err) {
-          console.error(err)
-          return Promise.reject(err)
-        } else {
-          debug("Got a feed")
-          item.feed = feed
-          return Promise.resolve(feed)
-        }
-      })
-    )
+    return item.feed
   }
 }
 
