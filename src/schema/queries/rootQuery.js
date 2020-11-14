@@ -1,10 +1,10 @@
-import { Podcast } from "~/schema/types/typeDefs"
+import { Podcast, PodcastItem } from "~/schema/types/typeDefs"
 
 const RootQuery = `
 type RootQuery {
-  podcasts: [Podcast]
-  podcastForFeedWithIdentifier(identifier: String!): Podcast
+  podcastItem(_id: String!): PodcastItem
+  podcast(identifier: String, _id: String): Podcast
 }
 `
 
-export default () => [Podcast, RootQuery]
+export default () => [Podcast, PodcastItem, RootQuery]

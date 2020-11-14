@@ -16,21 +16,21 @@ chai.use(chaiAsPromised)
 
 describe("Schema", () => {
   describe("queries", () => {
-    describe("podcastForFeedWithIdentifier", () => {
-      var podcastForFeedWithIdentifier
+    describe("podcast", () => {
+      var podcast
       var FeedMock
 
       beforeEach(function() {
         FeedMock = sinon.mock(Feed)
 
-        podcastForFeedWithIdentifier = proxyquire(
-          "../../../../src/schema/queries/resolvers/podcastForFeedWithIdentifier",
+        podcast = proxyquire(
+          "../../../../src/schema/queries/resolvers/podcast",
           {
             Feed
           }
         ).default
 
-        podcastForFeedWithIdentifier.clearCache()
+        podcast.clearCache()
       })
 
       afterEach(function() {
@@ -38,22 +38,19 @@ describe("Schema", () => {
       })
 
       it("should return a promise", () => {
-        const query = podcastForFeedWithIdentifier({}, { identifier: "" }).then(
-          () => {},
-          () => {}
-        )
+        const query = podcast({}, { identifier: "" }).then(() => {}, () => {})
         expect(query).to.be.a("promise")
       })
 
       it("should reject the promise when identifier is not a string", () => {
-        const query = podcastForFeedWithIdentifier({}, { identifier: null })
+        const query = podcast({}, { identifier: null })
         expect(query).to.be.a("promise")
         return expect(query).to.be.eventually.rejected
       })
 
       it("should reject the promise when identifier is an empty string", () => {
         FeedMock.expects("findOne")
-        const query = podcastForFeedWithIdentifier({}, { identifier: " " })
+        const query = podcast({}, { identifier: " " })
 
         expect(query).to.be.a("promise")
         return expect(query).to.be.eventually.rejected
@@ -67,10 +64,7 @@ describe("Schema", () => {
           .chain("exec")
           .yields(err_msg, null)
 
-        const query = podcastForFeedWithIdentifier(
-          {},
-          { identifier: "unknown" }
-        )
+        const query = podcast({}, { identifier: "unknown" })
 
         expect(query).to.be.a("promise")
         return expect(query).to.be.eventually.rejectedWith(err_msg)
@@ -85,10 +79,7 @@ describe("Schema", () => {
           .chain("exec")
           .yields(undefined, null)
 
-        const query = podcastForFeedWithIdentifier(
-          {},
-          { identifier: "unknown" }
-        )
+        const query = podcast({}, { identifier: "unknown" })
         expect(query).to.be.a("promise")
 
         return query.then(
@@ -102,15 +93,67 @@ describe("Schema", () => {
         )
       })
 
+      it("with known id, should resolve a feed and update cache", () => {
+        const feed_id = ObjectId("4eb6e7e7e9b7f4194e000001").toString()
+        const feed_identifier = "test-identifier"
+        const feed_alias = "old-test-identifier"
+
+        const feed_obj = new Feed({
+          _id: feed_id,
+          identifier: feed_identifier,
+          _slugs: [feed_identifier, feed_alias]
+        })
+
+        FeedMock.expects("findOne")
+          .withArgs({ _id: feed_id })
+          .chain("exec")
+          .yields(null, feed_obj)
+
+        return podcast(
+          {},
+          {
+            _id: feed_id
+          }
+        )
+          .then(() => {
+            FeedMock.expects("findOne")
+              .withArgs({ _id: feed_id })
+              .chain("exec")
+              .yields(null, feed_obj)
+
+            return podcast(
+              {},
+              {
+                identifier: feed_alias
+              }
+            )
+          })
+          .then(() => {
+            FeedMock.expects("findOne")
+              .withArgs({ _id: feed_id })
+              .chain("exec")
+              .yields(null, feed_obj)
+
+            return podcast(
+              {},
+              {
+                identifier: feed_identifier
+              }
+            )
+          })
+          .then(() => {
+            FeedMock.verify()
+
+            return Promise.resolve()
+          })
+      })
+
       it("with known identifier should resolve a feed", () => {
         FeedMock.expects("findOne")
           .chain("exec")
           .yields(null, new Feed({ identifier: "podcast" }))
 
-        const query = podcastForFeedWithIdentifier(
-          {},
-          { identifier: "podcast" }
-        )
+        const query = podcast({}, { identifier: "podcast" })
         expect(query).to.be.a("promise")
 
         return query.then(
@@ -135,42 +178,39 @@ describe("Schema", () => {
         })
 
         FeedMock.expects("findOne")
-          .withArgs(
-            {
-              $and: [
-                {
-                  $or: [
-                    { feed_to_takeover_id: { $exists: false } },
-                    { feed_to_takeover_id: null }
-                  ]
-                },
-                {
-                  $or: [
-                    { identifier: feed_identifier },
-                    { _slugs: feed_identifier }
-                  ]
-                }
-              ],
-              draft: { $ne: true },
-              external: { $ne: true }
-            },
-            sinon.match.any
-          )
+          .withArgs({
+            $and: [
+              {
+                $or: [
+                  { feed_to_takeover_id: { $exists: false } },
+                  { feed_to_takeover_id: null }
+                ]
+              },
+              {
+                $or: [
+                  { identifier: feed_identifier },
+                  { _slugs: feed_identifier }
+                ]
+              }
+            ],
+            draft: { $ne: true },
+            external: { $ne: true }
+          })
           .chain("exec")
           .yields(null, feed_obj)
 
-        return podcastForFeedWithIdentifier(
+        return podcast(
           {},
           {
             identifier: feed_identifier
           }
         ).then(() => {
           FeedMock.expects("findOne")
-            .withArgs({ _id: feed_id.toString() }, sinon.match.any)
+            .withArgs({ _id: feed_id.toString() })
             .chain("exec")
             .yields(null, feed_obj)
 
-          return podcastForFeedWithIdentifier(
+          return podcast(
             {},
             {
               identifier: feed_alias
@@ -195,31 +235,28 @@ describe("Schema", () => {
 
         // Do full query and create cache
         FeedMock.expects("findOne")
-          .withArgs(
-            {
-              $and: [
-                {
-                  $or: [
-                    { feed_to_takeover_id: { $exists: false } },
-                    { feed_to_takeover_id: null }
-                  ]
-                },
-                {
-                  $or: [
-                    { identifier: feed_identifier },
-                    { _slugs: feed_identifier }
-                  ]
-                }
-              ],
-              draft: { $ne: true },
-              external: { $ne: true }
-            },
-            sinon.match.any
-          )
+          .withArgs({
+            $and: [
+              {
+                $or: [
+                  { feed_to_takeover_id: { $exists: false } },
+                  { feed_to_takeover_id: null }
+                ]
+              },
+              {
+                $or: [
+                  { identifier: feed_identifier },
+                  { _slugs: feed_identifier }
+                ]
+              }
+            ],
+            draft: { $ne: true },
+            external: { $ne: true }
+          })
           .chain("exec")
           .yields(null, feed_obj)
 
-        return podcastForFeedWithIdentifier(
+        return podcast(
           {},
           {
             identifier: feed_identifier
@@ -231,11 +268,11 @@ describe("Schema", () => {
 
           // use cache, and update it
           FeedMock.expects("findOne")
-            .withArgs({ _id: feed_id.toString() }, sinon.match.any)
+            .withArgs({ _id: feed_id.toString() })
             .chain("exec")
             .yields(null, feed_obj)
 
-          return podcastForFeedWithIdentifier(
+          return podcast(
             {},
             {
               identifier: feed_alias
@@ -243,28 +280,25 @@ describe("Schema", () => {
           ).then(() => {
             // should not it cache, and do full query
             FeedMock.expects("findOne")
-              .withArgs(
-                {
-                  $and: [
-                    {
-                      $or: [
-                        { feed_to_takeover_id: { $exists: false } },
-                        { feed_to_takeover_id: null }
-                      ]
-                    },
-                    {
-                      $or: [{ identifier: feed_alias }, { _slugs: feed_alias }]
-                    }
-                  ],
-                  draft: { $ne: true },
-                  external: { $ne: true }
-                },
-                sinon.match.any
-              )
+              .withArgs({
+                $and: [
+                  {
+                    $or: [
+                      { feed_to_takeover_id: { $exists: false } },
+                      { feed_to_takeover_id: null }
+                    ]
+                  },
+                  {
+                    $or: [{ identifier: feed_alias }, { _slugs: feed_alias }]
+                  }
+                ],
+                draft: { $ne: true },
+                external: { $ne: true }
+              })
               .chain("exec")
               .yields(null, feed_obj)
 
-            return podcastForFeedWithIdentifier(
+            return podcast(
               {},
               {
                 identifier: feed_alias

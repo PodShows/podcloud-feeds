@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 19);
+/******/ 	return __webpack_require__(__webpack_require__.s = 21);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -74,7 +74,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _dateFormat = __webpack_require__(6);
+var _dateFormat = __webpack_require__(8);
 
 Object.defineProperty(exports, "DateFormat", {
   enumerable: true,
@@ -95,13 +95,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.sanitize = exports.markdown = exports.empty = undefined;
+exports.sanitize = exports.markdown = exports.nullIfEmpty = exports.empty = undefined;
 
-var _sanitizeHtml = __webpack_require__(32);
+var _sanitizeHtml = __webpack_require__(35);
 
 var _sanitizeHtml2 = _interopRequireDefault(_sanitizeHtml);
 
-var _marked = __webpack_require__(33);
+var _marked = __webpack_require__(36);
 
 var _marked2 = _interopRequireDefault(_marked);
 
@@ -143,12 +143,17 @@ const empty = function (obj) {
   return !(typeof obj === "string" && obj.trim().length > 0);
 };
 
+const nullIfEmpty = function (obj) {
+  return empty(obj) ? null : obj;
+};
+
 const sanitize = text => empty(text) ? "" : (0, _sanitizeHtml2.default)(text.replace(/<\/(p|div)>/, "</$1><br />").replace(/<br.*\/?>\s*<br.*\/?>/g, "<br />"), {
   allowedTags: [],
   allowedAttributes: {}
 }).trim();
 
 exports.empty = empty;
+exports.nullIfEmpty = nullIfEmpty;
 exports.markdown = markdown;
 exports.sanitize = sanitize;
 
@@ -165,11 +170,80 @@ Object.defineProperty(exports, "__esModule", {
 
 var _enums = __webpack_require__(0);
 
-var _episode = __webpack_require__(7);
+var _podcastItem = __webpack_require__(3);
+
+var _podcastItem2 = _interopRequireDefault(_podcastItem);
+
+var _platforms = __webpack_require__(30);
+
+var _platforms2 = _interopRequireDefault(_platforms);
+
+var _socials = __webpack_require__(31);
+
+var _socials2 = _interopRequireDefault(_socials);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const Podcast = `type Podcast {
+  _id: String!
+  title: String!
+  identifier: String!
+  catchline: String!
+  copyright: String
+  description: String!
+  language: String!
+  contact_email: String
+  author: String
+  cover: Cover!
+  created_at(format: DateFormat = RFC822): String!
+  updated_at(format: DateFormat = RFC822): String!
+  internal: Boolean!
+  external: Boolean!
+  feed_url: String!
+  website_url: String!
+  explicit: Boolean!
+  tags: [String!]
+  googleplay_block: Boolean!
+  itunes_block: Boolean!
+  itunes_category: String
+  disabled: Boolean!
+  feed_redirect_url: String
+  web_redirect_url: String
+  platforms: Platforms!
+  socials: Socials!
+  wiki_url: String
+  shop_url: String
+  donate_url: String
+  items: [PodcastItem]!
+  ordering: String!
+  _host: String!
+}
+`;
+
+exports.default = () => [_enums.DateFormat, _podcastItem2.default, Podcast, _podcastItem2.default, _platforms2.default, _socials2.default];
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _enums = __webpack_require__(0);
+
+var _podcast = __webpack_require__(2);
+
+var _podcast2 = _interopRequireDefault(_podcast);
+
+var _episode = __webpack_require__(9);
 
 var _episode2 = _interopRequireDefault(_episode);
 
-var _post = __webpack_require__(12);
+var _post = __webpack_require__(14);
 
 var _post2 = _interopRequireDefault(_post);
 
@@ -177,6 +251,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const PodcastItem = `
 interface PodcastItem {
+  _id: String!
   guid: String!
   title: String!
   text_content: String!
@@ -188,19 +263,20 @@ interface PodcastItem {
   url: String!
   author: String
   explicit: Boolean!
+  podcast: Podcast!
 }
 `;
 
-exports.default = () => [_enums.DateFormat, PodcastItem, _episode2.default, _post2.default];
+exports.default = () => [_enums.DateFormat, _podcast2.default, PodcastItem, _episode2.default, _post2.default];
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports) {
 
 module.exports = require("mongoose");
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -210,11 +286,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _moment = __webpack_require__(5);
+var _moment = __webpack_require__(7);
 
 var _moment2 = _interopRequireDefault(_moment);
 
-var _item = __webpack_require__(36);
+var _item = __webpack_require__(16);
 
 var _item2 = _interopRequireDefault(_item);
 
@@ -222,15 +298,13 @@ var _enums = __webpack_require__(0);
 
 var _utils = __webpack_require__(1);
 
-var _path = __webpack_require__(18);
+var _path = __webpack_require__(20);
 
 var _path2 = _interopRequireDefault(_path);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const debug = __webpack_require__(17)("podcloud-feeds:types:resolvers:podcast");
-
-const ItemFields = ["_id", "title", "content", "author", "updated_at", "published_at", "enclosure", "episode_type", "season", "episode", "cover_choice", "cover_detected", "cover_custom", "_slugs"];
+const debug = __webpack_require__(6)("podcloud-feeds:types:resolvers:podcast");
 
 const platform_subdomains = ["faq", "blog", "devblog", "astuces", "changelog"];
 
@@ -333,6 +407,53 @@ const Podcast = {
   ordering(feed) {
     return feed.ordering == "asc" ? "asc" : "desc";
   },
+  platforms(feed) {
+    return {
+      apple: (0, _utils.nullIfEmpty)(feed.itunes),
+      google: (0, _utils.nullIfEmpty)(feed.google_podcasts),
+      spotify: (0, _utils.nullIfEmpty)(feed.spotify),
+      deezer: (0, _utils.nullIfEmpty)(feed.deezer),
+      podcloud: feed.identifier
+    };
+  },
+  socials(feed) {
+    return {
+      youtube: (0, _utils.nullIfEmpty)(feed.youtube),
+      soundcloud: (0, _utils.nullIfEmpty)(feed.soundcloud),
+      dailymotion: (0, _utils.nullIfEmpty)(feed.dailymotion),
+      twitch: (0, _utils.nullIfEmpty)(feed.twitch),
+      twitter: (0, _utils.nullIfEmpty)(feed.twitter),
+      facebook: (0, _utils.nullIfEmpty)(feed.facebook),
+      instagram: (0, _utils.nullIfEmpty)(feed.instagram)
+    };
+  },
+  wiki_url(feed) {
+    let url = feed.wiki;
+
+    if ((0, _utils.empty)(url)) return null;
+
+    if (!/^https?:\/\//i.test(url)) url = "http://" + url;
+
+    return url;
+  },
+  shop_url(feed) {
+    let url = feed.shop;
+
+    if ((0, _utils.empty)(url)) return null;
+
+    if (!/^https?:\/\//i.test(url)) url = "http://" + url;
+
+    return url;
+  },
+  donate_url(feed) {
+    let url = feed.donate;
+
+    if ((0, _utils.empty)(url)) return null;
+
+    if (!/^https?:\/\//i.test(url)) url = "http://" + url;
+
+    return url;
+  },
   items(feed) {
     return new Promise((resolve, reject) => {
       const findArgs = {
@@ -348,7 +469,7 @@ const Podcast = {
 
       debug("findArgs", findArgs);
 
-      _item2.default.find(findArgs, ItemFields, {
+      _item2.default.find(findArgs, null, {
         sort: {
           published_at: feed.ordering == "asc" ? 1 : -1
         }
@@ -367,8 +488,6 @@ const Podcast = {
     });
   },
   _host(feed, args, ctx) {
-    if (!(0, _utils.empty)(feed.custom_domain)) return feed.custom_domain;
-
     let host = ctx.hosts.podcasts;
 
     if (platform_subdomains.includes(feed.identifier)) host = ctx.hosts.platform;
@@ -380,13 +499,19 @@ const Podcast = {
 exports.default = Podcast;
 
 /***/ }),
-/* 5 */
+/* 6 */
+/***/ (function(module, exports) {
+
+module.exports = require("debug");
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports) {
 
 module.exports = require("moment");
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -412,7 +537,7 @@ DateFormat.resolve = key => {
 exports.default = DateFormat;
 
 /***/ }),
-/* 7 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -422,20 +547,25 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _podcastItem = __webpack_require__(2);
+var _podcastItem = __webpack_require__(3);
 
 var _podcastItem2 = _interopRequireDefault(_podcastItem);
 
 var _enums = __webpack_require__(0);
 
-var _enclosure = __webpack_require__(8);
+var _enclosure = __webpack_require__(10);
 
 var _enclosure2 = _interopRequireDefault(_enclosure);
+
+var _podcast = __webpack_require__(2);
+
+var _podcast2 = _interopRequireDefault(_podcast);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const Episode = `
 type Episode implements PodcastItem {
+  _id: String!
   guid: String!
   title: String!
   text_content: String!
@@ -448,13 +578,14 @@ type Episode implements PodcastItem {
   explicit: Boolean!
   author: String
   enclosure: Enclosure!
+  podcast: Podcast!
 }
 `;
 
-exports.default = () => [_podcastItem2.default, _enums.DateFormat, _enclosure2.default, Episode];
+exports.default = () => [_podcastItem2.default, _enums.DateFormat, _enclosure2.default, Episode, _podcast2.default];
 
 /***/ }),
-/* 8 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -464,9 +595,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _scalars = __webpack_require__(27);
+var _scalars = __webpack_require__(28);
 
-var _cover = __webpack_require__(11);
+var _cover = __webpack_require__(13);
 
 var _cover2 = _interopRequireDefault(_cover);
 
@@ -485,7 +616,7 @@ type Enclosure {
 exports.default = () => [Enclosure, _scalars.BigInt.schema, _cover2.default];
 
 /***/ }),
-/* 9 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -495,7 +626,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _graphqlBigint = __webpack_require__(28);
+var _graphqlBigint = __webpack_require__(29);
 
 var GraphQLBigInt = _interopRequireWildcard(_graphqlBigint);
 
@@ -509,7 +640,7 @@ const BigInt = {
 exports.default = BigInt;
 
 /***/ }),
-/* 10 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -520,7 +651,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.BigInt = undefined;
 
-var _bigInt = __webpack_require__(9);
+var _bigInt = __webpack_require__(11);
 
 var _bigInt2 = _interopRequireDefault(_bigInt);
 
@@ -533,7 +664,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 11 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -544,94 +675,19 @@ Object.defineProperty(exports, "__esModule", {
 });
 const Cover = `
 type Cover {
-  width: Int!
-  height: Int!
-  sha1: String!
-  squared: Boolean!
-  dominant_color: String!
+  width: Int
+  height: Int
+  sha1: String
+  squared: Boolean
+  dominant_color: String
   url: String!
+  small_url: String!
+  medium_url: String!
+  big_url: String!
 }
 `;
 
 exports.default = () => [Cover];
-
-/***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _podcastItem = __webpack_require__(2);
-
-var _podcastItem2 = _interopRequireDefault(_podcastItem);
-
-var _enums = __webpack_require__(0);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const Post = `
-type Post implements PodcastItem {
-  guid: String!
-  title: String!
-  text_content: String!
-  formatted_content: String!
-  published_at(format: DateFormat = RFC822): String!
-  episode_type: String
-  season: Int
-  episode: Int
-  url: String!
-  author: String
-  explicit: Boolean!
-}
-`;
-
-exports.default = () => [_podcastItem2.default, _enums.DateFormat, Post];
-
-/***/ }),
-/* 13 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _feed = __webpack_require__(14);
-
-var _feed2 = _interopRequireDefault(_feed);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const PodcastFields = ["_id", "title", "catchline", "description", "identifier", "language", "contact_email", "author", "explicit", "tags", "cover_filename", "parent_feed", "external", "block_itunes", "block_google_podcasts", "itunes_category", "disabled", "feed_redirect_url", "web_redirect_url", "created_at", "ordering", "updated_at", "feed_cover", "_slugs"];
-
-const podcasts = function () {
-  return new Promise((resolve, reject) => {
-    _feed2.default.find({
-      draft: { $ne: true },
-      disabled: { $ne: true }
-    }, PodcastFields, {
-      sort: {
-        created_at: -1
-      },
-      limit: 500
-    }).exec(function (err, feeds) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(feeds);
-      }
-    });
-  });
-};
-
-exports.default = podcasts;
 
 /***/ }),
 /* 14 */
@@ -644,51 +700,37 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _mongoose = __webpack_require__(3);
+var _podcastItem = __webpack_require__(3);
 
-var _mongoose2 = _interopRequireDefault(_mongoose);
+var _podcastItem2 = _interopRequireDefault(_podcastItem);
 
-var _cover_schema = __webpack_require__(15);
+var _enums = __webpack_require__(0);
 
-var _cover_schema2 = _interopRequireDefault(_cover_schema);
+var _podcast = __webpack_require__(2);
+
+var _podcast2 = _interopRequireDefault(_podcast);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_mongoose2.default.Promise = global.Promise;
+const Post = `
+type Post implements PodcastItem {
+  _id: String!
+  guid: String!
+  title: String!
+  text_content: String!
+  formatted_content: String!
+  published_at(format: DateFormat = RFC822): String!
+  episode_type: String
+  season: Int
+  episode: Int
+  url: String!
+  author: String
+  explicit: Boolean!
+  podcast: Podcast!
+}
+`;
 
-const ObjectId = _mongoose2.default.Schema.Types.ObjectId;
-
-const FeedSchema = new _mongoose2.default.Schema({
-  title: String,
-  catchline: String,
-  description: String,
-  copyright: String,
-  feed_cover: _cover_schema2.default,
-  identifier: String,
-  custom_domain: String,
-  feed_to_takeover_id: ObjectId,
-  language: String,
-  contact_email: String,
-  author: String,
-  explicit: Boolean,
-  draft: Boolean,
-  tags: String,
-  _slugs: [String],
-  parent_feed: String,
-  external: Boolean,
-  created_at: Date,
-  updated_at: Date,
-  ordering: String,
-  block_itunes: Boolean,
-  itunes_category: String,
-  disabled: Boolean,
-  feed_redirect_url: String,
-  web_redirect_url: String
-});
-
-const Feed = _mongoose2.default.model("feeds", FeedSchema);
-
-exports.default = Feed;
+exports.default = () => [_podcastItem2.default, _enums.DateFormat, Post, _podcast2.default];
 
 /***/ }),
 /* 15 */
@@ -701,7 +743,136 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _mongoose = __webpack_require__(3);
+var _item = __webpack_require__(16);
+
+var _item2 = _interopRequireDefault(_item);
+
+var _feed = __webpack_require__(18);
+
+var _feed2 = _interopRequireDefault(_feed);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const debug = __webpack_require__(6)("podcloud-feeds:queries:podcastItem");
+
+const podcastItem = function (obj, args, context, info) {
+  return new Promise((resolve, reject) => {
+    const findArgs = {
+      _id: args._id,
+      published_at: {
+        $lte: new Date()
+      },
+      status: "published",
+      private: {
+        $ne: true
+      }
+    };
+
+    debug("findArgs", findArgs);
+
+    _item2.default.findOne(findArgs).exec(function (err, item) {
+      debug("err:", err);
+      debug("item:", item);
+      if (err) {
+        reject(err);
+      } else {
+        if (item.feed_id) {
+          _feed2.default.findOne({ _id: item.feed_id }).exec(function (err, feed) {
+            if (err) {
+              console.error(err);
+              reject(err);
+            } else {
+              debug("Got a feed", feed);
+              item.feed = feed;
+              resolve(item);
+            }
+          });
+        } else {
+          resolve(null);
+        }
+      }
+    });
+  });
+};
+
+exports.default = podcastItem;
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _mongoose = __webpack_require__(4);
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
+var _cover_schema = __webpack_require__(17);
+
+var _cover_schema2 = _interopRequireDefault(_cover_schema);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_mongoose2.default.Promise = global.Promise;
+
+const ObjectId = _mongoose2.default.Schema.Types.ObjectId;
+
+const EnclosureUrlSchema = new _mongoose2.default.Schema({
+  path: String
+});
+
+const EnclosureSchema = new _mongoose2.default.Schema({
+  duration_in_seconds: Number,
+  length: String,
+  media_type: String,
+  mime_type: String,
+  meta_url: EnclosureUrlSchema,
+  filename: String,
+  cover_detected: _cover_schema2.default,
+  cover_custom: _cover_schema2.default,
+  cover_choice: String
+});
+
+const ItemSchema = new _mongoose2.default.Schema({
+  feed_id: ObjectId,
+  title: String,
+  explicit: Boolean,
+  author: String,
+  link: String,
+  status: String,
+  _slugs: [String],
+  content: String,
+  published_at: Date,
+  updated_at: Date,
+  private: Boolean,
+  episode_type: String,
+  season: Number,
+  episode: Number,
+  inferred_type_season_and_episode: Boolean,
+  enclosure: EnclosureSchema
+});
+
+const Item = _mongoose2.default.model("items", ItemSchema);
+
+exports.default = Item;
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _mongoose = __webpack_require__(4);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
@@ -721,7 +892,80 @@ const CoverSchema = new _mongoose2.default.Schema({
 exports.default = CoverSchema;
 
 /***/ }),
-/* 16 */
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _mongoose = __webpack_require__(4);
+
+var _mongoose2 = _interopRequireDefault(_mongoose);
+
+var _cover_schema = __webpack_require__(17);
+
+var _cover_schema2 = _interopRequireDefault(_cover_schema);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_mongoose2.default.Promise = global.Promise;
+
+const ObjectId = _mongoose2.default.Schema.Types.ObjectId;
+
+const FeedSchema = new _mongoose2.default.Schema({
+  title: String,
+  catchline: String,
+  description: String,
+  copyright: String,
+  feed_cover: _cover_schema2.default,
+  identifier: String,
+  url_prefix: String,
+  link: String,
+  feed_to_takeover_id: ObjectId,
+  language: String,
+  contact_email: String,
+  author: String,
+  explicit: Boolean,
+  draft: Boolean,
+  tags: String,
+  _slugs: [String],
+  parent_feed: String,
+  external: Boolean,
+  created_at: Date,
+  updated_at: Date,
+  ordering: String,
+  block_itunes: Boolean,
+  itunes_category: String,
+  disabled: Boolean,
+  feed_redirect_url: String,
+  web_redirect_url: String,
+  itunes: String,
+  google_podcasts: String,
+  spotify: String,
+  deezer: String,
+  podcloud: String,
+  youtube: String,
+  soundcloud: String,
+  dailymotion: String,
+  twitch: String,
+  twitter: String,
+  facebook: String,
+  instagram: String,
+  wiki: String,
+  shop: String,
+  donate: String
+});
+
+const Feed = _mongoose2.default.model("feeds", FeedSchema);
+
+exports.default = Feed;
+
+/***/ }),
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -735,17 +979,17 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _utils = __webpack_require__(1);
 
-var _feed = __webpack_require__(14);
+var _feed = __webpack_require__(18);
 
 var _feed2 = _interopRequireDefault(_feed);
 
-var _cached = __webpack_require__(34);
+var _cached = __webpack_require__(37);
 
 var _cached2 = _interopRequireDefault(_cached);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const debug = __webpack_require__(17)("podcloud-feeds:queries:podcastForFeedWithIdentifier");
+const debug = __webpack_require__(6)("podcloud-feeds:queries:podcast");
 
 const podcastIdentifiersCache = (0, _cached2.default)("podcastIdentifiersCache", {
   backend: {
@@ -756,33 +1000,52 @@ const podcastIdentifiersCache = (0, _cached2.default)("podcastIdentifiersCache",
   }
 });
 
-const PodcastFields = ["_id", "title", "catchline", "description", "identifier", "language", "copyright", "contact_email", "author", "explicit", "tags", "cover_filename", "parent_feed", "external", "block_itunes", "block_google_podcasts", "itunes_category", "disabled", "feed_redirect_url", "web_redirect_url", "created_at", "ordering", "updated_at", "feed_cover", "_slugs"];
-
-const podcastForFeedWithIdentifier = function (obj, args, context, info) {
+const podcast = function (obj, args, context, info) {
   debug("called");
   return new Promise((resolve, reject) => {
+    const error = err => {
+      console.error(err);
+      return reject(err);
+    };
+
     debug("inside promise");
-    if (typeof args !== "object" || !args.hasOwnProperty("identifier") || (0, _utils.empty)(args.identifier)) {
-      console.error("args.identifier must be a non-empty string!");
-      reject("args.identifier must be a non-empty string!");
+
+    if (typeof args !== "object") {
+      return error("args is not an object");
     }
-    const identifier_cleaned = args.identifier.toLowerCase().trim();
+
+    const hasIdentifier = args.hasOwnProperty("identifier") && !(0, _utils.empty)(args.identifier);
+    const hasId = args.hasOwnProperty("_id") && !(0, _utils.empty)(args._id);
+
+    const identifier_cleaned = `${args.identifier || ""}`.toLowerCase().trim();
     const cache_key = "identifier-uid-" + identifier_cleaned;
-    debug("Looking for cached uid with key : " + cache_key);
-    podcastIdentifiersCache.get(cache_key).then(found => {
+
+    if (!hasId && !hasIdentifier) {
+      return error("Either args.identifier or args._id must be provided");
+    }
+
+    if (hasId) {
+      debug("Already got _id : " + args._id);
+    } else {
+      debug("Looking for cached _id with key : " + cache_key);
+    }
+
+    const _idPromise = hasId ? Promise.resolve(args._id) : podcastIdentifiersCache.get(cache_key);
+
+    _idPromise.then(id => {
       let findArgs;
 
-      if (!(0, _utils.empty)(found)) {
-        debug("Found cached uid : " + found);
-        findArgs = { _id: found };
+      if (!(0, _utils.empty)(id)) {
+        debug("Has _id : " + id);
+        findArgs = { _id: id };
       } else {
-        debug("Cached uid not found, executing big ass query");
+        debug("No _id, executing big ass query");
         findArgs = {
           draft: { $ne: true },
           $and: [{
             $or: [{ feed_to_takeover_id: { $exists: false } }, { feed_to_takeover_id: null }]
           }, {
-            $or: [{ custom_domain: identifier_cleaned }, { identifier: identifier_cleaned }, { _slugs: identifier_cleaned }]
+            $or: [{ identifier: identifier_cleaned }, { _slugs: identifier_cleaned }]
           }]
         };
       }
@@ -793,14 +1056,16 @@ const podcastForFeedWithIdentifier = function (obj, args, context, info) {
           keys = [];
         } else {
           debug("Found podcast.", feed);
-          keys = [feed.identifier, ...feed._slugs, feed.custom_domain].filter((item, pos, self) => {
+          keys = [feed.identifier, ...feed._slugs].filter((item, pos, self) => {
             return self.indexOf(item) == pos && !(0, _utils.empty)(item);
           });
         }
-        if (!(0, _utils.empty)(found) && (keys.indexOf(identifier_cleaned) === -1 || feed === null)) {
+
+        if (!(0, _utils.empty)(id) && !(0, _utils.empty)(identifier_cleaned) && (keys.indexOf(identifier_cleaned) === -1 || feed === null)) {
           debug("Found podcast doesn't include cached identifier, we need to invalidate cache");
           debug("identifier_cleaned: " + identifier_cleaned);
           debug("keys: ", keys);
+
           // cached value is not valid anymore
           podcastIdentifiersCache.unset(cache_key).then(() => {
             resolve(null);
@@ -825,7 +1090,7 @@ const podcastForFeedWithIdentifier = function (obj, args, context, info) {
         }
       };
 
-      const doReq = () => _feed2.default.findOne(findArgs, PodcastFields).exec(function (err, feed) {
+      const doReq = () => _feed2.default.findOne(findArgs).exec(function (err, feed) {
         if (err) {
           console.error(err);
           reject(err);
@@ -835,7 +1100,7 @@ const podcastForFeedWithIdentifier = function (obj, args, context, info) {
         }
       });
 
-      const tryInternalFirst = () => _feed2.default.findOne(_extends({}, findArgs, { external: { $ne: true } }), PodcastFields).exec(function (err, feed) {
+      const tryInternalFirst = () => _feed2.default.findOne(_extends({}, findArgs, { external: { $ne: true } })).exec(function (err, feed) {
         if (err) {
           console.error(err);
           reject(err);
@@ -866,55 +1131,49 @@ const podcastForFeedWithIdentifier = function (obj, args, context, info) {
   });
 };
 
-podcastForFeedWithIdentifier.clearCache = function () {
+podcast.clearCache = function () {
   _cached2.default.dropNamedCache("podcastIdentifiersCache");
 };
 
-exports.default = podcastForFeedWithIdentifier;
+exports.default = podcast;
 
 /***/ }),
-/* 17 */
-/***/ (function(module, exports) {
-
-module.exports = require("debug");
-
-/***/ }),
-/* 18 */
+/* 20 */
 /***/ (function(module, exports) {
 
 module.exports = require("path");
 
 /***/ }),
-/* 19 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(20);
+module.exports = __webpack_require__(22);
 
 
 /***/ }),
-/* 20 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _schema = __webpack_require__(21);
+var _schema = __webpack_require__(23);
 
-var _connection = __webpack_require__(42);
+var _connection = __webpack_require__(45);
 
 var _connection2 = _interopRequireDefault(_connection);
 
-var _server = __webpack_require__(43);
+var _server = __webpack_require__(46);
 
 var _server2 = _interopRequireDefault(_server);
 
 var _utils = __webpack_require__(1);
 
-var _config = __webpack_require__(53);
+var _config = __webpack_require__(57);
 
 var _config2 = _interopRequireDefault(_config);
 
-var _process = __webpack_require__(54);
+var _process = __webpack_require__(58);
 
 var _process2 = _interopRequireDefault(_process);
 
@@ -936,7 +1195,7 @@ const server = new _server2.default({
 });
 
 /***/ }),
-/* 21 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -947,7 +1206,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.resolvers = exports.typeDefs = undefined;
 
-var _typeDefs = __webpack_require__(22);
+var _typeDefs = __webpack_require__(24);
 
 Object.defineProperty(exports, "typeDefs", {
   enumerable: true,
@@ -956,7 +1215,7 @@ Object.defineProperty(exports, "typeDefs", {
   }
 });
 
-var _resolvers = __webpack_require__(29);
+var _resolvers = __webpack_require__(32);
 
 var resolvers = _interopRequireWildcard(_resolvers);
 
@@ -965,51 +1224,6 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.resolvers = resolvers;
-
-/***/ }),
-/* 22 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.typeDefinitions = undefined;
-
-var _typeDefs = __webpack_require__(23);
-
-const typeDefinitions = [_typeDefs.RootQuery, `
-schema {
-  query: RootQuery
-}
-`];
-
-exports.typeDefinitions = typeDefinitions;
-exports.default = typeDefinitions;
-
-/***/ }),
-/* 23 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.RootQuery = undefined;
-
-var _rootQuery = __webpack_require__(24);
-
-var _rootQuery2 = _interopRequireDefault(_rootQuery);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-exports.RootQuery = _rootQuery2.default;
-
-exports.default = () => _rootQuery2.default;
 
 /***/ }),
 /* 24 */
@@ -1021,17 +1235,18 @@ exports.default = () => _rootQuery2.default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.typeDefinitions = undefined;
 
 var _typeDefs = __webpack_require__(25);
 
-const RootQuery = `
-type RootQuery {
-  podcasts: [Podcast]
-  podcastForFeedWithIdentifier(identifier: String!): Podcast
+const typeDefinitions = [_typeDefs.RootQuery, `
+schema {
+  query: RootQuery
 }
-`;
+`];
 
-exports.default = () => [_typeDefs.Podcast, RootQuery];
+exports.typeDefinitions = typeDefinitions;
+exports.default = typeDefinitions;
 
 /***/ }),
 /* 25 */
@@ -1043,31 +1258,75 @@ exports.default = () => [_typeDefs.Podcast, RootQuery];
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.RootQuery = undefined;
+
+var _rootQuery = __webpack_require__(26);
+
+var _rootQuery2 = _interopRequireDefault(_rootQuery);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.RootQuery = _rootQuery2.default;
+
+exports.default = () => _rootQuery2.default;
+
+/***/ }),
+/* 26 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeDefs = __webpack_require__(27);
+
+const RootQuery = `
+type RootQuery {
+  podcastItem(_id: String!): PodcastItem
+  podcast(identifier: String, _id: String): Podcast
+}
+`;
+
+exports.default = () => [_typeDefs.Podcast, _typeDefs.PodcastItem, RootQuery];
+
+/***/ }),
+/* 27 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.Cover = exports.Enclosure = exports.Episode = exports.Post = exports.PodcastItem = exports.Podcast = exports.DateFormat = undefined;
 
-var _dateFormat = __webpack_require__(6);
+var _dateFormat = __webpack_require__(8);
 
-var _podcast = __webpack_require__(26);
+var _podcast = __webpack_require__(2);
 
 var _podcast2 = _interopRequireDefault(_podcast);
 
-var _podcastItem = __webpack_require__(2);
+var _podcastItem = __webpack_require__(3);
 
 var _podcastItem2 = _interopRequireDefault(_podcastItem);
 
-var _post = __webpack_require__(12);
+var _post = __webpack_require__(14);
 
 var _post2 = _interopRequireDefault(_post);
 
-var _episode = __webpack_require__(7);
+var _episode = __webpack_require__(9);
 
 var _episode2 = _interopRequireDefault(_episode);
 
-var _enclosure = __webpack_require__(8);
+var _enclosure = __webpack_require__(10);
 
 var _enclosure2 = _interopRequireDefault(_enclosure);
 
-var _cover = __webpack_require__(11);
+var _cover = __webpack_require__(13);
 
 var _cover2 = _interopRequireDefault(_cover);
 
@@ -1084,7 +1343,7 @@ exports.Cover = _cover2.default;
 exports.default = () => [_dateFormat.DateFormat, _podcast2.default, _podcastItem2.default, _post2.default, _episode2.default, _enclosure2.default, _cover2.default];
 
 /***/ }),
-/* 26 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1094,59 +1353,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _enums = __webpack_require__(0);
-
-var _podcastItem = __webpack_require__(2);
-
-var _podcastItem2 = _interopRequireDefault(_podcastItem);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-const Podcast = `type Podcast {
-  _id: String!
-  title: String!
-  identifier: String!
-  catchline: String!
-  copyright: String
-  description: String!
-  language: String!
-  contact_email: String
-  author: String
-  cover: Cover!
-  created_at(format: DateFormat = RFC822): String!
-  updated_at(format: DateFormat = RFC822): String!
-  internal: Boolean!
-  external: Boolean!
-  feed_url: String!
-  website_url: String!
-  explicit: Boolean!
-  tags: [String!]
-  googleplay_block: Boolean!
-  itunes_block: Boolean!
-  itunes_category: String
-  disabled: Boolean!
-  feed_redirect_url: String
-  web_redirect_url: String
-  items: [PodcastItem]!
-  ordering: String!
-  _host: String!
-}
-`;
-
-exports.default = () => [_enums.DateFormat, _podcastItem2.default, Podcast, _podcastItem2.default];
-
-/***/ }),
-/* 27 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _bigInt = __webpack_require__(9);
+var _bigInt = __webpack_require__(11);
 
 Object.defineProperty(exports, "BigInt", {
   enumerable: true,
@@ -1155,7 +1362,7 @@ Object.defineProperty(exports, "BigInt", {
   }
 });
 
-var _resolvers = __webpack_require__(10);
+var _resolvers = __webpack_require__(12);
 
 Object.defineProperty(exports, "resolvers", {
   enumerable: true,
@@ -1167,13 +1374,59 @@ Object.defineProperty(exports, "resolvers", {
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports) {
 
 module.exports = require("graphql-bigint");
 
 /***/ }),
-/* 29 */
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+const Platforms = `
+type Platforms {
+  apple: String
+  google: String
+  spotify: String
+  deezer: String
+  podcloud: String
+}
+`;
+
+exports.default = () => [Platforms];
+
+/***/ }),
+/* 31 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+const Socials = `
+type Socials {
+  youtube: String
+  soundcloud: String
+  dailymotion: String
+  twitch: String
+  twitter: String
+  facebook: String
+  instagram: String
+}
+`;
+
+exports.default = () => [Socials];
+
+/***/ }),
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1183,7 +1436,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _resolvers = __webpack_require__(30);
+var _resolvers = __webpack_require__(33);
 
 Object.defineProperty(exports, "RootQuery", {
   enumerable: true,
@@ -1192,7 +1445,7 @@ Object.defineProperty(exports, "RootQuery", {
   }
 });
 
-var _resolvers2 = __webpack_require__(35);
+var _resolvers2 = __webpack_require__(38);
 
 Object.defineProperty(exports, "Enclosure", {
   enumerable: true,
@@ -1231,7 +1484,7 @@ Object.defineProperty(exports, "Cover", {
   }
 });
 
-var _resolvers3 = __webpack_require__(10);
+var _resolvers3 = __webpack_require__(12);
 
 Object.defineProperty(exports, "BigInt", {
   enumerable: true,
@@ -1241,7 +1494,7 @@ Object.defineProperty(exports, "BigInt", {
 });
 
 /***/ }),
-/* 30 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1251,7 +1504,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _rootQuery = __webpack_require__(31);
+var _rootQuery = __webpack_require__(34);
 
 Object.defineProperty(exports, "RootQuery", {
   enumerable: true,
@@ -1260,28 +1513,28 @@ Object.defineProperty(exports, "RootQuery", {
   }
 });
 
-var _podcastForFeedWithIdentifier = __webpack_require__(16);
+var _podcast = __webpack_require__(19);
 
-Object.defineProperty(exports, "podcastsForFeedWithIdentifier", {
+Object.defineProperty(exports, "podcast", {
   enumerable: true,
   get: function () {
-    return _interopRequireDefault(_podcastForFeedWithIdentifier).default;
+    return _interopRequireDefault(_podcast).default;
   }
 });
 
-var _podcasts = __webpack_require__(13);
+var _podcastItem = __webpack_require__(15);
 
-Object.defineProperty(exports, "podcasts", {
+Object.defineProperty(exports, "podcastItem", {
   enumerable: true,
   get: function () {
-    return _interopRequireDefault(_podcasts).default;
+    return _interopRequireDefault(_podcastItem).default;
   }
 });
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 31 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1291,43 +1544,43 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _podcasts = __webpack_require__(13);
+var _podcastItem = __webpack_require__(15);
 
-var _podcasts2 = _interopRequireDefault(_podcasts);
+var _podcastItem2 = _interopRequireDefault(_podcastItem);
 
-var _podcastForFeedWithIdentifier = __webpack_require__(16);
+var _podcast = __webpack_require__(19);
 
-var _podcastForFeedWithIdentifier2 = _interopRequireDefault(_podcastForFeedWithIdentifier);
+var _podcast2 = _interopRequireDefault(_podcast);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const RootQuery = {
-  podcasts: _podcasts2.default,
-  podcastForFeedWithIdentifier: _podcastForFeedWithIdentifier2.default
+  podcastItem: _podcastItem2.default,
+  podcast: _podcast2.default
 };
 
 exports.default = RootQuery;
 
 /***/ }),
-/* 32 */
+/* 35 */
 /***/ (function(module, exports) {
 
 module.exports = require("sanitize-html");
 
 /***/ }),
-/* 33 */
+/* 36 */
 /***/ (function(module, exports) {
 
 module.exports = require("marked");
 
 /***/ }),
-/* 34 */
+/* 37 */
 /***/ (function(module, exports) {
 
 module.exports = require("cached");
 
 /***/ }),
-/* 35 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1337,7 +1590,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _podcast = __webpack_require__(4);
+var _podcast = __webpack_require__(5);
 
 Object.defineProperty(exports, "Podcast", {
   enumerable: true,
@@ -1346,7 +1599,7 @@ Object.defineProperty(exports, "Podcast", {
   }
 });
 
-var _podcastItem = __webpack_require__(37);
+var _podcastItem = __webpack_require__(39);
 
 Object.defineProperty(exports, "PodcastItem", {
   enumerable: true,
@@ -1355,7 +1608,7 @@ Object.defineProperty(exports, "PodcastItem", {
   }
 });
 
-var _post = __webpack_require__(38);
+var _post = __webpack_require__(40);
 
 Object.defineProperty(exports, "Post", {
   enumerable: true,
@@ -1364,7 +1617,7 @@ Object.defineProperty(exports, "Post", {
   }
 });
 
-var _episode = __webpack_require__(39);
+var _episode = __webpack_require__(41);
 
 Object.defineProperty(exports, "Episode", {
   enumerable: true,
@@ -1373,7 +1626,7 @@ Object.defineProperty(exports, "Episode", {
   }
 });
 
-var _enclosure = __webpack_require__(40);
+var _enclosure = __webpack_require__(42);
 
 Object.defineProperty(exports, "Enclosure", {
   enumerable: true,
@@ -1382,7 +1635,7 @@ Object.defineProperty(exports, "Enclosure", {
   }
 });
 
-var _cover = __webpack_require__(41);
+var _cover = __webpack_require__(44);
 
 Object.defineProperty(exports, "Cover", {
   enumerable: true,
@@ -1394,70 +1647,7 @@ Object.defineProperty(exports, "Cover", {
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 36 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _mongoose = __webpack_require__(3);
-
-var _mongoose2 = _interopRequireDefault(_mongoose);
-
-var _cover_schema = __webpack_require__(15);
-
-var _cover_schema2 = _interopRequireDefault(_cover_schema);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-_mongoose2.default.Promise = global.Promise;
-
-const ObjectId = _mongoose2.default.Schema.Types.ObjectId;
-
-const EnclosureUrlSchema = new _mongoose2.default.Schema({
-  path: String
-});
-
-const EnclosureSchema = new _mongoose2.default.Schema({
-  duration_in_seconds: Number,
-  length: String,
-  mime_type: String,
-  meta_url: EnclosureUrlSchema,
-  filename: String,
-  cover_detected: _cover_schema2.default,
-  cover_custom: _cover_schema2.default,
-  cover_choice: String
-});
-
-const ItemSchema = new _mongoose2.default.Schema({
-  feed_id: ObjectId,
-  title: String,
-  explicit: Boolean,
-  author: String,
-  link: String,
-  status: String,
-  _slugs: [String],
-  content: String,
-  published_at: Date,
-  updated_at: Date,
-  private: Boolean,
-  episode_type: String,
-  season: Number,
-  episode: Number,
-  inferred_type_season_and_episode: Boolean,
-  enclosure: EnclosureSchema
-});
-
-const Item = _mongoose2.default.model("items", ItemSchema);
-
-exports.default = Item;
-
-/***/ }),
-/* 37 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1481,7 +1671,7 @@ const PodcastItem = {
 exports.default = PodcastItem;
 
 /***/ }),
-/* 38 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1491,7 +1681,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _moment = __webpack_require__(5);
+var _moment = __webpack_require__(7);
 
 var _moment2 = _interopRequireDefault(_moment);
 
@@ -1499,13 +1689,16 @@ var _enums = __webpack_require__(0);
 
 var _utils = __webpack_require__(1);
 
-var _podcast = __webpack_require__(4);
+var _podcast = __webpack_require__(5);
 
 var _podcast2 = _interopRequireDefault(_podcast);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const Post = {
+  _id(item) {
+    return item._id.toString();
+  },
   guid(item) {
     return item._id.toString();
   },
@@ -1544,13 +1737,16 @@ const Post = {
     if (!/^https?:\/\//.test(url)) url = "http://" + url;
 
     return url;
+  },
+  podcast(item) {
+    return item.feed;
   }
 };
 
 exports.default = Post;
 
 /***/ }),
-/* 39 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1560,11 +1756,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _moment = __webpack_require__(5);
+var _moment = __webpack_require__(7);
 
 var _moment2 = _interopRequireDefault(_moment);
 
-var _podcast = __webpack_require__(4);
+var _podcast = __webpack_require__(5);
 
 var _podcast2 = _interopRequireDefault(_podcast);
 
@@ -1575,6 +1771,9 @@ var _utils = __webpack_require__(1);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 const Episode = {
+  _id(item) {
+    return item._id.toString();
+  },
   guid(item) {
     return item._id.toString();
   },
@@ -1617,13 +1816,16 @@ const Episode = {
   enclosure(item) {
     item.enclosure.item = item;
     return item.enclosure;
+  },
+  podcast(item) {
+    return item.feed;
   }
 };
 
 exports.default = Episode;
 
 /***/ }),
-/* 40 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1633,9 +1835,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _path = __webpack_require__(18);
+var _path = __webpack_require__(20);
 
 var _path2 = _interopRequireDefault(_path);
+
+var _mimeTypes = __webpack_require__(43);
+
+var _mimeTypes2 = _interopRequireDefault(_mimeTypes);
+
+var _utils = __webpack_require__(1);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1644,13 +1852,13 @@ const Enclosure = {
     return Math.max(+enclosure.duration_in_seconds, 0) || 0;
   },
   size(enclosure) {
-    return parseInt(enclosure.length, 10);
+    return parseInt(enclosure.length, 10) || 0;
   },
   type(enclosure) {
-    return enclosure.mime_type;
+    return _mimeTypes2.default.lookup(enclosure.media_type) || enclosure.mime_type || "application/octet-stream";
   },
   url(enclosure, args, ctx) {
-    return "https://" + ctx.hosts.stats + "/" + enclosure.item.feed.identifier + "/" + enclosure.item._slugs[enclosure.item._slugs.length - 1] + "/enclosure." + +(enclosure.item.updated_at / 1000) + _path2.default.extname(`${enclosure.filename}`).replace(/(.*)\?.*$/, "$1") + "?p=f";
+    return ((0, _utils.empty)(enclosure.item.feed.url_prefix) ? "https://" : enclosure.item.feed.url_prefix) + ctx.hosts.stats + "/" + enclosure.item.feed.identifier + "/" + enclosure.item._slugs[enclosure.item._slugs.length - 1] + "/enclosure." + Math.round(enclosure.item.updated_at / 1000) + ((!(0, _utils.empty)(enclosure.media_type) ? `.${enclosure.media_type}` : _path2.default.extname(`${enclosure.filename}`).replace(/(.*)\?.*$/, "$1")) || ".mp3") + "?p=f";
   },
   cover(enclosure) {
     let cover = null;
@@ -1676,7 +1884,13 @@ const Enclosure = {
 exports.default = Enclosure;
 
 /***/ }),
-/* 41 */
+/* 43 */
+/***/ (function(module, exports) {
+
+module.exports = require("mime-types");
+
+/***/ }),
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1686,32 +1900,54 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _podcast = __webpack_require__(4);
+var _podcast = __webpack_require__(5);
 
 var _podcast2 = _interopRequireDefault(_podcast);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+const build_url = (ctx, cover, size) => {
+  const host = ctx.hosts.uploads;
+  const sha1 = cover.sha1;
+  const external = (cover.item || cover.feed).external;
+
+  let size_prefix = `${size || ""}`.trim();
+  if (size_prefix.length > 0) {
+    size_prefix += "_";
+  }
+
+  let url = `https://${host}/`;
+
+  if (typeof sha1 === "string" && sha1.trim().length > 0) {
+    url += `uploads/covers/`;
+    url += sha1.match(/([\w]{4})/g).join("/");
+    url += `/${size_prefix}${sha1}.jpg`;
+  } else {
+    url += `images/${size_prefix}nocover${external ? "_external" : ""}.jpg`;
+  }
+
+  return url;
+};
+
 const Cover = {
   url(cover, args, ctx) {
-    let url = `${_podcast2.default._host(cover.feed, args, ctx)}`;
-
-    if (cover.item) {
-      url += "/" + cover.item._slugs[cover.item._slugs.length - 1];
-    }
-
-    url += `/cover.${cover.sha1}.jpg`;
-
-    if (!/^https?:\/\//i.test(url)) url = "http://" + url;
-
-    return url;
+    return build_url(ctx, cover);
+  },
+  small_url(cover, args, ctx) {
+    return build_url(ctx, cover, "small");
+  },
+  medium_url(cover, args, ctx) {
+    return build_url(ctx, cover, "medium");
+  },
+  big_url(cover, args, ctx) {
+    return build_url(ctx, cover, "big");
   }
 };
 
 exports.default = Cover;
 
 /***/ }),
-/* 42 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1721,7 +1957,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _mongoose = __webpack_require__(3);
+var _mongoose = __webpack_require__(4);
 
 var _mongoose2 = _interopRequireDefault(_mongoose);
 
@@ -1759,7 +1995,7 @@ function mongo_connect(conn_str, { retries = 5, spaced = 2 } = {}) {
 exports.default = mongo_connect;
 
 /***/ }),
-/* 43 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1771,35 +2007,39 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var _net = __webpack_require__(44);
+var _net = __webpack_require__(47);
 
 var _net2 = _interopRequireDefault(_net);
 
-var _fs = __webpack_require__(45);
+var _fs = __webpack_require__(48);
 
 var _fs2 = _interopRequireDefault(_fs);
 
-var _http = __webpack_require__(46);
+var _http = __webpack_require__(49);
 
 var _http2 = _interopRequireDefault(_http);
 
-var _express = __webpack_require__(47);
+var _express = __webpack_require__(50);
 
 var _express2 = _interopRequireDefault(_express);
 
-var _compression = __webpack_require__(48);
+var _compression = __webpack_require__(51);
 
 var _compression2 = _interopRequireDefault(_compression);
 
-var _apolloServerExpress = __webpack_require__(49);
+var _apolloServerExpress = __webpack_require__(52);
 
-var _graphqlTools = __webpack_require__(50);
+var _graphqlTools = __webpack_require__(53);
 
-var _bodyParser = __webpack_require__(51);
+var _bodyParser = __webpack_require__(54);
 
 var _bodyParser2 = _interopRequireDefault(_bodyParser);
 
-var _expressPinoLogger = __webpack_require__(52);
+var _cors = __webpack_require__(55);
+
+var _cors2 = _interopRequireDefault(_cors);
+
+var _expressPinoLogger = __webpack_require__(56);
 
 var _expressPinoLogger2 = _interopRequireDefault(_expressPinoLogger);
 
@@ -1835,7 +2075,7 @@ function GraphQLServer(config = DEFAULT_CONFIG) {
 
   server.use((0, _expressPinoLogger2.default)());
 
-  server.use("/graphql", _bodyParser2.default.json({ type: "*/*" }), (0, _apolloServerExpress.graphqlExpress)(graphqlExpressOptions));
+  server.use("/graphql", (0, _cors2.default)(), _bodyParser2.default.json({ type: "*/*" }), (0, _apolloServerExpress.graphqlExpress)(graphqlExpressOptions));
 
   server.use("/graphiql", (0, _apolloServerExpress.graphiqlExpress)({
     graphiql: true,
@@ -1880,67 +2120,73 @@ function GraphQLServer(config = DEFAULT_CONFIG) {
 exports.default = GraphQLServer;
 
 /***/ }),
-/* 44 */
+/* 47 */
 /***/ (function(module, exports) {
 
 module.exports = require("net");
 
 /***/ }),
-/* 45 */
+/* 48 */
 /***/ (function(module, exports) {
 
 module.exports = require("fs");
 
 /***/ }),
-/* 46 */
+/* 49 */
 /***/ (function(module, exports) {
 
 module.exports = require("http");
 
 /***/ }),
-/* 47 */
+/* 50 */
 /***/ (function(module, exports) {
 
 module.exports = require("express");
 
 /***/ }),
-/* 48 */
+/* 51 */
 /***/ (function(module, exports) {
 
 module.exports = require("compression");
 
 /***/ }),
-/* 49 */
+/* 52 */
 /***/ (function(module, exports) {
 
 module.exports = require("apollo-server-express");
 
 /***/ }),
-/* 50 */
+/* 53 */
 /***/ (function(module, exports) {
 
 module.exports = require("graphql-tools");
 
 /***/ }),
-/* 51 */
+/* 54 */
 /***/ (function(module, exports) {
 
 module.exports = require("body-parser");
 
 /***/ }),
-/* 52 */
+/* 55 */
+/***/ (function(module, exports) {
+
+module.exports = require("cors");
+
+/***/ }),
+/* 56 */
 /***/ (function(module, exports) {
 
 module.exports = require("express-pino-logger");
 
 /***/ }),
-/* 53 */
+/* 57 */
 /***/ (function(module, exports) {
 
 module.exports = require("config");
 
 /***/ }),
-/* 54 */
+/* 58 */
 /***/ (function(module, exports) {
 
 module.exports = require("process");

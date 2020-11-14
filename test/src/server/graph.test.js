@@ -35,13 +35,13 @@ describe("GraphQL Server", () => {
       })
   })
 
-  describe("podcastForFeedWithIdentifier query", () => {
+  describe("podcast query", () => {
     it("should return a podcast using its identifier", () => {
       return testServer
         .graphqlQuery(
           `
 				{
-				  podcastForFeedWithIdentifier(identifier: "blog") {
+				  podcast(identifier: "blog") {
 				  	identifier
 				  }
 				}
@@ -50,7 +50,7 @@ describe("GraphQL Server", () => {
         .then(response => {
           expect(response.statusCode).to.equal(200)
           expect(response.body.data).to.deep.equal({
-            podcastForFeedWithIdentifier: {
+            podcast: {
               identifier: "blog"
             }
           })
@@ -62,7 +62,7 @@ describe("GraphQL Server", () => {
         .graphqlQuery(
           `
 				{
-				  podcastForFeedWithIdentifier(identifier: "webiblog") {
+				  podcast(identifier: "webiblog") {
 				  	identifier
 				  }
 				}
@@ -71,7 +71,7 @@ describe("GraphQL Server", () => {
         .then(response => {
           expect(response.statusCode).to.equal(200)
           expect(response.body.data).to.deep.equal({
-            podcastForFeedWithIdentifier: {
+            podcast: {
               identifier: "blog"
             }
           })
@@ -83,7 +83,7 @@ describe("GraphQL Server", () => {
         .graphqlQuery(
           `
 				{
-				  podcastForFeedWithIdentifier(identifier: "france-bleu-auvergne") {
+				  podcast(identifier: "france-bleu-auvergne") {
 				  	identifier
 				  }
 				}
@@ -92,7 +92,7 @@ describe("GraphQL Server", () => {
         .then(response => {
           expect(response.statusCode).to.equal(200)
           expect(response.body.data).to.deep.equal({
-            podcastForFeedWithIdentifier: {
+            podcast: {
               identifier: "france-bleu-auvergne"
             }
           })
@@ -104,7 +104,7 @@ describe("GraphQL Server", () => {
         .graphqlQuery(
           `
 				{
-				  podcastForFeedWithIdentifier(identifier: "draft") {
+				  podcast(identifier: "draft") {
 				  	identifier
 				  }
 				}
@@ -113,7 +113,7 @@ describe("GraphQL Server", () => {
         .then(response => {
           expect(response.statusCode).to.equal(200)
           expect(response.body.data).to.deep.equal({
-            podcastForFeedWithIdentifier: null
+            podcast: null
           })
         })
     })
@@ -123,7 +123,7 @@ describe("GraphQL Server", () => {
         .graphqlQuery(
           `
 				{
-				  podcastForFeedWithIdentifier(identifier: "fiction") {
+				  podcast(identifier: "fiction") {
 				  	identifier
 				  	catchline
 				  }
@@ -133,7 +133,7 @@ describe("GraphQL Server", () => {
         .then(response => {
           expect(response.statusCode).to.equal(200)
           expect(response.body.data).to.deep.equal({
-            podcastForFeedWithIdentifier: {
+            podcast: {
               identifier: "fiction",
               catchline: "Fictionite" // Not "Takeovering"
             }
@@ -147,7 +147,7 @@ describe("GraphQL Server", () => {
           .graphqlQuery(
             `
 					{
-					  podcastForFeedWithIdentifier(identifier: "blog") {
+					  podcast(identifier: "blog") {
 					  	items {
 					  		title
 					  	}
@@ -157,11 +157,9 @@ describe("GraphQL Server", () => {
           )
           .then(response => {
             expect(response.statusCode).to.equal(200)
-            expect(response.body.data).to.have.property(
-              "podcastForFeedWithIdentifier"
-            )
+            expect(response.body.data).to.have.property("podcast")
 
-            const feed = response.body.data.podcastForFeedWithIdentifier
+            const feed = response.body.data.podcast
 
             expect(feed.items).to.be.an("array").that.is.not.empty
 
@@ -184,7 +182,7 @@ describe("GraphQL Server", () => {
           .graphqlQuery(
             `
 					{
-					  podcastForFeedWithIdentifier(identifier: "blog") {
+					  podcast(identifier: "blog") {
 					  	identifier
 					  	items {
 					  		published_at
@@ -195,11 +193,9 @@ describe("GraphQL Server", () => {
           )
           .then(response => {
             expect(response.statusCode).to.equal(200)
-            expect(response.body.data).to.have.property(
-              "podcastForFeedWithIdentifier"
-            )
+            expect(response.body.data).to.have.property("podcast")
 
-            const feed = response.body.data.podcastForFeedWithIdentifier
+            const feed = response.body.data.podcast
 
             expect(feed.items)
               .to.be.an("array")
@@ -213,7 +209,7 @@ describe("GraphQL Server", () => {
 
             return testServer.graphqlQuery(`
 						{
-						  podcastForFeedWithIdentifier(identifier: "fiction") {
+						  podcast(identifier: "fiction") {
 						  	identifier
 						  	items {
 						  		published_at
@@ -224,11 +220,9 @@ describe("GraphQL Server", () => {
           })
           .then(response => {
             expect(response.statusCode).to.equal(200)
-            expect(response.body.data).to.have.property(
-              "podcastForFeedWithIdentifier"
-            )
+            expect(response.body.data).to.have.property("podcast")
 
-            const feed = response.body.data.podcastForFeedWithIdentifier
+            const feed = response.body.data.podcast
 
             expect(feed.items)
               .to.be.an("array")

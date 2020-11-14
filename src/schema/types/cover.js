@@ -6,6 +6,9 @@ type Cover {
   squared: Boolean
   dominant_color: String
   url: String!
+  small_url: String!
+  medium_url: String!
+  big_url: String!
 }
 `
 

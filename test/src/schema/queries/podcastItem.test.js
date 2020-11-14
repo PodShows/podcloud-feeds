@@ -8,7 +8,7 @@ import "sinon-mongoose"
 import { Types } from "mongoose"
 const ObjectId = Types.ObjectId
 
-import Feed from "~/connectors/feed"
+import Item from "~/connectors/item"
 
 const expect = chai.expect
 chai.use(sinonChai)
@@ -16,27 +16,27 @@ chai.use(chaiAsPromised)
 
 describe("Schema", () => {
   describe("queries", () => {
-    describe("podcasts", () => {
-      var podcasts
-      var FeedMock
+    describe("podcastItem", () => {
+      var podcastItem
+      var ItemMock
 
       beforeEach(function() {
-        FeedMock = sinon.mock(Feed)
+        ItemMock = sinon.mock(Item)
 
-        podcasts = proxyquire(
-          "../../../../src/schema/queries/resolvers/podcasts",
+        podcastItem = proxyquire(
+          "../../../../src/schema/queries/resolvers/podcastItem",
           {
-            Feed
+            Item
           }
         ).default
       })
 
       beforeEach(function() {
-        FeedMock.restore()
+        ItemMock.restore()
       })
 
       it("should return a promise", () => {
-        const query = podcasts()
+        const query = podcastItem({}, { _id: "" })
         expect(query).to.be.a("promise")
       })
 
@@ -44,29 +44,16 @@ describe("Schema", () => {
         const err_msg =
           "Error occured (simulated at " + +new Date() / 1000 + ")"
 
-        FeedMock.expects("find")
+        ItemMock.expects("findOne")
           .chain("exec")
           .yields(err_msg, null)
 
-        const query = podcasts()
+        const query = podcastItem({}, { _id: "" })
 
         expect(query).to.be.a("promise")
-        FeedMock.verify()
+        ItemMock.verify()
 
         return expect(query).to.be.eventually.rejectedWith(err_msg)
-      })
-
-      it("should resolve an array", () => {
-        FeedMock.expects("find")
-          .chain("exec")
-          .yields(undefined, [])
-
-        const query = podcasts()
-
-        expect(query).to.be.a("promise")
-        FeedMock.verify()
-
-        return expect(query).to.be.eventually.be.an("array")
       })
     })
   })

@@ -1,9 +1,11 @@
 import PodcastItem from "./podcastItem"
 import { DateFormat } from "~/schema/enums"
 import Enclosure from "./enclosure"
+import Podcast from "./podcast"
 
 const Episode = `
 type Episode implements PodcastItem {
+  _id: String!
   guid: String!
   title: String!
   text_content: String!
@@ -16,7 +18,8 @@ type Episode implements PodcastItem {
   explicit: Boolean!
   author: String
   enclosure: Enclosure!
+  podcast: Podcast!
 }
 `
 
-export default () => [PodcastItem, DateFormat, Enclosure, Episode]
+export default () => [PodcastItem, DateFormat, Enclosure, Episode, Podcast]
