@@ -16,15 +16,15 @@ chai.use(chaiAsPromised)
 
 describe("Schema", () => {
   describe("queries", () => {
-    describe("podcasts", () => {
-      var podcasts
+    describe("podcastItem", () => {
+      var podcastItem
       var FeedMock
 
       beforeEach(function() {
         FeedMock = sinon.mock(Feed)
 
-        podcasts = proxyquire(
-          "../../../../src/schema/queries/resolvers/podcasts",
+        podcastItem = proxyquire(
+          "../../../../src/schema/queries/resolvers/podcastItem",
           {
             Feed
           }
@@ -36,7 +36,7 @@ describe("Schema", () => {
       })
 
       it("should return a promise", () => {
-        const query = podcasts()
+        const query = podcastItem()
         expect(query).to.be.a("promise")
       })
 
@@ -48,25 +48,12 @@ describe("Schema", () => {
           .chain("exec")
           .yields(err_msg, null)
 
-        const query = podcasts()
+        const query = podcastItem()
 
         expect(query).to.be.a("promise")
         FeedMock.verify()
 
         return expect(query).to.be.eventually.rejectedWith(err_msg)
-      })
-
-      it("should resolve an array", () => {
-        FeedMock.expects("find")
-          .chain("exec")
-          .yields(undefined, [])
-
-        const query = podcasts()
-
-        expect(query).to.be.a("promise")
-        FeedMock.verify()
-
-        return expect(query).to.be.eventually.be.an("array")
       })
     })
   })

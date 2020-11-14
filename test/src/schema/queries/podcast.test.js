@@ -16,21 +16,21 @@ chai.use(chaiAsPromised)
 
 describe("Schema", () => {
   describe("queries", () => {
-    describe("podcastForFeedWithIdentifier", () => {
-      var podcastForFeedWithIdentifier
+    describe("podcast", () => {
+      var podcast
       var FeedMock
 
       beforeEach(function() {
         FeedMock = sinon.mock(Feed)
 
-        podcastForFeedWithIdentifier = proxyquire(
-          "../../../../src/schema/queries/resolvers/podcastForFeedWithIdentifier",
+        podcast = proxyquire(
+          "../../../../src/schema/queries/resolvers/podcast",
           {
             Feed
           }
         ).default
 
-        podcastForFeedWithIdentifier.clearCache()
+        podcast.clearCache()
       })
 
       afterEach(function() {
@@ -38,22 +38,19 @@ describe("Schema", () => {
       })
 
       it("should return a promise", () => {
-        const query = podcastForFeedWithIdentifier({}, { identifier: "" }).then(
-          () => {},
-          () => {}
-        )
+        const query = podcast({}, { identifier: "" }).then(() => {}, () => {})
         expect(query).to.be.a("promise")
       })
 
       it("should reject the promise when identifier is not a string", () => {
-        const query = podcastForFeedWithIdentifier({}, { identifier: null })
+        const query = podcast({}, { identifier: null })
         expect(query).to.be.a("promise")
         return expect(query).to.be.eventually.rejected
       })
 
       it("should reject the promise when identifier is an empty string", () => {
         FeedMock.expects("findOne")
-        const query = podcastForFeedWithIdentifier({}, { identifier: " " })
+        const query = podcast({}, { identifier: " " })
 
         expect(query).to.be.a("promise")
         return expect(query).to.be.eventually.rejected
@@ -67,10 +64,7 @@ describe("Schema", () => {
           .chain("exec")
           .yields(err_msg, null)
 
-        const query = podcastForFeedWithIdentifier(
-          {},
-          { identifier: "unknown" }
-        )
+        const query = podcast({}, { identifier: "unknown" })
 
         expect(query).to.be.a("promise")
         return expect(query).to.be.eventually.rejectedWith(err_msg)
@@ -85,10 +79,7 @@ describe("Schema", () => {
           .chain("exec")
           .yields(undefined, null)
 
-        const query = podcastForFeedWithIdentifier(
-          {},
-          { identifier: "unknown" }
-        )
+        const query = podcast({}, { identifier: "unknown" })
         expect(query).to.be.a("promise")
 
         return query.then(
@@ -107,10 +98,7 @@ describe("Schema", () => {
           .chain("exec")
           .yields(null, new Feed({ identifier: "podcast" }))
 
-        const query = podcastForFeedWithIdentifier(
-          {},
-          { identifier: "podcast" }
-        )
+        const query = podcast({}, { identifier: "podcast" })
         expect(query).to.be.a("promise")
 
         return query.then(
@@ -159,7 +147,7 @@ describe("Schema", () => {
           .chain("exec")
           .yields(null, feed_obj)
 
-        return podcastForFeedWithIdentifier(
+        return podcast(
           {},
           {
             identifier: feed_identifier
@@ -170,7 +158,7 @@ describe("Schema", () => {
             .chain("exec")
             .yields(null, feed_obj)
 
-          return podcastForFeedWithIdentifier(
+          return podcast(
             {},
             {
               identifier: feed_alias
@@ -219,7 +207,7 @@ describe("Schema", () => {
           .chain("exec")
           .yields(null, feed_obj)
 
-        return podcastForFeedWithIdentifier(
+        return podcast(
           {},
           {
             identifier: feed_identifier
@@ -235,7 +223,7 @@ describe("Schema", () => {
             .chain("exec")
             .yields(null, feed_obj)
 
-          return podcastForFeedWithIdentifier(
+          return podcast(
             {},
             {
               identifier: feed_alias
@@ -264,7 +252,7 @@ describe("Schema", () => {
               .chain("exec")
               .yields(null, feed_obj)
 
-            return podcastForFeedWithIdentifier(
+            return podcast(
               {},
               {
                 identifier: feed_alias
