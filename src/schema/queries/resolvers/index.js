@@ -1,5 +1,3 @@
 export { default as RootQuery } from "./rootQuery"
-export {
-  default as podcastsForFeedWithIdentifier
-} from "./podcastForFeedWithIdentifier"
-export { default as podcasts } from "./podcasts"
+export { default as podcast } from "./podcast"
+export { default as podcastItem } from "./podcastItem"

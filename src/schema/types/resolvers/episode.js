@@ -4,6 +4,9 @@ import { DateFormat } from "~/schema/enums"
 import { empty, markdown, sanitize } from "~/utils"
 
 const Episode = {
+  _id(item) {
+    return item._id.toString()
+  },
   guid(item) {
     return item._id.toString()
   },
@@ -51,6 +54,21 @@ const Episode = {
   enclosure(item) {
     item.enclosure.item = item
     return item.enclosure
+  },
+  podcast(item) {
+    return (
+      item.feed ||
+      Feed.findOne({ _id: item.feed_id }).exec(function(err, feed) {
+        if (err) {
+          console.error(err)
+          return Promise.reject(err)
+        } else {
+          debug("Got a feed")
+          item.feed = feed
+          return Promise.resolve(feed)
+        }
+      })
+    )
   }
 }
 

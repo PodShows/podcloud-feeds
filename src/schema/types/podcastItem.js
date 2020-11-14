@@ -1,9 +1,11 @@
 import { DateFormat } from "~/schema/enums"
+import Podcast from "./podcast"
 import Episode from "./episode"
 import Post from "./post"
 
 const PodcastItem = `
 interface PodcastItem {
+  _id: String!
   guid: String!
   title: String!
   text_content: String!
@@ -15,7 +17,8 @@ interface PodcastItem {
   url: String!
   author: String
   explicit: Boolean!
+  podcast: Podcast!
 }
 `
 
-export default () => [DateFormat, PodcastItem, Episode, Post]
+export default () => [DateFormat, Podcast, PodcastItem, Episode, Post]

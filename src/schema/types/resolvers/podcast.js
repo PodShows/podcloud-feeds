@@ -7,24 +7,6 @@ import path from "path"
 
 const debug = require("debug")("podcloud-feeds:types:resolvers:podcast")
 
-const ItemFields = [
-  "_id",
-  "title",
-  "content",
-  "author",
-  "updated_at",
-  "published_at",
-  "enclosure",
-  "episode_type",
-  "season",
-  "episode",
-  "cover_choice",
-  "cover_detected",
-  "cover_custom",
-  "link",
-  "_slugs"
-]
-
 const platform_subdomains = ["faq", "blog", "devblog", "astuces", "changelog"]
 
 const Podcast = {
@@ -192,7 +174,7 @@ const Podcast = {
 
       debug("findArgs", findArgs)
 
-      Item.find(findArgs, ItemFields, {
+      Item.find(findArgs, null, {
         sort: {
           published_at: feed.ordering == "asc" ? 1 : -1
         }

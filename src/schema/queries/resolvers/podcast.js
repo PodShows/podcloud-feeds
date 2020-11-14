@@ -15,75 +15,50 @@ const podcastIdentifiersCache = cached("podcastIdentifiersCache", {
   }
 })
 
-const PodcastFields = [
-  "_id",
-  "title",
-  "catchline",
-  "description",
-  "identifier",
-  "language",
-  "copyright",
-  "contact_email",
-  "author",
-  "explicit",
-  "tags",
-  "cover_filename",
-  "parent_feed",
-  "url_prefix",
-  "link",
-  "external",
-  "block_itunes",
-  "block_google_podcasts",
-  "itunes_category",
-  "disabled",
-  "feed_redirect_url",
-  "web_redirect_url",
-  "created_at",
-  "ordering",
-  "updated_at",
-  "feed_cover",
-  "_slugs",
-  "itunes",
-  "google_podcasts",
-  "spotify",
-  "deezer",
-  "podcloud",
-  "youtube",
-  "soundcloud",
-  "dailymotion",
-  "twitch",
-  "twitter",
-  "facebook",
-  "instagram",
-  "wiki",
-  "shop",
-  "donate"
-]
-
-const podcastForFeedWithIdentifier = function(obj, args, context, info) {
+const podcast = function(obj, args, context, info) {
   debug("called")
   return new Promise((resolve, reject) => {
-    debug("inside promise")
-    if (
-      typeof args !== "object" ||
-      !args.hasOwnProperty("identifier") ||
-      empty(args.identifier)
-    ) {
-      console.error("args.identifier must be a non-empty string!")
-      reject("args.identifier must be a non-empty string!")
+    const error = err => {
+      console.error(err)
+      return reject(err)
     }
-    const identifier_cleaned = args.identifier.toLowerCase().trim()
+
+    debug("inside promise")
+
+    if (typeof args !== "object") {
+      return error("args is not an object")
+    }
+
+    const hasIdentifier =
+      args.hasOwnProperty("identifier") && !empty(args.identifier)
+    const hasId = args.hasOwnProperty("_id") && !empty(args._id)
+
+    const identifier_cleaned = `${args.identifier || ""}`.toLowerCase().trim()
     const cache_key = "identifier-uid-" + identifier_cleaned
-    debug("Looking for cached uid with key : " + cache_key)
-    podcastIdentifiersCache.get(cache_key).then(
-      found => {
+
+    if (!hasId && !hasIdentifier) {
+      return error("Either args.identifier or args._id must be provided")
+    }
+
+    if (hasId) {
+      debug("Already got _id : " + args._id)
+    } else {
+      debug("Looking for cached _id with key : " + cache_key)
+    }
+
+    const _idPromise = hasId
+      ? Promise.resolve(args._id)
+      : podcastIdentifiersCache.get(cache_key)
+
+    _idPromise.then(
+      id => {
         let findArgs
 
-        if (!empty(found)) {
-          debug("Found cached uid : " + found)
-          findArgs = { _id: found }
+        if (!empty(id)) {
+          debug("Has _id : " + id)
+          findArgs = { _id: id }
         } else {
-          debug("Cached uid not found, executing big ass query")
+          debug("No _id, executing big ass query")
           findArgs = {
             draft: { $ne: true },
             $and: [
@@ -115,8 +90,10 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
               }
             )
           }
+
           if (
-            !empty(found) &&
+            !empty(id) &&
+            !empty(identifier_cleaned) &&
             (keys.indexOf(identifier_cleaned) === -1 || feed === null)
           ) {
             debug(
@@ -124,6 +101,7 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
             )
             debug("identifier_cleaned: " + identifier_cleaned)
             debug("keys: ", keys)
+
             // cached value is not valid anymore
             podcastIdentifiersCache.unset(cache_key).then(
               () => {
@@ -157,7 +135,7 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
         }
 
         const doReq = () =>
-          Feed.findOne(findArgs, PodcastFields).exec(function(err, feed) {
+          Feed.findOne(findArgs).exec(function(err, feed) {
             if (err) {
               console.error(err)
               reject(err)
@@ -168,10 +146,10 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
           })
 
         const tryInternalFirst = () =>
-          Feed.findOne(
-            { ...findArgs, external: { $ne: true } },
-            PodcastFields
-          ).exec(function(err, feed) {
+          Feed.findOne({ ...findArgs, external: { $ne: true } }).exec(function(
+            err,
+            feed
+          ) {
             if (err) {
               console.error(err)
               reject(err)
@@ -204,8 +182,8 @@ const podcastForFeedWithIdentifier = function(obj, args, context, info) {
   })
 }
 
-podcastForFeedWithIdentifier.clearCache = function() {
+podcast.clearCache = function() {
   cached.dropNamedCache("podcastIdentifiersCache")
 }
 
-export default podcastForFeedWithIdentifier
+export default podcast
