@@ -113,13 +113,23 @@ const Podcast = {
     return feed.ordering == "asc" ? "asc" : "desc"
   },
   platforms(feed) {
-    return {
-      apple: nullIfEmpty(feed.itunes),
-      google: nullIfEmpty(feed.google_podcasts),
-      spotify: nullIfEmpty(feed.spotify),
-      deezer: nullIfEmpty(feed.deezer),
-      podcloud: feed.identifier
-    }
+    feed.podcloud = feed.visible_in_directory ? feed.identifier : null
+    feed.apple = feed.itunes
+    feed.google = feed.google_podcasts
+
+    return [
+      ["apple", `https://podcasts.apple.com/`],
+      ["google", ``],
+      ["spotify", `https://open.spotify.com/show/`],
+      ["deezer", `https://deezer.com/`],
+      ["podcloud", `https://podcloud.fr/podcast/`]
+    ].reduce((acc, [platform, prefix]) => {
+      const val = nullIfEmpty(feed[platform])
+
+      acc[platform] = val
+      acc[`${platform}_url`] = val === null ? null : `${prefix}${val}`
+      return acc
+    }, {})
   },
   socials(feed) {
     return {
