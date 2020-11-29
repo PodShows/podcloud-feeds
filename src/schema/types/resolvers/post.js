@@ -51,6 +51,16 @@ const Post = {
 
     return url
   },
+  podcloud_url(item, args, ctx) {
+    const podcast_podcloud_url = Podcast.platforms(item.feed, args, ctx)
+      .podcloud_url
+
+    return podcast_podcloud_url
+      ? `${podcast_podcloud_url}/episode/${item._slugs[
+          item._slugs.length - 1
+        ] || item._id}`
+      : null
+  },
   podcast(item) {
     return item.feed
   }

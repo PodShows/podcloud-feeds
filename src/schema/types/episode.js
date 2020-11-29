@@ -15,6 +15,7 @@ type Episode implements PodcastItem {
   season: Int
   episode: Int
   url: String!
+  podcloud_url: String
   explicit: Boolean!
   author: String
   enclosure: Enclosure!

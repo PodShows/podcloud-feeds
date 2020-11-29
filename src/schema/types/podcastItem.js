@@ -15,6 +15,7 @@ interface PodcastItem {
   season: Int
   episode: Int
   url: String!
+  podcloud_url: String
   author: String
   explicit: Boolean!
   podcast: Podcast!
