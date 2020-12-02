@@ -44,6 +44,7 @@ const FeedSchema = new Mongoose.Schema({
   twitter: String,
   facebook: String,
   instagram: String,
+  discord: String,
   wiki: String,
   shop: String,
   donate: String
