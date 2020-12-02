@@ -139,7 +139,8 @@ const Podcast = {
       twitch: nullIfEmpty(feed.twitch),
       twitter: nullIfEmpty(feed.twitter),
       facebook: nullIfEmpty(feed.facebook),
-      instagram: nullIfEmpty(feed.instagram)
+      instagram: nullIfEmpty(feed.instagram),
+      discord: nullIfEmpty(feed.discord)
     }
   },
   wiki_url(feed) {
