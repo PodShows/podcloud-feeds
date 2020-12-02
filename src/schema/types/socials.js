@@ -7,6 +7,7 @@ type Socials {
   twitter: String
   facebook: String
   instagram: String
+  discord: String
 }
 `
 
