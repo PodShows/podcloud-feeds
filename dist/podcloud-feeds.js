@@ -261,6 +261,7 @@ interface PodcastItem {
   season: Int
   episode: Int
   url: String!
+  podcloud_url: String
   author: String
   explicit: Boolean!
   podcast: Podcast!
@@ -408,13 +409,17 @@ const Podcast = {
     return feed.ordering == "asc" ? "asc" : "desc";
   },
   platforms(feed) {
-    return {
-      apple: (0, _utils.nullIfEmpty)(feed.itunes),
-      google: (0, _utils.nullIfEmpty)(feed.google_podcasts),
-      spotify: (0, _utils.nullIfEmpty)(feed.spotify),
-      deezer: (0, _utils.nullIfEmpty)(feed.deezer),
-      podcloud: feed.identifier
-    };
+    feed.podcloud = feed.visible_in_directory ? feed.identifier : null;
+    feed.apple = feed.itunes;
+    feed.google = feed.google_podcasts;
+
+    return [["apple", `https://podcasts.apple.com/`], ["google", ``], ["spotify", `https://open.spotify.com/show/`], ["deezer", `https://deezer.com/`], ["podcloud", `https://podcloud.fr/podcast/`]].reduce((acc, [platform, prefix]) => {
+      const val = (0, _utils.nullIfEmpty)(feed[platform]);
+
+      acc[platform] = val;
+      acc[`${platform}_url`] = val === null ? null : `${prefix}${val}`;
+      return acc;
+    }, {});
   },
   socials(feed) {
     return {
@@ -424,7 +429,8 @@ const Podcast = {
       twitch: (0, _utils.nullIfEmpty)(feed.twitch),
       twitter: (0, _utils.nullIfEmpty)(feed.twitter),
       facebook: (0, _utils.nullIfEmpty)(feed.facebook),
-      instagram: (0, _utils.nullIfEmpty)(feed.instagram)
+      instagram: (0, _utils.nullIfEmpty)(feed.instagram),
+      discord: (0, _utils.nullIfEmpty)(feed.discord)
     };
   },
   wiki_url(feed) {
@@ -575,6 +581,7 @@ type Episode implements PodcastItem {
   season: Int
   episode: Int
   url: String!
+  podcloud_url: String
   explicit: Boolean!
   author: String
   enclosure: Enclosure!
@@ -724,6 +731,7 @@ type Post implements PodcastItem {
   season: Int
   episode: Int
   url: String!
+  podcloud_url: String
   author: String
   explicit: Boolean!
   podcast: Podcast!
@@ -955,6 +963,7 @@ const FeedSchema = new _mongoose2.default.Schema({
   twitter: String,
   facebook: String,
   instagram: String,
+  discord: String,
   wiki: String,
   shop: String,
   donate: String
@@ -1392,10 +1401,15 @@ Object.defineProperty(exports, "__esModule", {
 const Platforms = `
 type Platforms {
   apple: String
+  apple_url: String
   google: String
+  google_url: String
   spotify: String
+  spotify_url: String
   deezer: String
+  deezer_url: String
   podcloud: String
+  podcloud_url: String
 }
 `;
 
@@ -1420,6 +1434,7 @@ type Socials {
   twitter: String
   facebook: String
   instagram: String
+  discord: String
 }
 `;
 
@@ -1738,6 +1753,11 @@ const Post = {
 
     return url;
   },
+  podcloud_url(item, args, ctx) {
+    const podcast_podcloud_url = _podcast2.default.platforms(item.feed, args, ctx).podcloud_url;
+
+    return podcast_podcloud_url ? `${podcast_podcloud_url}/episode/${item._slugs[item._slugs.length - 1] || item._id}` : null;
+  },
   podcast(item) {
     return item.feed;
   }
@@ -1802,6 +1822,11 @@ const Episode = {
     if (!/^https?:\/\//.test(url)) url = "http://" + url;
 
     return url;
+  },
+  podcloud_url(item, args, ctx) {
+    const podcast_podcloud_url = _podcast2.default.platforms(item.feed, args, ctx).podcloud_url;
+
+    return podcast_podcloud_url ? `${podcast_podcloud_url}/episode/${item._slugs[item._slugs.length - 1] || item._id}` : null;
   },
   episode_type(item) {
     return (/^(full|bonus|trailer)$/.test(item.episode_type) ? item.episode_type : null
@@ -1909,7 +1934,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 const build_url = (ctx, cover, size) => {
   const host = ctx.hosts.uploads;
   const sha1 = cover.sha1;
-  const external = (cover.item || cover.feed).external;
+  const external = (cover.item || cover.feed || {}).external == true;
 
   let size_prefix = `${size || ""}`.trim();
   if (size_prefix.length > 0) {
