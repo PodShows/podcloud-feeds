@@ -24,7 +24,7 @@ const podcastItem = function(obj, args, context, info) {
       if (err) {
         reject(err)
       } else {
-        if (item.feed_id) {
+        if (item && item.feed_id) {
           Feed.findOne({ _id: item.feed_id }).exec(function(err, feed) {
             if (err) {
               console.error(err)
