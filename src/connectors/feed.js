@@ -20,6 +20,7 @@ const FeedSchema = new Mongoose.Schema({
   author: String,
   explicit: Boolean,
   draft: Boolean,
+  visible_in_directory: Boolean,
   tags: String,
   _slugs: [String],
   parent_feed: String,
