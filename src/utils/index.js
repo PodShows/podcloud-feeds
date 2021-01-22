@@ -1,5 +1,6 @@
 import sanitizeHtml from "sanitize-html"
 import marked from "marked"
+import crypto from "crypto"
 
 const renderer = new marked.Renderer()
 renderer.heading = function(text, level, raw) {
@@ -57,4 +58,10 @@ const sanitize = text =>
         }
       ).trim()
 
-export { empty, nullIfEmpty, markdown, sanitize }
+const sha256 = text =>
+  crypto
+    .createHash("sha256")
+    .update(text)
+    .digest("hex")
+
+export { empty, nullIfEmpty, markdown, sanitize, sha256 }

@@ -1,6 +1,6 @@
 import path from "path"
 import mime from "mime-types"
-import { empty } from "~/utils"
+import { empty, sha256 } from "~/utils"
 
 const Enclosure = {
   duration(enclosure) {
@@ -17,23 +17,28 @@ const Enclosure = {
     )
   },
   url(enclosure, args, ctx) {
-    return (
-      (empty(enclosure.item.feed.url_prefix)
-        ? "https://"
-        : enclosure.item.feed.url_prefix) +
-      ctx.hosts.stats +
-      "/" +
-      enclosure.item.feed.identifier +
-      "/" +
-      enclosure.item._slugs[enclosure.item._slugs.length - 1] +
-      "/enclosure." +
-      Math.round(enclosure.item.updated_at / 1000) +
-      ((!empty(enclosure.media_type)
-        ? `.${enclosure.media_type}`
-        : path.extname(`${enclosure.filename}`).replace(/(.*)\?.*$/, "$1")) ||
-        ".mp3") +
-      "?p=f"
-    )
+    const prefix = empty(enclosure.item.feed.url_prefix)
+      ? "https://"
+      : enclosure.item.feed.url_prefix
+
+    const identifier = enclosure.item.feed.identifier
+    const item_slug = enclosure.item._slugs[enclosure.item._slugs.length - 1]
+
+    const enclosure_sha256 = empty(enclosure.sha256)
+      ? sha256(enclosure.meta_url.path)
+      : enclosure.sha256
+
+    const file_ext = path
+      .extname(`${enclosure.filename}`)
+      .replace(/(.*)\?.*$/, "$1")
+
+    const enclosure_ext = empty(enclosure.media_type)
+      ? file_ext || ".mp3"
+      : `.${enclosure.media_type}`
+
+    return `${prefix}${
+      ctx.hosts.stats
+    }/${identifier}/${item_slug}/enclosure.${enclosure_sha256}${enclosure_ext}?p=f`
   },
   cover(enclosure) {
     let cover = null
