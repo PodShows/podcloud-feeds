@@ -14,6 +14,7 @@ const EnclosureSchema = new Mongoose.Schema({
   length: String,
   media_type: String,
   mime_type: String,
+  sha256: String,
   meta_url: EnclosureUrlSchema,
   filename: String,
   cover_detected: CoverSchema,

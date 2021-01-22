@@ -18,6 +18,7 @@ describe("Enclosure Graph Object", () => {
     },
     duration_in_seconds: 600,
     length: "123521",
+    sha256: "blabla",
     media_type: null,
     mime_type: "audio/mpeg+test",
     filename: "afile.ext",
@@ -124,7 +125,7 @@ describe("Enclosure Graph Object", () => {
       "https://" +
         context.hosts.stats +
         "/blog-de-toto/tata/enclosure." +
-        1337 +
+        "blabla" +
         ".pouet?p=f"
     )
   })
@@ -143,7 +144,7 @@ describe("Enclosure Graph Object", () => {
       "https://" +
         context.hosts.stats +
         "/blog-de-toto/tata/enclosure." +
-        1337 +
+        "blabla" +
         ".ext?p=f"
     )
   })
@@ -163,7 +164,7 @@ describe("Enclosure Graph Object", () => {
       "https://" +
         context.hosts.stats +
         "/blog-de-toto/tata/enclosure." +
-        1337 +
+        "blabla" +
         ".mp3?p=f"
     )
   })
@@ -190,8 +191,28 @@ describe("Enclosure Graph Object", () => {
       "https://michel.stats/" +
         context.hosts.stats +
         "/blog-de-toto/tata/enclosure." +
-        1337 +
+        "blabla" +
         ".mp3?p=f"
+    )
+  })
+
+  it("should resolve url without sha256", () => {
+    expect(
+      enclosureFields.url.resolve(
+        {
+          ...enclosureObject,
+          sha256: null
+        },
+        {},
+        context
+      )
+    ).to.equals(
+      "https://" +
+        context.hosts.stats +
+        "/blog-de-toto/tata/enclosure." +
+        // this is meta_url.path sha256
+        "85e551c61511d36350535b2688a6bdb40845301414e630e2f8a03c252ccf37de" +
+        ".ext?p=f"
     )
   })
 })
