@@ -1,7 +1,7 @@
-import Item from "~/connectors/item"
-import Feed from "~/connectors/feed"
+import Item from "~/connectors/item";
+import Feed from "~/connectors/feed";
 
-const debug = require("debug")("podcloud-feeds:queries:podcastItem")
+const debug = require("debug")("podcloud-feeds:queries:podcastItem");
 
 const podcastItem = function(obj, args, context, info) {
   return new Promise((resolve, reject) => {
@@ -11,33 +11,33 @@ const podcastItem = function(obj, args, context, info) {
       private: {
         $ne: true
       }
-    }
+    };
 
-    debug("findArgs", findArgs)
+    debug("findArgs", findArgs);
 
     Item.findOne(findArgs).exec(function(err, item) {
-      debug("err:", err)
-      debug("item:", item)
+      debug("err:", err);
+      debug("item:", item);
       if (err) {
-        reject(err)
+        reject(err);
       } else {
         if (item && item.feed_id) {
           Feed.findOne({ _id: item.feed_id }).exec(function(err, feed) {
             if (err) {
-              console.error(err)
-              reject(err)
+              console.error(err);
+              reject(err);
             } else {
-              debug("Got a feed", feed)
-              item.feed = feed
-              resolve(item)
+              debug("Got a feed", feed);
+              item.feed = feed;
+              resolve(item);
             }
-          })
+          });
         } else {
-          resolve(null)
+          resolve(null);
         }
       }
-    })
-  })
-}
+    });
+  });
+};
 
-export default podcastItem
+export default podcastItem;

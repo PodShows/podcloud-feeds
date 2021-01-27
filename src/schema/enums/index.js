@@ -1,1 +1,1 @@
-export { default as DateFormat } from "./dateFormat"
+export { default as DateFormat } from "./dateFormat";

@@ -1,5 +1,5 @@
-import { BigInt } from "~/schema/scalars"
-import Cover from "~/schema/types/cover"
+import { BigInt } from "~/schema/scalars";
+import Cover from "~/schema/types/cover";
 
 const Enclosure = `
 type Enclosure {
@@ -9,6 +9,6 @@ type Enclosure {
   url: String!
   cover: Cover!
 }
-`
+`;
 
-export default () => [Enclosure, BigInt.schema, Cover]
+export default () => [Enclosure, BigInt.schema, Cover];

@@ -1,6 +1,6 @@
-import { Types } from "mongoose"
-const ObjectId = Types.ObjectId
-const NOW = new Date()
+import { Types } from "mongoose";
+const ObjectId = Types.ObjectId;
+const NOW = new Date();
 
 const items = [
   {
@@ -102,7 +102,7 @@ const items = [
     content: "Ceci est l'épisode 2",
     published_at: NOW
   }
-]
+];
 
-export { items }
-export default items
+export { items };
+export default items;

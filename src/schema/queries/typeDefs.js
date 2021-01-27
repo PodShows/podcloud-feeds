@@ -1,5 +1,5 @@
-import RootQuery from "./rootQuery"
+import RootQuery from "./rootQuery";
 
-export { RootQuery }
+export { RootQuery };
 
-export default () => RootQuery
+export default () => RootQuery;

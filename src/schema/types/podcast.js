@@ -1,8 +1,8 @@
-import { DateFormat } from "~/schema/enums"
-import Cover from "./podcastItem"
-import PodcastItem from "./podcastItem"
-import Platforms from "./platforms"
-import Socials from "./socials"
+import { DateFormat } from "~/schema/enums";
+import Cover from "./podcastItem";
+import PodcastItem from "./podcastItem";
+import Platforms from "./platforms";
+import Socials from "./socials";
 
 const Podcast = `type Podcast {
   _id: String!
@@ -38,7 +38,7 @@ const Podcast = `type Podcast {
   ordering: String!
   _host: String!
 }
-`
+`;
 
 export default () => [
   DateFormat,
@@ -47,4 +47,4 @@ export default () => [
   Cover,
   Platforms,
   Socials
-]
+];

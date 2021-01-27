@@ -1,6 +1,6 @@
 {
   "name": "podcloud-feeds",
-  "version": "1.6.8",
+  "version": "1.7.0",
   "description": "GraphQL API for podcloud",
   "scripts": {
     "test": "NODE_ENV=test mocha --opts test/mocha.opts",
@@ -65,8 +65,5 @@
     "sinon-mongoose": "2.0.2",
     "webpack": "^3.10.0",
     "webpack-node-externals": "^1.6.0"
-  },
-  "prettier": {
-    "semi": false
   }
 }

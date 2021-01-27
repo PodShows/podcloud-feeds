@@ -7,15 +7,15 @@ const resolveFixture = {
             message: "hello world"
           }),
           200
-        )
-      })
+        );
+      });
     }
   },
   HelloWorld: {
     message(greeting) {
-      return greeting.message
+      return greeting.message;
     }
   }
-}
+};
 
-export default resolveFixture
+export default resolveFixture;

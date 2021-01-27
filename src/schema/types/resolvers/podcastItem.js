@@ -1,13 +1,13 @@
 const PodcastItem = {
   __resolveType(data, context, info) {
-    const enclosure_path = (((data || {}).enclosure || {}).meta_url || {}).path
+    const enclosure_path = (((data || {}).enclosure || {}).meta_url || {}).path;
 
     if (enclosure_path) {
-      return info.schema.getType("Episode")
+      return info.schema.getType("Episode");
     }
 
-    return info.schema.getType("Post")
+    return info.schema.getType("Post");
   }
-}
+};
 
-export default PodcastItem
+export default PodcastItem;

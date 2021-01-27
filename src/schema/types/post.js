@@ -1,6 +1,6 @@
-import PodcastItem from "./podcastItem"
-import { DateFormat } from "~/schema/enums"
-import Podcast from "./podcast"
+import PodcastItem from "./podcastItem";
+import { DateFormat } from "~/schema/enums";
+import Podcast from "./podcast";
 
 const Post = `
 type Post implements PodcastItem {
@@ -19,6 +19,6 @@ type Post implements PodcastItem {
   explicit: Boolean!
   podcast: Podcast!
 }
-`
+`;
 
-export default () => [PodcastItem, DateFormat, Post, Podcast]
+export default () => [PodcastItem, DateFormat, Post, Podcast];

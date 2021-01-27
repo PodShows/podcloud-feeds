@@ -11,6 +11,6 @@ type Platforms {
   podcloud: String
   podcloud_url: String
 }
-`
+`;
 
-export default () => [Platforms]
+export default () => [Platforms];

@@ -10,6 +10,6 @@ type RootQuery {
 schema {
   query: RootQuery
 }
-`
+`;
 
-export default [typeDefsFixtures]
+export default [typeDefsFixtures];

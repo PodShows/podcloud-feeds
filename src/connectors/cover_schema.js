@@ -1,5 +1,5 @@
-import Mongoose from "mongoose"
-Mongoose.Promise = global.Promise
+import Mongoose from "mongoose";
+Mongoose.Promise = global.Promise;
 
 const CoverSchema = new Mongoose.Schema({
   filename: String,
@@ -8,6 +8,6 @@ const CoverSchema = new Mongoose.Schema({
   height: Number,
   squared: Boolean,
   dominant_color: String
-})
+});
 
-export default CoverSchema
+export default CoverSchema;

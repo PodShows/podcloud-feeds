@@ -9,6 +9,6 @@ type Socials {
   instagram: String
   discord: String
 }
-`
+`;
 
-export default () => [Socials]
+export default () => [Socials];

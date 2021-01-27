@@ -1,13 +1,13 @@
-import Mongoose from "mongoose"
-import CoverSchema from "./cover_schema"
+import Mongoose from "mongoose";
+import CoverSchema from "./cover_schema";
 
-Mongoose.Promise = global.Promise
+Mongoose.Promise = global.Promise;
 
-const ObjectId = Mongoose.Schema.Types.ObjectId
+const ObjectId = Mongoose.Schema.Types.ObjectId;
 
 const EnclosureUrlSchema = new Mongoose.Schema({
   path: String
-})
+});
 
 const EnclosureSchema = new Mongoose.Schema({
   duration_in_seconds: Number,
@@ -20,7 +20,7 @@ const EnclosureSchema = new Mongoose.Schema({
   cover_detected: CoverSchema,
   cover_custom: CoverSchema,
   cover_choice: String
-})
+});
 
 const ItemSchema = new Mongoose.Schema({
   feed_id: ObjectId,
@@ -39,8 +39,8 @@ const ItemSchema = new Mongoose.Schema({
   episode: Number,
   inferred_type_season_and_episode: Boolean,
   enclosure: EnclosureSchema
-})
+});
 
-const Item = Mongoose.model("items", ItemSchema)
+const Item = Mongoose.model("Item", ItemSchema);
 
-export default Item
+export default Item;
