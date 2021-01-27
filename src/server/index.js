@@ -1,15 +1,15 @@
-import net from "net"
-import fs from "fs"
-import http from "http"
+import net from "net";
+import fs from "fs";
+import http from "http";
 
-import express from "express"
-import compression from "compression"
-import { graphqlExpress, graphiqlExpress } from "apollo-server-express"
-import { makeExecutableSchema } from "graphql-tools"
-import bodyParser from "body-parser"
-import cors from "cors"
+import express from "express";
+import compression from "compression";
+import { graphqlExpress, graphiqlExpress } from "apollo-server-express";
+import { makeExecutableSchema } from "graphql-tools";
+import bodyParser from "body-parser";
+import cors from "cors";
 
-import pino from "express-pino-logger"
+import pino from "express-pino-logger";
 
 const DEFAULT_CONFIG = {
   typeDefs: null,
@@ -17,14 +17,14 @@ const DEFAULT_CONFIG = {
   options: {},
   port: 8888,
   socket: null
-}
+};
 
 function GraphQLServer(config = DEFAULT_CONFIG) {
-  config = { ...DEFAULT_CONFIG, ...config }
+  config = { ...DEFAULT_CONFIG, ...config };
 
-  if (typeof config.prepare !== "function") config.prepare = () => {}
+  if (typeof config.prepare !== "function") config.prepare = () => {};
 
-  if (typeof config.listen !== "function") config.listen = () => {}
+  if (typeof config.listen !== "function") config.listen = () => {};
 
   const graphqlExpressOptions = {
     ...config.options,
@@ -38,18 +38,18 @@ function GraphQLServer(config = DEFAULT_CONFIG) {
         requireResolversForNonScalar: true
       }
     })
-  }
+  };
 
-  const server = express()
+  const server = express();
 
-  server.use(pino())
+  server.use(pino());
 
   server.use(
     "/graphql",
     cors(),
     bodyParser.json({ type: "*/*" }),
     graphqlExpress(graphqlExpressOptions)
-  )
+  );
 
   server.use(
     "/graphiql",
@@ -58,45 +58,45 @@ function GraphQLServer(config = DEFAULT_CONFIG) {
       pretty: true,
       endpointURL: "/graphql"
     })
-  )
+  );
 
-  server.use(compression())
+  server.use(compression());
 
-  config.prepare()
+  config.prepare();
 
   const unix_socket =
-    typeof config.socket === "string" && config.socket.trim() !== ""
+    typeof config.socket === "string" && config.socket.trim() !== "";
 
   const srvCfg = unix_socket
     ? { path: config.socket }
-    : { host: "::", port: config.port }
+    : { host: "::", port: config.port };
 
-  const http_server = http.createServer(server).listen(srvCfg, config.listen)
+  const http_server = http.createServer(server).listen(srvCfg, config.listen);
 
   if (unix_socket) {
     http_server.on("listening", () => {
       // set permissions
-      return fs.chmod(config.socket, 0o777, err => err && console.error(err))
-    })
+      return fs.chmod(config.socket, 0o777, err => err && console.error(err));
+    });
 
     // double-check EADDRINUSE
     http_server.on("error", e => {
-      if (e.code !== "EADDRINUSE") throw e
+      if (e.code !== "EADDRINUSE") throw e;
       net
         .connect({ path: config.socket }, () => {
           // really in use: re-throw
-          throw e
+          throw e;
         })
         .on("error", e => {
-          if (e.code !== "ECONNREFUSED") throw e
+          if (e.code !== "ECONNREFUSED") throw e;
           // not in use: delete it and re-listen
-          fs.unlinkSync(config.socket)
-          server.listen(config.socket, config.listen)
-        })
-    })
+          fs.unlinkSync(config.socket);
+          server.listen(config.socket, config.listen);
+        });
+    });
   }
 
-  return server
+  return server;
 }
 
-export default GraphQLServer
+export default GraphQLServer;

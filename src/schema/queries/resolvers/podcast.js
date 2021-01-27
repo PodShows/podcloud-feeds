@@ -1,8 +1,8 @@
-import { empty } from "~/utils"
-import Feed from "~/connectors/feed"
-import cached from "cached"
+import { empty } from "~/utils";
+import Feed from "~/connectors/feed";
+import cached from "cached";
 
-const debug = require("debug")("podcloud-feeds:queries:podcast")
+const debug = require("debug")("podcloud-feeds:queries:podcast");
 
 const podcastIdentifiersCache = cached("podcastIdentifiersCache", {
   backend: {
@@ -11,52 +11,52 @@ const podcastIdentifiersCache = cached("podcastIdentifiersCache", {
   defaults: {
     expire: 300
   }
-})
+});
 
 const podcast = function(obj, args, context, info) {
-  debug("called")
+  debug("called");
   return new Promise((resolve, reject) => {
     const error = err => {
-      console.error(err)
-      return reject(err)
-    }
+      console.error(err);
+      return reject(err);
+    };
 
-    debug("inside promise")
+    debug("inside promise");
 
     if (typeof args !== "object") {
-      return error("args is not an object")
+      return error("args is not an object");
     }
 
     const hasIdentifier =
-      args.hasOwnProperty("identifier") && !empty(args.identifier)
-    const hasId = args.hasOwnProperty("_id") && !empty(args._id)
+      args.hasOwnProperty("identifier") && !empty(args.identifier);
+    const hasId = args.hasOwnProperty("_id") && !empty(args._id);
 
-    const identifier_cleaned = `${args.identifier || ""}`.toLowerCase().trim()
-    const cache_key = "identifier-uid-" + identifier_cleaned
+    const identifier_cleaned = `${args.identifier || ""}`.toLowerCase().trim();
+    const cache_key = "identifier-uid-" + identifier_cleaned;
 
     if (!hasId && !hasIdentifier) {
-      return error("Either args.identifier or args._id must be provided")
+      return error("Either args.identifier or args._id must be provided");
     }
 
     if (hasId) {
-      debug("Already got _id : " + args._id)
+      debug("Already got _id : " + args._id);
     } else {
-      debug("Looking for cached _id with key : " + cache_key)
+      debug("Looking for cached _id with key : " + cache_key);
     }
 
     const _idPromise = hasId
       ? Promise.resolve(args._id)
-      : podcastIdentifiersCache.get(cache_key)
+      : podcastIdentifiersCache.get(cache_key);
 
     _idPromise.then(
       id => {
-        let findArgs
+        let findArgs;
 
         if (!empty(id)) {
-          debug("Has _id : " + id)
-          findArgs = { _id: id }
+          debug("Has _id : " + id);
+          findArgs = { _id: id };
         } else {
-          debug("No _id, executing big ass query")
+          debug("No _id, executing big ass query");
           findArgs = {
             draft: { $ne: true },
             $and: [
@@ -73,20 +73,20 @@ const podcast = function(obj, args, context, info) {
                 ]
               }
             ]
-          }
+          };
         }
 
         const resolveFeed = feed => {
-          let keys
+          let keys;
           if (feed === null) {
-            keys = []
+            keys = [];
           } else {
-            debug("Found podcast.", feed)
+            debug("Found podcast.", feed);
             keys = [feed.identifier, ...feed._slugs].filter(
               (item, pos, self) => {
-                return self.indexOf(item) == pos && !empty(item)
+                return self.indexOf(item) == pos && !empty(item);
               }
-            )
+            );
           }
 
           if (
@@ -96,52 +96,52 @@ const podcast = function(obj, args, context, info) {
           ) {
             debug(
               "Found podcast doesn't include cached identifier, we need to invalidate cache"
-            )
-            debug("identifier_cleaned: " + identifier_cleaned)
-            debug("keys: ", keys)
+            );
+            debug("identifier_cleaned: " + identifier_cleaned);
+            debug("keys: ", keys);
 
             // cached value is not valid anymore
             podcastIdentifiersCache.unset(cache_key).then(
               () => {
-                resolve(null)
+                resolve(null);
               },
               err => {
-                throw err
+                throw err;
               }
-            )
+            );
           } else {
             if (feed !== null) {
-              debug("Updating cache with up to date data")
-              const feed_id = feed._id.toString()
-              const prefix = "identifier-uid-"
+              debug("Updating cache with up to date data");
+              const feed_id = feed._id.toString();
+              const prefix = "identifier-uid-";
               Promise.all(
                 keys.map(k => {
-                  debug("Setting cache " + k + "=" + feed_id)
-                  return podcastIdentifiersCache.set(prefix + k, feed_id)
+                  debug("Setting cache " + k + "=" + feed_id);
+                  return podcastIdentifiersCache.set(prefix + k, feed_id);
                 })
               ).then(
                 () => resolve(feed),
                 err => {
                   /* istanbul ignore next */
-                  throw err
+                  throw err;
                 }
-              )
+              );
             } else {
-              resolve(feed)
+              resolve(feed);
             }
           }
-        }
+        };
 
         const doReq = () =>
           Feed.findOne(findArgs).exec(function(err, feed) {
             if (err) {
-              console.error(err)
-              reject(err)
+              console.error(err);
+              reject(err);
             } else {
-              debug("Got a feed")
-              resolveFeed(feed)
+              debug("Got a feed");
+              resolveFeed(feed);
             }
-          })
+          });
 
         const tryInternalFirst = () =>
           Feed.findOne({ ...findArgs, external: { $ne: true } }).exec(function(
@@ -149,39 +149,39 @@ const podcast = function(obj, args, context, info) {
             feed
           ) {
             if (err) {
-              console.error(err)
-              reject(err)
+              console.error(err);
+              reject(err);
             } else {
-              debug("Tried internal first")
+              debug("Tried internal first");
               if (feed === null) {
-                debug("Got null")
-                debug("Do request now")
-                doReq()
+                debug("Got null");
+                debug("Do request now");
+                doReq();
               } else {
-                debug("Got a feed")
-                resolveFeed(feed)
+                debug("Got a feed");
+                resolveFeed(feed);
               }
             }
-          })
+          });
 
         if (findArgs._id) {
-          debug("Do request now")
-          doReq()
+          debug("Do request now");
+          doReq();
         } else {
-          debug("Try internal first")
-          tryInternalFirst()
+          debug("Try internal first");
+          tryInternalFirst();
         }
       },
       err => {
         /* istanbul ignore next */
-        throw err
+        throw err;
       }
-    )
-  })
-}
+    );
+  });
+};
 
 podcast.clearCache = function() {
-  cached.dropNamedCache("podcastIdentifiersCache")
-}
+  cached.dropNamedCache("podcastIdentifiersCache");
+};
 
-export default podcast
+export default podcast;

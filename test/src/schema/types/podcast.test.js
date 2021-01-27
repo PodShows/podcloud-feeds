@@ -1,31 +1,31 @@
-import chai from "chai"
-import chaiAsPromised from "chai-as-promised"
-import sinon from "sinon"
-import sinonChai from "sinon-chai"
-import "sinon-mongoose"
-import proxyquire from "proxyquire"
+import chai from "chai";
+import chaiAsPromised from "chai-as-promised";
+import sinon from "sinon";
+import sinonChai from "sinon-chai";
+import "sinon-mongoose";
+import proxyquire from "proxyquire";
 
-import * as graphql from "graphql"
-import { buildSchema, testGraphQLProperty } from "#/helpers/schema.helper.js"
-import { context } from "#/helpers/server.helper"
+import * as graphql from "graphql";
+import { buildSchema, testGraphQLProperty } from "#/helpers/schema.helper.js";
+import { context } from "#/helpers/server.helper";
 
-import Item from "~/connectors/item"
+import Item from "~/connectors/item";
 
-import path from "path"
+import path from "path";
 
-import { Types } from "mongoose"
-const ObjectId = Types.ObjectId
+import { Types } from "mongoose";
+const ObjectId = Types.ObjectId;
 
-const expect = chai.expect
-chai.use(sinonChai)
-chai.use(chaiAsPromised)
+const expect = chai.expect;
+chai.use(sinonChai);
+chai.use(chaiAsPromised);
 
 describe("Podcast Graph Object", () => {
-  const schema = buildSchema()
-  const fields = schema.getType("Podcast").getFields()
+  const schema = buildSchema();
+  const fields = schema.getType("Podcast").getFields();
 
-  const created_at = new Date(Date.UTC(2009, 4, 1, 19, 30, 42))
-  const updated_at = new Date(Date.UTC(2009, 4, 1, 20, 30, 42))
+  const created_at = new Date(Date.UTC(2009, 4, 1, 19, 30, 42));
+  const updated_at = new Date(Date.UTC(2009, 4, 1, 20, 30, 42));
 
   const obj = {
     _id: ObjectId("a6b7321bf6ab350bcef47624"),
@@ -52,15 +52,15 @@ describe("Podcast Graph Object", () => {
     disabled: false,
     feed_redirect_url: "http://redirect_feed",
     web_redirect_url: "http://redirect_web"
-  }
+  };
 
   before(() => {
-    testGraphQLProperty.context = context
-  })
+    testGraphQLProperty.context = context;
+  });
 
   after(() => {
-    testGraphQLProperty.restore()
-  })
+    testGraphQLProperty.restore();
+  });
 
   it(
     "should include and resolve a required string _id",
@@ -71,7 +71,7 @@ describe("Podcast Graph Object", () => {
       obj,
       obj._id.toString()
     )
-  )
+  );
 
   it(
     "should include and resolve a required string title",
@@ -82,7 +82,7 @@ describe("Podcast Graph Object", () => {
       obj,
       obj.title
     )
-  )
+  );
 
   it(
     "should include and resolve a required string identifier",
@@ -93,7 +93,7 @@ describe("Podcast Graph Object", () => {
       obj,
       obj.identifier
     )
-  )
+  );
 
   it(
     "should include and resolve a required string catchline",
@@ -104,7 +104,7 @@ describe("Podcast Graph Object", () => {
       obj,
       obj.catchline
     )
-  )
+  );
 
   it(
     "should include and resolve a string ordering",
@@ -115,7 +115,7 @@ describe("Podcast Graph Object", () => {
       obj,
       obj.ordering
     )
-  )
+  );
 
   it(
     "should include and resolve a string copyright",
@@ -126,7 +126,7 @@ describe("Podcast Graph Object", () => {
       obj,
       obj.copyright
     )
-  )
+  );
 
   it(
     "should include and resolve a required string description",
@@ -137,7 +137,7 @@ describe("Podcast Graph Object", () => {
       obj,
       obj.description
     )
-  )
+  );
 
   it(
     "should include and resolve a required string language",
@@ -148,7 +148,7 @@ describe("Podcast Graph Object", () => {
       obj,
       obj.language
     )
-  )
+  );
 
   it(
     "should include and resolve a string contact email",
@@ -159,7 +159,7 @@ describe("Podcast Graph Object", () => {
       obj,
       obj.contact_email
     )
-  )
+  );
 
   it(
     "should include and resolve a string author",
@@ -170,7 +170,7 @@ describe("Podcast Graph Object", () => {
       obj,
       obj.author
     )
-  )
+  );
 
   it(
     "should include and resolve a required string published_at",
@@ -181,7 +181,7 @@ describe("Podcast Graph Object", () => {
       obj,
       "Fri, 01 May 2009 19:30:42 +0000"
     )
-  )
+  );
 
   it(
     "should include and resolve a required string published_at",
@@ -192,7 +192,7 @@ describe("Podcast Graph Object", () => {
       obj,
       "Fri, 01 May 2009 20:30:42 +0000"
     )
-  )
+  );
 
   it(
     "should include and resolve a required string published_at",
@@ -203,7 +203,7 @@ describe("Podcast Graph Object", () => {
       obj,
       "Fri, 01 May 2009 19:30:42 +0000"
     )
-  )
+  );
 
   it(
     "should include and resolve a required boolean internal",
@@ -214,7 +214,7 @@ describe("Podcast Graph Object", () => {
       obj,
       true
     )
-  )
+  );
 
   describe("should include and resolve a required string feed_url", () => {
     describe("internal feed", () => {
@@ -222,7 +222,7 @@ describe("Podcast Graph Object", () => {
         ...obj,
         external: false,
         identifier: "toto"
-      }
+      };
 
       it("without platform subdomain", () => {
         testGraphQLProperty(
@@ -231,27 +231,27 @@ describe("Podcast Graph Object", () => {
           new graphql.GraphQLNonNull(graphql.GraphQLString),
           feed,
           `https://${feed.identifier}.${context.hosts.podcasts}/rss`
-        )()
-      })
+        )();
+      });
 
       it("with platform subdomain", () => {
-        const o = { ...feed, identifier: "blog" }
+        const o = { ...feed, identifier: "blog" };
         testGraphQLProperty(
           fields,
           "feed_url",
           new graphql.GraphQLNonNull(graphql.GraphQLString),
           o,
           `https://${o.identifier}.${context.hosts.platform}/rss`
-        )()
-      })
-    })
+        )();
+      });
+    });
 
     it("external feed with http", () => {
       const o = {
         ...obj,
         external: true,
         parent_feed: "https://toto.com/feed"
-      }
+      };
 
       testGraphQLProperty(
         fields,
@@ -259,15 +259,15 @@ describe("Podcast Graph Object", () => {
         new graphql.GraphQLNonNull(graphql.GraphQLString),
         o,
         o.parent_feed
-      )()
-    })
+      )();
+    });
 
     it("external feed without http", () => {
       const o = {
         ...obj,
         external: true,
         parent_feed: "toto.com/feed"
-      }
+      };
 
       testGraphQLProperty(
         fields,
@@ -275,9 +275,9 @@ describe("Podcast Graph Object", () => {
         new graphql.GraphQLNonNull(graphql.GraphQLString),
         o,
         "http://" + o.parent_feed
-      )()
-    })
-  })
+      )();
+    });
+  });
 
   describe("should include and resolve a required string website_url", () => {
     it("without website", () => {
@@ -286,7 +286,7 @@ describe("Podcast Graph Object", () => {
         external: false,
         identifier: "toto",
         link: null
-      }
+      };
 
       it("without platform subdomain", () => {
         testGraphQLProperty(
@@ -295,27 +295,27 @@ describe("Podcast Graph Object", () => {
           new graphql.GraphQLNonNull(graphql.GraphQLString),
           feed,
           `https://${feed.identifier}.${context.hosts.podcasts}/`
-        )()
-      })
+        )();
+      });
 
       it("with platform subdomain", () => {
-        const o = { ...feed, identifier: "blog" }
+        const o = { ...feed, identifier: "blog" };
         testGraphQLProperty(
           fields,
           "website_url",
           new graphql.GraphQLNonNull(graphql.GraphQLString),
           o,
           `https://${o.identifier}.${context.hosts.platform}/`
-        )()
-      })
-    })
+        )();
+      });
+    });
 
     it("external website with https", () => {
       const o = {
         ...obj,
         external: true,
         link: "https://toto.com"
-      }
+      };
 
       testGraphQLProperty(
         fields,
@@ -323,15 +323,15 @@ describe("Podcast Graph Object", () => {
         new graphql.GraphQLNonNull(graphql.GraphQLString),
         o,
         o.link
-      )()
-    })
+      )();
+    });
 
     it("external website without http", () => {
       const o = {
         ...obj,
         external: true,
         link: "toto.com"
-      }
+      };
 
       testGraphQLProperty(
         fields,
@@ -339,9 +339,9 @@ describe("Podcast Graph Object", () => {
         new graphql.GraphQLNonNull(graphql.GraphQLString),
         o,
         "http://" + o.link
-      )()
-    })
-  })
+      )();
+    });
+  });
 
   it(
     "should include and resolve a required boolean external",
@@ -352,7 +352,7 @@ describe("Podcast Graph Object", () => {
       obj,
       false
     )
-  )
+  );
 
   it(
     "should include and resolve a required boolean disabled",
@@ -363,7 +363,7 @@ describe("Podcast Graph Object", () => {
       obj,
       false
     )
-  )
+  );
 
   it(
     "should include and resolve a required boolean explicit",
@@ -374,7 +374,7 @@ describe("Podcast Graph Object", () => {
       obj,
       true
     )
-  )
+  );
 
   it(
     "should include and resolve a required string array tags",
@@ -387,7 +387,7 @@ describe("Podcast Graph Object", () => {
       obj,
       ["test", "tags", "lol"]
     )
-  )
+  );
 
   it(
     "should include and resolve a required boolean itunes_block",
@@ -398,7 +398,7 @@ describe("Podcast Graph Object", () => {
       obj,
       false
     )
-  )
+  );
 
   it(
     "should include and resolve a required boolean googleplay_block",
@@ -409,7 +409,7 @@ describe("Podcast Graph Object", () => {
       obj,
       false
     )
-  )
+  );
 
   it(
     "should include and resolve a string itunes_category",
@@ -420,7 +420,7 @@ describe("Podcast Graph Object", () => {
       obj,
       obj.itunes_category
     )
-  )
+  );
 
   it(
     "should include and resolve a string feed_redirect_url",
@@ -431,18 +431,18 @@ describe("Podcast Graph Object", () => {
       obj,
       obj.feed_redirect_url
     )
-  )
+  );
 
   it("should include and resolve a null feed_redirect_url", () => {
-    obj.feed_redirect_url = ""
+    obj.feed_redirect_url = "";
     return testGraphQLProperty(
       fields,
       "feed_redirect_url",
       graphql.GraphQLString,
       obj,
       null
-    )()
-  })
+    )();
+  });
 
   it(
     "should include and resolve a string web_redirect_url",
@@ -453,18 +453,18 @@ describe("Podcast Graph Object", () => {
       obj,
       obj.web_redirect_url
     )
-  )
+  );
 
   it("should include and resolve a null web_redirect_url", () => {
-    obj.web_redirect_url = ""
+    obj.web_redirect_url = "";
     return testGraphQLProperty(
       fields,
       "web_redirect_url",
       graphql.GraphQLString,
       obj,
       null
-    )()
-  })
+    )();
+  });
 
   it(
     "should include a required list of PodcastItems",
@@ -475,46 +475,46 @@ describe("Podcast Graph Object", () => {
         new graphql.GraphQLList(schema.getType("PodcastItem"))
       )
     )
-  )
+  );
 
   describe("should resolve a required list of PodcastItems", () => {
-    let ItemMock
-    let PodcastResolvers
+    let ItemMock;
+    let PodcastResolvers;
 
     beforeEach(() => {
-      ItemMock = sinon.mock(Item)
+      ItemMock = sinon.mock(Item);
       PodcastResolvers = proxyquire(
         "../../../../src/schema/types/resolvers/podcast",
         {
           Item
         }
-      ).default
-    })
+      ).default;
+    });
 
     it("should reject the promise when database has an error", () => {
-      const err_msg = "Error occured (simulated at " + +new Date() / 1000 + ")"
+      const err_msg = "Error occured (simulated at " + +new Date() / 1000 + ")";
 
       ItemMock.expects("find")
         .chain("exec")
-        .yields(err_msg, null)
+        .yields(err_msg, null);
 
-      const items = PodcastResolvers.items(obj)
+      const items = PodcastResolvers.items(obj);
 
-      expect(items).to.be.a("promise")
-      ItemMock.verify()
+      expect(items).to.be.a("promise");
+      ItemMock.verify();
 
-      return expect(items).to.be.eventually.rejectedWith(err_msg)
-    })
+      return expect(items).to.be.eventually.rejectedWith(err_msg);
+    });
 
     it("should filter out null values from db", () => {
       ItemMock.expects("find")
         .chain("exec")
-        .yields(undefined, [null, { id: "item1" }, { id: "item2" }])
+        .yields(undefined, [null, { id: "item1" }, { id: "item2" }]);
 
-      const items = PodcastResolvers.items(obj)
+      const items = PodcastResolvers.items(obj);
 
-      expect(items).to.be.a("promise")
-      ItemMock.verify()
+      expect(items).to.be.a("promise");
+      ItemMock.verify();
 
       return expect(items).to.eventually.deep.equals([
         {
@@ -525,18 +525,18 @@ describe("Podcast Graph Object", () => {
           id: "item2",
           feed: obj
         }
-      ])
-    })
+      ]);
+    });
 
     it("should resolve the promise when everything works", () => {
       ItemMock.expects("find")
         .chain("exec")
-        .yields(undefined, [{ id: "item1" }, { id: "item2" }])
+        .yields(undefined, [{ id: "item1" }, { id: "item2" }]);
 
-      const items = PodcastResolvers.items(obj)
+      const items = PodcastResolvers.items(obj);
 
-      expect(items).to.be.a("promise")
-      ItemMock.verify()
+      expect(items).to.be.a("promise");
+      ItemMock.verify();
 
       return expect(items).to.eventually.deep.equals([
         {
@@ -547,11 +547,11 @@ describe("Podcast Graph Object", () => {
           id: "item2",
           feed: obj
         }
-      ])
-    })
+      ]);
+    });
 
     afterEach(() => {
-      ItemMock.restore()
-    })
-  })
-})
+      ItemMock.restore();
+    });
+  });
+});

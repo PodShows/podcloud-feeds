@@ -1,9 +1,9 @@
-import Mongoose from "mongoose"
-import CoverSchema from "./cover_schema"
+import Mongoose from "mongoose";
+import CoverSchema from "./cover_schema";
 
-Mongoose.Promise = global.Promise
+Mongoose.Promise = global.Promise;
 
-const ObjectId = Mongoose.Schema.Types.ObjectId
+const ObjectId = Mongoose.Schema.Types.ObjectId;
 
 const FeedSchema = new Mongoose.Schema({
   title: String,
@@ -49,8 +49,8 @@ const FeedSchema = new Mongoose.Schema({
   wiki: String,
   shop: String,
   donate: String
-})
+});
 
-const Feed = Mongoose.model("feeds", FeedSchema)
+const Feed = Mongoose.model("feeds", FeedSchema);
 
-export default Feed
+export default Feed;

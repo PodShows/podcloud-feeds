@@ -10,6 +10,6 @@ type Cover {
   medium_url: String!
   big_url: String!
 }
-`
+`;
 
-export default () => [Cover]
+export default () => [Cover];

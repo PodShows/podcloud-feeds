@@ -4,14 +4,14 @@ const DateFormat = () => [
 	  RFC822
 	}
 `
-]
+];
 
 const DateFormatEnum = {
   RFC822: "ddd, DD MMM YYYY HH:mm:ss ZZ"
-}
+};
 
 DateFormat.resolve = key => {
-  return DateFormatEnum[key]
-}
+  return DateFormatEnum[key];
+};
 
-export default DateFormat
+export default DateFormat;

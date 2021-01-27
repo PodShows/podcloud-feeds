@@ -1,4 +1,4 @@
-import Feed from "./feed"
-import Item from "./item"
+import Feed from "./feed";
+import Item from "./item";
 
-export { Feed, Item }
+export { Feed, Item };

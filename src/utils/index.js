@@ -1,16 +1,16 @@
-import sanitizeHtml from "sanitize-html"
-import marked from "marked"
-import crypto from "crypto"
+import sanitizeHtml from "sanitize-html";
+import marked from "marked";
+import crypto from "crypto";
 
-const renderer = new marked.Renderer()
+const renderer = new marked.Renderer();
 renderer.heading = function(text, level, raw) {
-  return "<h" + level + ">" + text + "</h" + level + ">\n"
-}
+  return "<h" + level + ">" + text + "</h" + level + ">\n";
+};
 
-marked.setOptions({ renderer, breaks: true })
+marked.setOptions({ renderer, breaks: true });
 
 const markdown = function(content, config) {
-  content = marked(content)
+  content = marked(content);
 
   const allowed_markups = {
     "%SHOWNOTES_ALLOWED_MARKUPS%": `
@@ -23,27 +23,27 @@ const markdown = function(content, config) {
 			kbd li mark ol p pre q rp rt ruby s samp small span strike strong sub summary
 			sup table tbody td tfoot th thead time tr u ul var wbr
 		`
-  }
+  };
 
   Object.keys(allowed_markups).forEach(key => {
     content = content.replace(
       key,
       allowed_markups[key].match(/\w+/g).map(markup => {
-        "<code>" + markup + "</code>"
+        "<code>" + markup + "</code>";
       })
-    )
-  })
+    );
+  });
 
-  return content
-}
+  return content;
+};
 
 const empty = function(obj) {
-  return !(typeof obj === "string" && obj.trim().length > 0)
-}
+  return !(typeof obj === "string" && obj.trim().length > 0);
+};
 
 const nullIfEmpty = function(obj) {
-  return empty(obj) ? null : obj
-}
+  return empty(obj) ? null : obj;
+};
 
 const sanitize = text =>
   empty(text)
@@ -56,12 +56,12 @@ const sanitize = text =>
           allowedTags: [],
           allowedAttributes: {}
         }
-      ).trim()
+      ).trim();
 
 const sha256 = text =>
   crypto
     .createHash("sha256")
     .update(text)
-    .digest("hex")
+    .digest("hex");
 
-export { empty, nullIfEmpty, markdown, sanitize, sha256 }
+export { empty, nullIfEmpty, markdown, sanitize, sha256 };

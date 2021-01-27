@@ -1,13 +1,13 @@
-import { typeDefs, resolvers } from "~/schema"
-import mongo_connect from "~/connectors/connection"
-import Server from "~/server"
-import { empty } from "~/utils"
-import config from "config"
+import { typeDefs, resolvers } from "~/schema";
+import mongo_connect from "~/connectors/connection";
+import Server from "~/server";
+import { empty } from "~/utils";
+import config from "config";
 
-import process from "process"
+import process from "process";
 
-const socket = config.has("socket") ? config.get("socket") : null
-const port = empty(socket) && config.has("port") ? config.get("port") : null
+const socket = config.has("socket") ? config.get("socket") : null;
+const port = empty(socket) && config.has("port") ? config.get("port") : null;
 
 const server = new Server({
   typeDefs,
@@ -24,4 +24,4 @@ const server = new Server({
       "GraphQL Server is now running on " +
         (port ? `http://[::]:${port}/graphql` : socket)
     )
-})
+});

@@ -1,4 +1,4 @@
-export { RootQuery } from "./queries/resolvers"
+export { RootQuery } from "./queries/resolvers";
 
 export {
   Enclosure,
@@ -7,6 +7,6 @@ export {
   PodcastItem,
   Post,
   Cover
-} from "./types/resolvers"
+} from "./types/resolvers";
 
-export { BigInt } from "./scalars/resolvers"
+export { BigInt } from "./scalars/resolvers";

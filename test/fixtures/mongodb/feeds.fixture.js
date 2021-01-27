@@ -1,5 +1,5 @@
-import { Types } from "mongoose"
-const ObjectId = Types.ObjectId
+import { Types } from "mongoose";
+const ObjectId = Types.ObjectId;
 
 const feeds = [
   {
@@ -134,7 +134,7 @@ const feeds = [
     feed_redirect_url: "",
     web_redirect_url: ""
   }
-]
+];
 
-export { feeds }
-export default feeds
+export { feeds };
+export default feeds;

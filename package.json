@@ -4,7 +4,8 @@
   "description": "GraphQL API for podcloud",
   "scripts": {
     "test": "NODE_ENV=test mocha --opts test/mocha.opts",
-    "coverage": "node_modules/.bin/babel-node node_modules/.bin/babel-istanbul cover node_modules/.bin/_mocha -- --opts test/mocha.opts",
+    "coverage":
+      "node_modules/.bin/babel-node node_modules/.bin/babel-istanbul cover node_modules/.bin/_mocha -- --opts test/mocha.opts",
     "codecov": "npm run coverage && codecov",
     "watch": "nodemon --watch . --exec 'npm test || true'",
     "build": "webpack",
@@ -65,8 +66,5 @@
     "sinon-mongoose": "2.0.2",
     "webpack": "^3.10.0",
     "webpack-node-externals": "^1.6.0"
-  },
-  "prettier": {
-    "semi": false
   }
 }

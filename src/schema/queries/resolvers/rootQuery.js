@@ -1,9 +1,9 @@
-import podcastItem from "./podcastItem"
-import podcast from "./podcast"
+import podcastItem from "./podcastItem";
+import podcast from "./podcast";
 
 const RootQuery = {
   podcastItem,
   podcast
-}
+};
 
-export default RootQuery
+export default RootQuery;

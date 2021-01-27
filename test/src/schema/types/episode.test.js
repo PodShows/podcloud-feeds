@@ -1,13 +1,13 @@
-import { expect } from "chai"
-import sinon from "sinon"
+import { expect } from "chai";
+import sinon from "sinon";
 
-import * as graphql from "graphql"
-import { buildSchema, testGraphQLProperty } from "#/helpers/schema.helper.js"
-import { context } from "#/helpers/server.helper"
+import * as graphql from "graphql";
+import { buildSchema, testGraphQLProperty } from "#/helpers/schema.helper.js";
+import { context } from "#/helpers/server.helper";
 
 describe("Episode Graph Object", () => {
-  const schema = buildSchema()
-  const fields = schema.getType("Episode").getFields()
+  const schema = buildSchema();
+  const fields = schema.getType("Episode").getFields();
 
   const obj = {
     feed: { identifier: "toto" },
@@ -21,15 +21,15 @@ describe("Episode Graph Object", () => {
         path: "http://anurl.test/afile.mp3"
       }
     }
-  }
+  };
 
   before(() => {
-    testGraphQLProperty.context = context
-  })
+    testGraphQLProperty.context = context;
+  });
 
   after(() => {
-    testGraphQLProperty.restore()
-  })
+    testGraphQLProperty.restore();
+  });
 
   it(
     "should include and resolve a required Enclosure",
@@ -40,5 +40,5 @@ describe("Episode Graph Object", () => {
       obj,
       obj.enclosure
     )
-  )
-})
+  );
+});
