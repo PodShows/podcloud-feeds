@@ -51,6 +51,6 @@ const FeedSchema = new Mongoose.Schema({
   donate: String
 });
 
-const Feed = Mongoose.model("feeds", FeedSchema);
+const Feed = Mongoose.model("Feed", FeedSchema);
 
 export default Feed;

@@ -41,6 +41,6 @@ const ItemSchema = new Mongoose.Schema({
   enclosure: EnclosureSchema
 });
 
-const Item = Mongoose.model("items", ItemSchema);
+const Item = Mongoose.model("Item", ItemSchema);
 
 export default Item;
