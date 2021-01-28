@@ -20,6 +20,7 @@ type Episode implements PodcastItem {
   author: String
   enclosure: Enclosure!
   podcast: Podcast!
+  order_index: Int # Only used for playlist items
 }
 `;
 
