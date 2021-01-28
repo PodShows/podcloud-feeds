@@ -31,6 +31,7 @@ const Playlist = {
         Promise.all(
           pl_items.map(i => {
             const item = i.episode;
+            item.order_index = i.order_index;
 
             if (!item) {
               debug("no valid episode for plitem " + i._id);
@@ -58,7 +59,7 @@ const Playlist = {
           })
         ).then(() => {
           debug("resolving items", items);
-          resolve(items);
+          resolve(items.sort((a, b) => a.order_index - b.order_index));
         });
       });
     });

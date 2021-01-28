@@ -49,7 +49,6 @@ const playlist = function(obj, args, context, info) {
       });
 
       debug("playlist:", playlist);
-      debug("playlist.items:", playlist.items);
       resolve(playlist);
     });
   });

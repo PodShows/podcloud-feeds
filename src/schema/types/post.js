@@ -18,6 +18,7 @@ type Post implements PodcastItem {
   author: String
   explicit: Boolean!
   podcast: Podcast!
+  order_index: Int # Only used for playlist items
 }
 `;
 

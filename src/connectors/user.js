@@ -27,7 +27,9 @@ const PlaylistSchema = new Mongoose.Schema({
 });
 
 PlaylistSchema.virtual("items").get(function() {
-  return PlaylistItem.find({ playlist_id: this._id }).populate("episode_id");
+  return PlaylistItem.find({ playlist_id: this._id })
+    .sort({ order_index: 1 })
+    .populate("episode_id");
 });
 
 const UserSchema = new Mongoose.Schema({

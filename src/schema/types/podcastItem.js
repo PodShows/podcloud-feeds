@@ -19,6 +19,7 @@ interface PodcastItem {
   author: String
   explicit: Boolean!
   podcast: Podcast!
+  order_index: Int # Only for playlist items
 }
 `;
 

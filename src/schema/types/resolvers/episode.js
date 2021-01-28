@@ -69,6 +69,9 @@ const Episode = {
   },
   podcast(item) {
     return item.feed;
+  },
+  order_index(item) {
+    return item.order_index;
   }
 };
 
