@@ -38,6 +38,11 @@ const Playlist = {
               return Promise.resolve();
             }
 
+            if (item.published_at <= new Date()) {
+              debug("Ignoring unpublished episode");
+              return Promise.resolve();
+            }
+
             if (!cached_feeds[item.feed_id]) {
               debug("no cached feeds promise for feed_id : ", item.feed_id);
               cached_feeds[item.feed_id] = new Promise((resolve, reject) => {
