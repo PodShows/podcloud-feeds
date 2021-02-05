@@ -21,6 +21,7 @@ const podcastItem = function(obj, args, context, info) {
       if (err) {
         reject(err);
       } else {
+        item.preview = true; // Items loaded by ID should include preview token
         if (item && item.feed_id) {
           Feed.findOne({ _id: item.feed_id }).exec(function(err, feed) {
             if (err) {
