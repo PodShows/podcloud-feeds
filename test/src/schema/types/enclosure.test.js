@@ -12,6 +12,7 @@ describe("Enclosure Graph Object", () => {
 
   const enclosureObject = {
     item: {
+      id: "this_is_my_id",
       _slugs: ["toto", "tata"],
       feed: { identifier: "blog-de-toto" },
       updated_at: new Date(1337 * 1000)
@@ -23,7 +24,7 @@ describe("Enclosure Graph Object", () => {
     mime_type: "audio/mpeg+test",
     filename: "afile.ext",
     meta_url: {
-      path: "http://anurl.test/afile.mp3?p=f"
+      path: "http://anurl.test/afile.mp3"
     }
   };
 
@@ -111,6 +112,68 @@ describe("Enclosure Graph Object", () => {
     );
   });
 
+  it("should resolve url with default purpose", () => {
+    expect(enclosureFields.url.resolve(enclosureObject, {}, context)).to.equals(
+      "https://" +
+        context.hosts.stats +
+        "/blog-de-toto/tata/enclosure.blabla.ext?p=dl"
+    );
+  });
+
+  it("should resolve url with custom purpose", () => {
+    expect(
+      enclosureFields.url.resolve(enclosureObject, { purpose: "f" }, context)
+    ).to.equals(
+      "https://" +
+        context.hosts.stats +
+        "/blog-de-toto/tata/enclosure.blabla.ext?p=f"
+    );
+  });
+
+  it("should resolve url without preview", () => {
+    expect(enclosureFields.url.resolve(enclosureObject, {}, context)).to.equals(
+      "https://" +
+        context.hosts.stats +
+        "/blog-de-toto/tata/enclosure.blabla" +
+        ".ext?p=dl"
+    );
+
+    expect(
+      enclosureFields.url.resolve(
+        {
+          ...enclosureObject,
+          item: { ...enclosureObject.item, preview: false }
+        },
+        {},
+        context
+      )
+    ).to.equals(
+      "https://" +
+        context.hosts.stats +
+        "/blog-de-toto/tata/enclosure.blabla" +
+        ".ext?p=dl"
+    );
+  });
+
+  it("should resolve url with preview", () => {
+    expect(
+      enclosureFields.url.resolve(
+        {
+          ...enclosureObject,
+          item: { ...enclosureObject.item, preview: true }
+        },
+        {},
+        context
+      )
+    ).to.equals(
+      "https://" +
+        context.hosts.stats +
+        "/blog-de-toto/tata/enclosure.blabla" +
+        ".ext?p=dl&preview=" +
+        enclosureObject.item.id
+    );
+  });
+
   it("should resolve url with correct media_type", () => {
     expect(
       enclosureFields.url.resolve(
@@ -126,7 +189,7 @@ describe("Enclosure Graph Object", () => {
         context.hosts.stats +
         "/blog-de-toto/tata/enclosure." +
         "blabla" +
-        ".pouet?p=f"
+        ".pouet?p=dl"
     );
   });
 
@@ -145,7 +208,7 @@ describe("Enclosure Graph Object", () => {
         context.hosts.stats +
         "/blog-de-toto/tata/enclosure." +
         "blabla" +
-        ".ext?p=f"
+        ".ext?p=dl"
     );
   });
 
@@ -165,7 +228,7 @@ describe("Enclosure Graph Object", () => {
         context.hosts.stats +
         "/blog-de-toto/tata/enclosure." +
         "blabla" +
-        ".mp3?p=f"
+        ".mp3?p=dl"
     );
   });
 
@@ -192,7 +255,7 @@ describe("Enclosure Graph Object", () => {
         context.hosts.stats +
         "/blog-de-toto/tata/enclosure." +
         "blabla" +
-        ".mp3?p=f"
+        ".mp3?p=dl"
     );
   });
 
@@ -211,8 +274,8 @@ describe("Enclosure Graph Object", () => {
         context.hosts.stats +
         "/blog-de-toto/tata/enclosure." +
         // this is meta_url.path sha256
-        "85e551c61511d36350535b2688a6bdb40845301414e630e2f8a03c252ccf37de" +
-        ".ext?p=f"
+        "d281e6f02163d971e1218a178ad09fbf09deb41d8e9aaed19ff1a440674221b2" +
+        ".ext?p=dl"
     );
   });
 });

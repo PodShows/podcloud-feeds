@@ -6,7 +6,7 @@ type Enclosure {
   duration: Int!
   size: BigInt!
   type: String!
-  url: String!
+  url(purpose: String): String!
   cover: Cover!
 }
 `;

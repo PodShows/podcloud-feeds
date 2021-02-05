@@ -38,7 +38,9 @@ const Enclosure = {
 
     return `${prefix}${
       ctx.hosts.stats
-    }/${identifier}/${item_slug}/enclosure.${enclosure_sha256}${enclosure_ext}?p=f`;
+    }/${identifier}/${item_slug}/enclosure.${enclosure_sha256}${enclosure_ext}?p=${
+      empty(args.purpose) ? "dl" : args.purpose
+    }${enclosure.item.preview ? `&preview=${enclosure.item.id}` : ""}`;
   },
   cover(enclosure) {
     let cover = null;
