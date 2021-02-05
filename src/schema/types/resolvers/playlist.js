@@ -38,7 +38,7 @@ const Playlist = {
               return Promise.resolve();
             }
 
-            if (item.published_at <= new Date()) {
+            if (item.published_at > new Date()) {
               debug("Ignoring unpublished episode");
               return Promise.resolve();
             }
