@@ -1,4 +1,4 @@
-FROM node:10.15.3 as runner
+FROM node:10.24.1 as runner
 
 WORKDIR /usr/src/app
 
