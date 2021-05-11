@@ -78,6 +78,20 @@ const items = [
   },
   {
     _id: ObjectId("000000000000000000000016"),
+    feed_id: ObjectId("000000000000000000000001"),
+    title: "Blog post mais banned",
+    explicit: false,
+    author: "banned",
+    link: "",
+    status: "published",
+    banned_at: new Date(+NOW - 3600 * 1000),
+    private: false,
+    _slugs: ["blog-post-past-private"],
+    content: "Ceci est un post de blog mais private",
+    published_at: new Date(+NOW - 3 * 24 * 3600 * 1000)
+  },
+  {
+    _id: ObjectId("000000000000000000000017"),
     feed_id: ObjectId("000000000000000000000002"),
     title: "Episode 1",
     explicit: false,
@@ -90,7 +104,7 @@ const items = [
     published_at: new Date(+NOW - 15 * 24 * 3600 * 1000)
   },
   {
-    _id: ObjectId("000000000000000000000017"),
+    _id: ObjectId("000000000000000000000018"),
     feed_id: ObjectId("000000000000000000000002"),
     title: "Episode 2",
     explicit: false,

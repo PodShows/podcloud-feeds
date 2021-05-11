@@ -43,6 +43,16 @@ const Playlist = {
               return Promise.resolve();
             }
 
+            if (item.private) {
+              debug("Ignoring private episode");
+              return Promise.resolve();
+            }
+
+            if (+item.banned_at > 0) {
+              debug("Ignoring banned episode");
+              return Promise.resolve();
+            }
+
             if (!cached_feeds[item.feed_id]) {
               debug("no cached feeds promise for feed_id : ", item.feed_id);
               cached_feeds[item.feed_id] = new Promise((resolve, reject) => {

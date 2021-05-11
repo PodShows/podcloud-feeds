@@ -8,6 +8,7 @@ const podcastItem = function(obj, args, context, info) {
     const findArgs = {
       _id: args._id,
       status: "published",
+      banned_at: null,
       private: {
         $ne: true
       }
