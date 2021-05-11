@@ -16,6 +16,8 @@ services:
     labels:
       traefik.frontend.rule: "HostRegexp:feeds.{host:podcloud}.test"
       traefik.frontend.priority: 500
+    extra_hosts:
+      - "dave:192.168.10.40"
 
 networks:
   podcloud:

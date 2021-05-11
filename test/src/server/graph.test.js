@@ -174,6 +174,10 @@ describe("GraphQL Server", () => {
             expect(feed.items).to.not.deep.include({
               title: "Blog post dans le passé mais privé"
             });
+
+            expect(feed.items).to.not.deep.include({
+              title: "Blog post mais banned"
+            });
           });
       });
 

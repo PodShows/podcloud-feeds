@@ -177,6 +177,7 @@ const Podcast = {
         published_at: {
           $lte: new Date()
         },
+        banned_at: null,
         status: "published",
         private: {
           $ne: true
