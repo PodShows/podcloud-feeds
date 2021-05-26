@@ -8,7 +8,9 @@ const Post = {
     return item._id.toString();
   },
   guid(item) {
-    return item._id.toString();
+    return item.use_original_guid === true
+      ? item.original_guid
+      : item._id.toString();
   },
   title(item) {
     return item.title;
