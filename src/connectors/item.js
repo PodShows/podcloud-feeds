@@ -34,6 +34,8 @@ const ItemSchema = new Mongoose.Schema({
   published_at: Date,
   updated_at: Date,
   private: Boolean,
+  original_guid: String,
+  use_original_guid: Boolean,
   banned_at: Date,
   episode_type: String,
   season: Number,
