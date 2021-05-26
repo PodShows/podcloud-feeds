@@ -32,7 +32,7 @@
     "marked": "^0.3.12",
     "mime-types": "^2.1.27",
     "moment": "^2.18.1",
-    "mongoose": "^4.4.12",
+    "mongoose": "^5.0.0",
     "mongoose-fixture-loader": "^1.0.2",
     "request": "^2.83.0",
     "request-promise": "^4.0.0",
