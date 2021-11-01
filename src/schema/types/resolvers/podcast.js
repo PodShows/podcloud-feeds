@@ -162,7 +162,11 @@ const Podcast = {
     return url;
   },
   donate_url(feed) {
-    let url = feed.donate;
+    let url = feed.coffee_affiliate_url;
+
+    if (empty(url)) {
+      url = feed.donate;
+    }
 
     if (empty(url)) return null;
 
