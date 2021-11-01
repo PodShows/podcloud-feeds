@@ -48,7 +48,8 @@ const FeedSchema = new Mongoose.Schema({
   discord: String,
   wiki: String,
   shop: String,
-  donate: String
+  donate: String,
+  coffee_affiliate_url: String
 });
 
 const Feed = Mongoose.model("Feed", FeedSchema);
