@@ -62,7 +62,7 @@
     "proxyquire": "1.8.0",
     "sinon": "4.1.4",
     "sinon-chai": "2.14.0",
-    "sinon-mongoose": "2.0.2",
+    "sinon-mongoose": "2.3.0",
     "webpack": "^3.10.0",
     "webpack-node-externals": "^1.6.0"
   }
