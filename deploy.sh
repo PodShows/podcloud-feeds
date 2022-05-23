@@ -35,6 +35,9 @@ cd $BASE/releases/$RELEASEN
 
 mv docker-compose.production.yml docker-compose.yml
 
+echo "Linking shared data"
+ln -nfs $BASE/shared/.env.local $BASE/releases/$RELEASEN/
+
 ./containerctl.sh pull
 ./containerctl.sh up -d --remove-orphans
 

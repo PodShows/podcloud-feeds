@@ -9,7 +9,7 @@ services:
     volumes:
       - ./config:/usr/src/app/config
     env_file:
-      - ../shared/env.local
+      - ./env.local
     restart: always
     labels:
       traefik.enable: true
